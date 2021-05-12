@@ -10,12 +10,19 @@ export class UsersService {
     return this.users;
   }
 
+  getUserById(id: number): User {
+    return this.users.find((user) => user.id == id);
+  }
+
   createUser(createUserDto: CreateUserDto): User {
     const { name, email, password, favoriteDish, specialDish, bio } =
       createUserDto;
 
+    // ランダムなidを生成
+    const randomId = Math.floor(Math.random() * 101);
+
     const user: User = {
-      id: 1,
+      id: randomId,
       name,
       email,
       password,
