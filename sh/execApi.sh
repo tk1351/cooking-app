@@ -1,3 +1,3 @@
 # apiコンテナに接続する
-# $ ./execApi.sh
+# $ ./sh/execApi.sh
 docker-compose -f docker-compose.dev.yml exec api bash

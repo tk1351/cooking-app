@@ -1,4 +1,4 @@
 # docker-compose up
-# $ ./up.sh
+# $ ./sh/up.sh
 
 docker-compose -f docker-compose.dev.yml up -d
