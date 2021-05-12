@@ -6,10 +6,13 @@ import {
   Param,
   Delete,
   Patch,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User, UserRole } from './user.model';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UserRoleValidationPipe } from './pipes/user-role-validation.pipe';
 
 @Controller('users')
 export class UsersController {
@@ -26,6 +29,7 @@ export class UsersController {
   }
 
   @Post()
+  @UsePipes(ValidationPipe)
   createUser(@Body() createUserDto: CreateUserDto): User {
     return this.usersService.createUser(createUserDto);
   }
@@ -36,7 +40,10 @@ export class UsersController {
   }
 
   @Patch('/:id/role')
-  updateUserRole(@Param('id') id: number, @Body('role') role: UserRole) {
+  updateUserRole(
+    @Param('id') id: number,
+    @Body('role', UserRoleValidationPipe) role: UserRole,
+  ) {
     return this.usersService.updateUserRole(id, role);
   }
 }
