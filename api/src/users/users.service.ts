@@ -37,4 +37,8 @@ export class UsersService {
     this.users.push(user);
     return user;
   }
+
+  deleteUser(id: number): void {
+    this.users = this.users.filter((user) => user.id != id);
+  }
 }
