@@ -3,10 +3,15 @@ export interface User {
   name: string;
   email: string;
   password: string;
-  role: 'admin' | 'auth';
+  role: UserRole;
   favoriteDish: string;
   specialDish: string;
   bio: string;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export enum UserRole {
+  admin = 'admin',
+  auth = 'auth',
 }

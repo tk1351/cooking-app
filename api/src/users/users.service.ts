@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from './user.model';
+import { User, UserRole } from './user.model';
 import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
@@ -26,7 +26,7 @@ export class UsersService {
       name,
       email,
       password,
-      role: 'auth',
+      role: UserRole.auth,
       favoriteDish,
       specialDish,
       bio,
@@ -40,5 +40,11 @@ export class UsersService {
 
   deleteUser(id: number): void {
     this.users = this.users.filter((user) => user.id != id);
+  }
+
+  updateUserRole(id: number, role: UserRole): User {
+    const user = this.getUserById(id);
+    user.role = role;
+    return user;
   }
 }
