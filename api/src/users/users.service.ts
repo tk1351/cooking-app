@@ -74,12 +74,18 @@ export class UsersService {
     return found;
   }
 
-  async deleteUser(id: number): Promise<void> {
+  async deleteUser(id: number, user: User): Promise<{ message: string }> {
     const result = await this.userRepository.delete({ id });
 
     // DeleteResultのaffectedが0 = 削除できるものが存在しない
     if (result.affected === 0) {
       throw new NotFoundException(`ID: ${id}のuserは存在しません`);
     }
+
+    if (id !== user.id) {
+      throw new UnauthorizedException('認証情報が無効です');
+    }
+
+    return { message: 'ユーザーを削除しました' };
   }
 }

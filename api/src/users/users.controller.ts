@@ -63,7 +63,11 @@ export class UsersController {
   }
 
   @Delete('/:id')
-  deleteUser(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.usersService.deleteUser(id);
+  @UseGuards(AuthGuard())
+  deleteUser(
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser() user: User,
+  ): Promise<{ message: string }> {
+    return this.usersService.deleteUser(id, user);
   }
 }
