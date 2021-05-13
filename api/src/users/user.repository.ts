@@ -1,11 +1,12 @@
 import { Repository, EntityRepository } from 'typeorm';
-import { User } from './user.entity';
-import { AuthCredentialsDto } from './dto/auth-credentials.dto';
-import { UserRole } from './user.model';
 import {
   ConflictException,
   InternalServerErrorException,
 } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
+import { User } from './user.entity';
+import { AuthCredentialsDto } from './dto/auth-credentials.dto';
+import { UserRole } from './user.model';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -15,7 +16,8 @@ export class UserRepository extends Repository<User> {
     const user = new User();
     user.name = name;
     user.email = email;
-    user.password = password;
+    user.salt = await bcrypt.genSalt();
+    user.password = await this.hashPassword(password, user.salt);
     user.role = UserRole.admin;
     user.favoriteDish = '';
     user.specialDish = '';
@@ -39,7 +41,8 @@ export class UserRepository extends Repository<User> {
     const user = new User();
     user.name = name;
     user.email = email;
-    user.password = password;
+    user.salt = await bcrypt.genSalt();
+    user.password = await this.hashPassword(password, user.salt);
     user.role = UserRole.auth;
     user.favoriteDish = '';
     user.specialDish = '';
@@ -55,5 +58,10 @@ export class UserRepository extends Repository<User> {
         throw new InternalServerErrorException();
       }
     }
+  }
+
+  // passwordの暗号化
+  private async hashPassword(password: string, salt: string): Promise<string> {
+    return bcrypt.hash(password, salt);
   }
 }
