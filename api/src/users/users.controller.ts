@@ -19,4 +19,9 @@ export class UsersController {
   ): Promise<void> {
     return this.usersService.register(authCredentialsDto);
   }
+
+  @Post('/login')
+  login(@Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto) {
+    return this.usersService.login(authCredentialsDto);
+  }
 }

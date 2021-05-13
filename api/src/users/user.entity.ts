@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
   Unique,
 } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 import { UserRole } from './user.model';
 
 @Entity()
@@ -44,4 +45,9 @@ export class User extends BaseEntity {
 
   @UpdateDateColumn()
   readonly updatedAt: Date;
+
+  async validatePassword(password: string): Promise<boolean> {
+    const hash = await bcrypt.hash(password, this.salt);
+    return hash === this.password;
+  }
 }

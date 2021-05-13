@@ -11,10 +11,10 @@ import { UserRole } from './user.model';
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
   async registerAdmin(authCredentialsDto: AuthCredentialsDto): Promise<void> {
-    const { name, email, password } = authCredentialsDto;
+    const { email, password } = authCredentialsDto;
 
     const user = new User();
-    user.name = name;
+    user.name = '';
     user.email = email;
     user.salt = await bcrypt.genSalt();
     user.password = await this.hashPassword(password, user.salt);
@@ -36,10 +36,10 @@ export class UserRepository extends Repository<User> {
   }
 
   async register(authCredentialsDto: AuthCredentialsDto): Promise<void> {
-    const { name, email, password } = authCredentialsDto;
+    const { email, password } = authCredentialsDto;
 
     const user = new User();
-    user.name = name;
+    user.name = '';
     user.email = email;
     user.salt = await bcrypt.genSalt();
     user.password = await this.hashPassword(password, user.salt);
@@ -57,6 +57,21 @@ export class UserRepository extends Repository<User> {
       } else {
         throw new InternalServerErrorException();
       }
+    }
+  }
+
+  async validateUserPassword(
+    authCredentialsDto: AuthCredentialsDto,
+  ): Promise<string> {
+    const { email, password } = authCredentialsDto;
+    const user = await this.findOne({ email });
+
+    console.log('validateUserPassword', user);
+
+    if (user && (await user.validatePassword(password))) {
+      return user.name;
+    } else {
+      return null;
     }
   }
 
