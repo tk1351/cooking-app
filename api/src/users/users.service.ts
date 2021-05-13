@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User, UserRole } from './user.model';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UserRepository } from './user.repository';
+import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 
 @Injectable()
 export class UsersService {
@@ -26,28 +26,12 @@ export class UsersService {
     return found;
   }
 
-  createUser(createUserDto: CreateUserDto): User {
-    const { name, email, password, favoriteDish, specialDish, bio } =
-      createUserDto;
+  async registerAdmin(authCredentialsDto: AuthCredentialsDto): Promise<void> {
+    return this.userRepository.registerAdmin(authCredentialsDto);
+  }
 
-    // ランダムなidを生成
-    const randomId = Math.floor(Math.random() * 101);
-
-    const user: User = {
-      id: randomId,
-      name,
-      email,
-      password,
-      role: UserRole.auth,
-      favoriteDish,
-      specialDish,
-      bio,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    this.users.push(user);
-    return user;
+  async register(authCredentialsDto: AuthCredentialsDto): Promise<void> {
+    return this.userRepository.register(authCredentialsDto);
   }
 
   deleteUser(id: number): void {

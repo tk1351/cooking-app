@@ -15,7 +15,5 @@ export class CreateUserDto {
 
   favoriteDish: string;
   specialDish: string;
-
-  @IsNotEmpty({ message: '自己紹介を入力してください' })
   bio: string;
 }

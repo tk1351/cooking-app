@@ -6,13 +6,11 @@ import {
   Param,
   Delete,
   Patch,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User, UserRole } from './user.model';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UserRoleValidationPipe } from './pipes/user-role-validation.pipe';
+import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 
 @Controller('users')
 export class UsersController {
@@ -28,10 +26,14 @@ export class UsersController {
     return this.usersService.getUserById(id);
   }
 
-  @Post()
-  @UsePipes(ValidationPipe)
-  createUser(@Body() createUserDto: CreateUserDto): User {
-    return this.usersService.createUser(createUserDto);
+  @Post('/register/admin')
+  registerAdmin(@Body() authCredentialsDto: AuthCredentialsDto): Promise<void> {
+    return this.usersService.registerAdmin(authCredentialsDto);
+  }
+
+  @Post('/register')
+  register(@Body() authCredentialsDto: AuthCredentialsDto): Promise<void> {
+    return this.usersService.register(authCredentialsDto);
   }
 
   @Delete('/:id')
