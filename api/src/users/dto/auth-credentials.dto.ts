@@ -17,8 +17,8 @@ export class AuthCredentialsDto {
 
   @IsNotEmpty({ message: 'パスワードを入力してください' })
   @IsString({ message: 'パスワードには文字を入力してください' })
-  @MinLength(6, { message: 'パスワードは6文字以上で入力してください' })
-  @MaxLength(20, { message: 'パスワードは20文字以内で入力してください' })
+  @MinLength(6, { message: 'パスワードは6字以上で入力してください' })
+  @MaxLength(20, { message: 'パスワードは20字以内で入力してください' })
   @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
     message: '半角英小文字、半角英大文字、数字を各1種類以上含んでください',
   })

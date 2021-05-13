@@ -2,6 +2,7 @@ import { Repository, EntityRepository } from 'typeorm';
 import {
   ConflictException,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { User } from './user.entity';
@@ -10,6 +11,24 @@ import { UserRole } from './user.model';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
+  async getAllUsers(): Promise<User[]> {
+    try {
+      const result = await this.find({});
+      return result;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getUserById(id: number): Promise<User> {
+    const user = await this.findOne(id);
+
+    if (!user) {
+      throw new NotFoundException(`ID: ${id}のuserは存在しません`);
+    }
+    return user;
+  }
+
   async registerAdmin(authCredentialsDto: AuthCredentialsDto): Promise<void> {
     const { email, password } = authCredentialsDto;
 
@@ -65,8 +84,6 @@ export class UserRepository extends Repository<User> {
   ): Promise<string> {
     const { email, password } = authCredentialsDto;
     const user = await this.findOne({ email });
-
-    console.log('validateUserPassword', user);
 
     if (user && (await user.validatePassword(password))) {
       return user.email;
