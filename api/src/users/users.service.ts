@@ -1,13 +1,16 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from './user.repository';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
+import { JwtPayload } from './jwt-payload.interface';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UserRepository)
     private userRepository: UserRepository,
+    private jwtService: JwtService,
   ) {}
 
   async registerAdmin(authCredentialsDto: AuthCredentialsDto): Promise<void> {
@@ -18,8 +21,9 @@ export class UsersService {
     return this.userRepository.register(authCredentialsDto);
   }
 
-  // 一旦booleanを返す
-  async login(authCredentialsDto: AuthCredentialsDto): Promise<boolean> {
+  async login(
+    authCredentialsDto: AuthCredentialsDto,
+  ): Promise<{ accessToken: string }> {
     const username = await this.userRepository.validateUserPassword(
       authCredentialsDto,
     );
@@ -27,7 +31,10 @@ export class UsersService {
     if (!username) {
       throw new UnauthorizedException('認証情報が無効です');
     }
-    return true;
-    // jwtを返す記述を書く
+
+    // JWTを返す
+    const payload: JwtPayload = { username };
+    const accessToken = await this.jwtService.sign(payload);
+    return { accessToken };
   }
 }

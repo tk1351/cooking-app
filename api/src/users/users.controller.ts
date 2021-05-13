@@ -21,7 +21,9 @@ export class UsersController {
   }
 
   @Post('/login')
-  login(@Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto) {
+  login(
+    @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
+  ): Promise<{ accessToken: string }> {
     return this.usersService.login(authCredentialsDto);
   }
 }

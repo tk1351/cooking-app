@@ -8,12 +8,6 @@ import {
 } from 'class-validator';
 
 export class AuthCredentialsDto {
-  // @IsNotEmpty({ message: '名前を入力してください' })
-  // @IsString({ message: '名前には文字を入力してください' })
-  // @MinLength(4, { message: '名前は4文字以上入力してください' })
-  // @MaxLength(15, { message: '名前は15文字以内で入力してください' })
-  // name: string;
-
   @IsNotEmpty({ message: 'メールアドレスを入力してください' })
   @IsEmail(
     {},
