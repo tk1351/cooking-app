@@ -69,7 +69,7 @@ export class UserRepository extends Repository<User> {
     console.log('validateUserPassword', user);
 
     if (user && (await user.validatePassword(password))) {
-      return user.name;
+      return user.email;
     } else {
       return null;
     }

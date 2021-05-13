@@ -24,16 +24,16 @@ export class UsersService {
   async login(
     authCredentialsDto: AuthCredentialsDto,
   ): Promise<{ accessToken: string }> {
-    const username = await this.userRepository.validateUserPassword(
+    const email = await this.userRepository.validateUserPassword(
       authCredentialsDto,
     );
 
-    if (!username) {
+    if (!email) {
       throw new UnauthorizedException('認証情報が無効です');
     }
 
     // JWTを返す
-    const payload: JwtPayload = { username };
+    const payload: JwtPayload = { email };
     const accessToken = await this.jwtService.sign(payload);
     return { accessToken };
   }
