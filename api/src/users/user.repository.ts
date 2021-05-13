@@ -2,6 +2,10 @@ import { Repository, EntityRepository } from 'typeorm';
 import { User } from './user.entity';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { UserRole } from './user.model';
+import {
+  ConflictException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -17,7 +21,16 @@ export class UserRepository extends Repository<User> {
     user.specialDish = '';
     user.bio = '';
 
-    await user.save();
+    try {
+      await user.save();
+    } catch (error) {
+      // userのemailが重複している場合
+      if (error.code === '23505') {
+        throw new ConflictException('このメールアドレスは既に登録されています');
+      } else {
+        throw new InternalServerErrorException();
+      }
+    }
   }
 
   async register(authCredentialsDto: AuthCredentialsDto): Promise<void> {
@@ -32,6 +45,15 @@ export class UserRepository extends Repository<User> {
     user.specialDish = '';
     user.bio = '';
 
-    await user.save();
+    try {
+      await user.save();
+    } catch (error) {
+      // userのemailが重複している場合
+      if (error.code === '23505') {
+        throw new ConflictException('このメールアドレスは既に登録されています');
+      } else {
+        throw new InternalServerErrorException();
+      }
+    }
   }
 }
