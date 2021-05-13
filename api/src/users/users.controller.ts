@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   ParseIntPipe,
+  Delete,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
@@ -54,5 +55,10 @@ export class UsersController {
     @Body(ValidationPipe) updateProfileDto: UpdateProfileDto,
   ): Promise<User> {
     return this.usersService.updateUserProfile(id, updateProfileDto);
+  }
+
+  @Delete('/:id')
+  deleteUser(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.usersService.deleteUser(id);
   }
 }

@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from './user.repository';
@@ -48,9 +52,6 @@ export class UsersService {
     return { accessToken };
   }
 
-  // TODO: PATCH userのプロフィールを変更
-  // idからuserを特定する
-  // 変更したい箇所：name, bio, specialDish, favoriteDish
   async updateUserProfile(
     id: number,
     updateProfileDto: UpdateProfileDto,
@@ -65,5 +66,14 @@ export class UsersService {
 
     await user.save();
     return user;
+  }
+
+  async deleteUser(id: number): Promise<void> {
+    const result = await this.userRepository.delete({ id });
+
+    // DeleteResultのaffectedが0 = 削除できるものが存在しない
+    if (result.affected === 0) {
+      throw new NotFoundException(`ID: ${id}のuserは存在しません`);
+    }
   }
 }
