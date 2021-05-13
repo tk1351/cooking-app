@@ -8,11 +8,14 @@ import {
   Patch,
   ParseIntPipe,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { User } from './user.entity';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { GetUser } from './get-user.decorator';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
 export class UsersController {
@@ -24,7 +27,7 @@ export class UsersController {
   }
 
   @Get('/:id')
-  getUserById(@Param('id') id: number): Promise<User> {
+  getUserById(@Param('id', ParseIntPipe) id: number): Promise<User> {
     return this.usersService.getUserById(id);
   }
 
@@ -50,11 +53,13 @@ export class UsersController {
   }
 
   @Patch('/:id/profile')
+  @UseGuards(AuthGuard())
   updateUserProfile(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) updateProfileDto: UpdateProfileDto,
+    @GetUser() user: User,
   ): Promise<User> {
-    return this.usersService.updateUserProfile(id, updateProfileDto);
+    return this.usersService.updateUserProfile(id, updateProfileDto, user);
   }
 
   @Delete('/:id')

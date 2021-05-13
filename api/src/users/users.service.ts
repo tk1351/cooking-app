@@ -55,17 +55,23 @@ export class UsersService {
   async updateUserProfile(
     id: number,
     updateProfileDto: UpdateProfileDto,
+    user: User,
   ): Promise<User> {
-    const user = await this.getUserById(id);
+    const found = await this.getUserById(id);
+
+    if (found.id !== user.id) {
+      throw new UnauthorizedException('認証情報が無効です');
+    }
+
     const { name, specialDish, favoriteDish, bio } = updateProfileDto;
 
-    user.name = name;
-    user.specialDish = specialDish;
-    user.favoriteDish = favoriteDish;
-    user.bio = bio;
+    found.name = name;
+    found.specialDish = specialDish;
+    found.favoriteDish = favoriteDish;
+    found.bio = bio;
 
-    await user.save();
-    return user;
+    await found.save();
+    return found;
   }
 
   async deleteUser(id: number): Promise<void> {
