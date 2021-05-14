@@ -32,12 +32,12 @@ paths:
     get:
       description: '指定されたidのuserを取得する'
       parameters:
-      - name: 'id'
-        in: 'path'
-        description: '取得したいuserのid'
-        required: true
-        type: integer
-        format: 'int64'
+        - name: 'id'
+          in: 'path'
+          description: '取得したいuserのid'
+          required: true
+          type: integer
+          format: 'int64'
       responses:
         200:
           description: '成功時のレスポンス'
@@ -47,7 +47,195 @@ paths:
           description: '失敗時のレスポンス'
           schema:
             $ref: '#/definitions/NotFoundError'
-        
+
+  /register/admin:
+    post:
+      summary: 'admin権限のあるユーザーを作成する'
+      description: 'role: adminのユーザー登録をする'
+      parameters:
+        - name: authCredentialsDto
+          in: 'body'
+          description: '登録したいユーザー情報'
+          required: true
+          schema:
+            $ref: '#/definitions/authCredentialsDto'
+
+      responses:
+        200:
+          description: '成功時のレスポンス'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'ユーザー登録が完了しました'
+                description: '登録完了のメッセージ'
+        409:
+          description: 'Email重複時のレスポンス'
+          schema:
+            $ref: '#/definitions/ConflictError'
+        500:
+          description: '失敗時のレスポンス'
+          schema:
+            $ref: '#/definitions/InternalServerError'
+
+  /register:
+    post:
+      summary: 'admin権限の無いユーザーを作成する'
+      description: 'role: authのユーザー登録をする'
+      parameters:
+        - name: authCredentialsDto
+          in: 'body'
+          description: '登録したいユーザー情報'
+          required: true
+          schema:
+            $ref: '#/definitions/authCredentialsDto'
+
+      responses:
+        200:
+          description: '成功時のレスポンス'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'ユーザー登録が完了しました'
+                description: '登録完了のメッセージ'
+        409:
+          description: 'Email重複時のレスポンス'
+          schema:
+            $ref: '#/definitions/ConflictError'
+
+        500:
+          description: '失敗時のレスポンス'
+          schema:
+            $ref: '#/definitions/InternalServerError'
+
+  /login:
+    post:
+      description: 'ログインする'
+      parameters:
+        - name: authCredentialsDto
+          in: 'body'
+          description: 'ログインするユーザー情報'
+          required: true
+          schema:
+            $ref: '#/definitions/authCredentialsDto'
+      responses:
+        200:
+          description: '成功時のレスポンス'
+          schema:
+            type: object
+            properties:
+              accessToken:
+                type: string
+                example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+                description: 'ユーザーのtoken'
+        401:
+          description: '認証情報が不当の場合のエラー'
+          schema:
+            $ref: '#/definitions/UnauthorizedError'
+
+  /{id}/profile:
+    patch:
+      description: 'ユーザー情報を更新する'
+      parameters:
+        - name: id
+          in: 'path'
+          description: '更新したいuserのid'
+          required: true
+          type: integer
+          format: 'int64'
+        - name: updateProfileDto
+          in: 'body'
+          description: '更新したい内容'
+          schema:
+            $ref: '#/definitions/updateProfileDto'
+        - name: accessToken
+          in: 'header'
+          required: true
+          type: string
+          description: '認証に必要なtoken'
+      responses:
+        200:
+          description: '成功時のレスポンス'
+          schema:
+            $ref: '#/definitions/User'
+        401:
+          description: '認証情報が不当の場合のエラー'
+          schema:
+            $ref: '#/definitions/UnauthorizedError'
+
+  /{id}:
+    delete:
+      summary: 'ユーザーを削除する'
+      description: '自身で登録したユーザーのみ削除'
+      parameters:
+        - name: id
+          in: 'path'
+          description: '削除したいuserのid'
+          required: true
+          type: integer
+          format: 'int64'
+        - name: accessToken
+          in: 'header'
+          required: true
+          type: string
+          description: '認証に必要なtoken'
+      responses:
+        200:
+          description: '成功時のレスポンス'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'ユーザーを削除しました'
+                description: '削除完了のメッセージ'
+        401:
+          description: '認証情報が不当の場合のエラー'
+          schema:
+            $ref: '#/definitions/UnauthorizedError'
+        404:
+          description: 'userが存在しない場合のレスポンス'
+          schema:
+            $ref: '#/definitions/NotFoundError'
+
+  /{id}/admin:
+    delete:
+      summary: 'admin権限でユーザーを削除する'
+      description: 'admin権限があればどのユーザーも削除可能'
+      parameters:
+        - name: id
+          in: 'path'
+          description: '削除したいuserのid'
+          required: true
+          type: integer
+          format: 'int64'
+        - name: accessToken
+          in: 'header'
+          required: true
+          type: string
+          description: '認証に必要なtoken'
+      responses:
+        200:
+          description: '成功時のレスポンス'
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: 'ユーザーを削除しました'
+                description: '削除完了のメッセージ'
+        401:
+          description: '認証情報が不当の場合のエラー'
+          schema:
+            $ref: '#/definitions/UnauthorizedError'
+        404:
+          description: 'userが存在しない場合のレスポンス'
+          schema:
+            $ref: '#/definitions/NotFoundError'
+
 definitions:
   User:
     type: object
@@ -95,7 +283,39 @@ definitions:
       updatedAt:
         type: string
         format: date-time
-        
+
+  authCredentialsDto:
+    type: object
+    properties:
+      email:
+        type: string
+        example: 'test@example.com'
+        description: 登録するメールアドレス
+      password:
+        type: string
+        example: 'Test123'
+        description: 登録するパスワード(英小文字、英大文字、数字各1つずつ)
+
+  updateProfileDto:
+    type: object
+    properties:
+      name:
+        type: string
+        example: 'testUser'
+        description: userの名前
+      favoriteDish:
+        type: string
+        example: 'カレー'
+        description: userの好きな食べ物
+      specialDish:
+        type: string
+        example: 'シチュー'
+        description: userの得意料理
+      bio:
+        type: string
+        example: 'testBio'
+        description: userの自己紹介
+
   InternalServerError:
     type: object
     properties:
@@ -107,7 +327,7 @@ definitions:
         type: string
         example: 'Internal server error'
         description: エラーメッセージ
-        
+
   NotFoundError:
     type: object
     properties:
@@ -118,4 +338,28 @@ definitions:
       message:
         type: string
         example: 'Not found error'
+        description: エラーメッセージ
+
+  UnauthorizedError:
+    type: object
+    properties:
+      statusCode:
+        type: number
+        example: 401
+        description: ステータスコード
+      message:
+        type: string
+        example: 'Unauthorized Error'
+        description: エラーメッセージ
+
+  ConflictError:
+    type: object
+    properties:
+      statusCode:
+        type: number
+        example: 409
+        description: ステータスコード
+      message:
+        type: string
+        example: 'Conflict error'
         description: エラーメッセージ
