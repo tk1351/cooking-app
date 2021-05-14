@@ -18,7 +18,7 @@ export class UsersService {
   constructor(
     @InjectRepository(UserRepository)
     private userRepository: UserRepository,
-    private jwtService: JwtService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async getAllUsers(): Promise<User[]> {
@@ -91,7 +91,8 @@ export class UsersService {
   }
 
   async deleteUser(id: number, user: User): Promise<MyKnownMessage> {
-    if (id !== user.id) {
+    const found = await this.getUserById(id);
+    if (found.id !== user.id) {
       throw new UnauthorizedException('認証情報が無効です');
     }
 
@@ -106,7 +107,6 @@ export class UsersService {
   }
 
   // adminのみが全てのユーザーの削除権限あり
-  // tokenのuser.role === 'admin' => ok
   async deleteUserByAdmin(id: number, user: User): Promise<MyKnownMessage> {
     if (user.role !== 'admin') {
       throw new UnauthorizedException('管理者権限がありません');

@@ -2,7 +2,6 @@ import { Repository, EntityRepository } from 'typeorm';
 import {
   ConflictException,
   InternalServerErrorException,
-  NotFoundException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { User } from './user.entity';
