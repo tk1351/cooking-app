@@ -17,7 +17,7 @@ export class UserRepository extends Repository<User> {
   ): Promise<MyKnownMessage> {
     const { email, password } = authCredentialsDto;
 
-    const user = new User();
+    const user = this.create();
     user.name = '';
     user.email = email;
     user.salt = await bcrypt.genSalt();
@@ -45,7 +45,7 @@ export class UserRepository extends Repository<User> {
   ): Promise<MyKnownMessage> {
     const { email, password } = authCredentialsDto;
 
-    const user = new User();
+    const user = this.create();
     user.name = '';
     user.email = email;
     user.salt = await bcrypt.genSalt();
