@@ -1,0 +1,121 @@
+swagger: '2.0'
+
+info:
+  version: '1.0.0'
+  title: cooking-app API
+  description: 'cooking-appのAPI情報'
+
+schemes:
+  - http
+
+host: localhost:8080
+
+basePath: /
+
+paths:
+  /user:
+    get:
+      description: '全てのuserを取得する'
+      responses:
+        200:
+          description: '成功時のレスポンス'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+        500:
+          description: '失敗時のレスポンス'
+          schema:
+            $ref: '#/definitions/InternalServerError'
+
+  /user/{id}:
+    get:
+      description: '指定されたidのuserを取得する'
+      parameters:
+      - name: 'id'
+        in: 'path'
+        description: '取得したいuserのid'
+        required: true
+        type: integer
+        format: 'int64'
+      responses:
+        200:
+          description: '成功時のレスポンス'
+          schema:
+            $ref: '#/definitions/User'
+        404:
+          description: '失敗時のレスポンス'
+          schema:
+            $ref: '#/definitions/NotFoundError'
+        
+definitions:
+  User:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: 'int64'
+        example: 1
+        description: ID
+      name:
+        type: string
+        example: 'testUser'
+        description: userの名前
+      email:
+        type: string
+        example: 'test@example.com'
+        description: userのメールアドレス
+      password:
+        type: string
+        example: 'gdjkahfsal'
+        description: userのパスワード(暗号化)
+      salt:
+        type: string
+        example: 'gdjkahfsal'
+        description: userのパスワード(照合用)
+      role:
+        type: string
+        example: 'admin'
+        description: userの役割
+      favoriteDish:
+        type: string
+        example: 'カレー'
+        description: userの好きな食べ物
+      specialDish:
+        type: string
+        example: 'シチュー'
+        description: userの得意料理
+      bio:
+        type: string
+        example: 'testBio'
+        description: userの自己紹介
+      createdAt:
+        type: string
+        format: date-time
+      updatedAt:
+        type: string
+        format: date-time
+        
+  InternalServerError:
+    type: object
+    properties:
+      statusCode:
+        type: number
+        example: 500
+        description: ステータスコード
+      message:
+        type: string
+        example: 'Internal server error'
+        description: エラーメッセージ
+        
+  NotFoundError:
+    type: object
+    properties:
+      statusCode:
+        type: number
+        example: 404
+        description: ステータスコード
+      message:
+        type: string
+        example: 'Not found error'
+        description: エラーメッセージ
