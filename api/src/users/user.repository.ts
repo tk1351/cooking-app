@@ -8,6 +8,7 @@ import * as bcrypt from 'bcrypt';
 import { User } from './user.entity';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { UserRole } from './user.model';
+import { MyKnownMessage } from '../message.interface';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -29,7 +30,9 @@ export class UserRepository extends Repository<User> {
     return user;
   }
 
-  async registerAdmin(authCredentialsDto: AuthCredentialsDto): Promise<void> {
+  async registerAdmin(
+    authCredentialsDto: AuthCredentialsDto,
+  ): Promise<MyKnownMessage> {
     const { email, password } = authCredentialsDto;
 
     const user = new User();
@@ -44,6 +47,7 @@ export class UserRepository extends Repository<User> {
 
     try {
       await user.save();
+      return { message: 'ユーザー登録が完了しました' };
     } catch (error) {
       // userのemailが重複している場合
       if (error.code === '23505') {
@@ -54,7 +58,9 @@ export class UserRepository extends Repository<User> {
     }
   }
 
-  async register(authCredentialsDto: AuthCredentialsDto): Promise<void> {
+  async register(
+    authCredentialsDto: AuthCredentialsDto,
+  ): Promise<MyKnownMessage> {
     const { email, password } = authCredentialsDto;
 
     const user = new User();
@@ -69,6 +75,7 @@ export class UserRepository extends Repository<User> {
 
     try {
       await user.save();
+      return { message: 'ユーザー登録が完了しました' };
     } catch (error) {
       // userのemailが重複している場合
       if (error.code === '23505') {

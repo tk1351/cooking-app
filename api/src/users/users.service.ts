@@ -10,6 +10,7 @@ import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { JwtPayload } from './jwt-payload.interface';
 import { User } from './user.entity';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { MyKnownMessage } from '../message.interface';
 
 @Injectable()
 export class UsersService {
@@ -27,11 +28,15 @@ export class UsersService {
     return this.userRepository.getUserById(id);
   }
 
-  async registerAdmin(authCredentialsDto: AuthCredentialsDto): Promise<void> {
+  async registerAdmin(
+    authCredentialsDto: AuthCredentialsDto,
+  ): Promise<MyKnownMessage> {
     return this.userRepository.registerAdmin(authCredentialsDto);
   }
 
-  async register(authCredentialsDto: AuthCredentialsDto): Promise<void> {
+  async register(
+    authCredentialsDto: AuthCredentialsDto,
+  ): Promise<MyKnownMessage> {
     return this.userRepository.register(authCredentialsDto);
   }
 
@@ -74,7 +79,11 @@ export class UsersService {
     return found;
   }
 
-  async deleteUser(id: number, user: User): Promise<{ message: string }> {
+  async deleteUser(id: number, user: User): Promise<MyKnownMessage> {
+    if (id !== user.id) {
+      throw new UnauthorizedException('認証情報が無効です');
+    }
+
     const result = await this.userRepository.delete({ id });
 
     // DeleteResultのaffectedが0 = 削除できるものが存在しない
@@ -82,8 +91,21 @@ export class UsersService {
       throw new NotFoundException(`ID: ${id}のuserは存在しません`);
     }
 
-    if (id !== user.id) {
-      throw new UnauthorizedException('認証情報が無効です');
+    return { message: 'ユーザーを削除しました' };
+  }
+
+  // adminのみが全てのユーザーの削除権限あり
+  // tokenのuser.role === 'admin' => ok
+  async deleteUserByAdmin(id: number, user: User): Promise<MyKnownMessage> {
+    if (user.role !== 'admin') {
+      throw new UnauthorizedException('管理者権限がありません');
+    }
+
+    const result = await this.userRepository.delete({ id });
+
+    // DeleteResultのaffectedが0 = 削除できるものが存在しない
+    if (result.affected === 0) {
+      throw new NotFoundException(`ID: ${id}のuserは存在しません`);
     }
 
     return { message: 'ユーザーを削除しました' };

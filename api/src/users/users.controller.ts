@@ -10,12 +10,13 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from './users.service';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { User } from './user.entity';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { GetUser } from './get-user.decorator';
-import { AuthGuard } from '@nestjs/passport';
+import { MyKnownMessage } from '../message.interface';
 
 @Controller('users')
 export class UsersController {
@@ -34,14 +35,14 @@ export class UsersController {
   @Post('/register/admin')
   registerAdmin(
     @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
-  ): Promise<void> {
+  ): Promise<MyKnownMessage> {
     return this.usersService.registerAdmin(authCredentialsDto);
   }
 
   @Post('/register')
   register(
     @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
-  ): Promise<void> {
+  ): Promise<MyKnownMessage> {
     return this.usersService.register(authCredentialsDto);
   }
 
@@ -67,7 +68,16 @@ export class UsersController {
   deleteUser(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
-  ): Promise<{ message: string }> {
+  ): Promise<MyKnownMessage> {
     return this.usersService.deleteUser(id, user);
+  }
+
+  @Delete('/:id/admin')
+  @UseGuards(AuthGuard())
+  deleteUserByAdmin(
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser() user: User,
+  ): Promise<MyKnownMessage> {
+    return this.usersService.deleteUserByAdmin(id, user);
   }
 }
