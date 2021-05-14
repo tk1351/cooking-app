@@ -2,6 +2,7 @@ import {
   Injectable,
   UnauthorizedException,
   NotFoundException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -21,11 +22,21 @@ export class UsersService {
   ) {}
 
   async getAllUsers(): Promise<User[]> {
-    return this.userRepository.getAllUsers();
+    try {
+      const result = await this.userRepository.find({});
+      return result;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 
   async getUserById(id: number): Promise<User> {
-    return this.userRepository.getUserById(id);
+    const user = await this.userRepository.findOne(id);
+
+    if (!user) {
+      throw new NotFoundException(`ID: ${id}のuserは存在しません`);
+    }
+    return user;
   }
 
   async registerAdmin(

@@ -12,24 +12,6 @@ import { MyKnownMessage } from '../message.interface';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-  async getAllUsers(): Promise<User[]> {
-    try {
-      const result = await this.find({});
-      return result;
-    } catch (error) {
-      throw new InternalServerErrorException();
-    }
-  }
-
-  async getUserById(id: number): Promise<User> {
-    const user = await this.findOne(id);
-
-    if (!user) {
-      throw new NotFoundException(`ID: ${id}のuserは存在しません`);
-    }
-    return user;
-  }
-
   async registerAdmin(
     authCredentialsDto: AuthCredentialsDto,
   ): Promise<MyKnownMessage> {
