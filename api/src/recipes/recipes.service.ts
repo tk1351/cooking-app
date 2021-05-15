@@ -10,6 +10,10 @@ export class RecipesService {
     return this.recipes;
   }
 
+  getRecipeById(id: number): Recipe {
+    return this.recipes.find((recipe) => recipe.id == id);
+  }
+
   createRecipe(createRecipeDto: CreateRecipeDto): Recipe {
     const randomId = Math.floor(Math.random() * 101);
 
@@ -26,5 +30,21 @@ export class RecipesService {
 
     this.recipes.push(recipe);
     return recipe;
+  }
+
+  updateRecipe(id: number, createRecipeDto: CreateRecipeDto): Recipe {
+    const recipe = this.getRecipeById(id);
+    const { name, time, remarks, image } = createRecipeDto;
+
+    recipe.name = name;
+    recipe.time = time;
+    recipe.remarks = remarks;
+    recipe.image = image;
+
+    return recipe;
+  }
+
+  deleteRecipe(id: number): void {
+    this.recipes = this.recipes.filter((recipe) => recipe.id != id);
   }
 }
