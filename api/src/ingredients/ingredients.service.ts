@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { IngredientRepository } from './ingredient.repository';
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
 import { Ingredient } from './ingredient.entity';
+import { MyKnownMessage } from '../message.interface';
 
 @Injectable()
 export class IngredientsService {
@@ -42,5 +43,15 @@ export class IngredientsService {
 
     await found.save();
     return found;
+  }
+
+  async deleteIngredient(id: number): Promise<MyKnownMessage> {
+    const result = await this.ingredientRepository.delete(id);
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`ID: ${id}のingredientは存在しません`);
+    }
+
+    return { message: '材料を削除しました' };
   }
 }
