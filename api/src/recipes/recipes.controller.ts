@@ -9,7 +9,9 @@ import {
   Query,
   ValidationPipe,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { RecipesService } from './recipes.service';
 import { Recipe } from './recipe.model';
 import { GetRecipesFilterDto } from './dto/get-recipes.dto';
@@ -33,6 +35,7 @@ export class RecipesController {
   }
 
   @Post()
+  @UseGuards(AuthGuard())
   createRecipe(
     @Body(ValidationPipe) createRecipeDto: CreateRecipeDto,
   ): Promise<Recipe> {
@@ -40,6 +43,7 @@ export class RecipesController {
   }
 
   @Patch('/:id')
+  @UseGuards(AuthGuard())
   updateRecipe(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) createRecipeDto: CreateRecipeDto,
@@ -48,6 +52,7 @@ export class RecipesController {
   }
 
   @Delete('/:id')
+  @UseGuards(AuthGuard())
   deleteRecipe(@Param('id', ParseIntPipe) id: number): Promise<MyKnownMessage> {
     return this.recipesService.deleteRecipe(id);
   }
