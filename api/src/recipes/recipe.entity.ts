@@ -37,7 +37,7 @@ export class Recipe extends BaseEntity {
   @ManyToOne(() => User, (user) => user.recipes, { eager: false })
   user: User;
 
-  @OneToMany(() => Ingredient, (ingredients) => ingredients.recipe, {
+  @OneToMany(() => Ingredient, (ingredient) => ingredient.recipe, {
     eager: true,
   })
   ingredients: Ingredient[];

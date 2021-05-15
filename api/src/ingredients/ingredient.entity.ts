@@ -17,6 +17,8 @@ export class Ingredient extends BaseEntity {
   @Column()
   name: string;
 
+  // TODO: 量: amount追加
+
   @CreateDateColumn()
   readonly createdAt: Date;
 

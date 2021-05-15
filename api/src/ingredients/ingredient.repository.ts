@@ -7,12 +7,15 @@ export class IngredientRepository extends Repository<Ingredient> {
   async createIngredient(
     createIngredientDto: CreateIngredientDto,
   ): Promise<Ingredient> {
-    const { name } = createIngredientDto;
+    const { name, recipe } = createIngredientDto;
 
     const ingredient = this.create();
     ingredient.name = name;
+    ingredient.recipe = recipe;
 
     await ingredient.save();
+
+    delete ingredient.recipe;
 
     return ingredient;
   }
