@@ -6,9 +6,11 @@ import {
   Delete,
   Param,
   Patch,
+  Query,
 } from '@nestjs/common';
 import { RecipesService } from './recipes.service';
 import { Recipe } from './recipe.model';
+import { GetRecipesFilterDto } from './dto/get-recipes.dto';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 
 @Controller('recipes')
@@ -16,8 +18,12 @@ export class RecipesController {
   constructor(private recipesService: RecipesService) {}
 
   @Get()
-  getAllRecipes(): Recipe[] {
-    return this.recipesService.getAllRecipes();
+  getRecipes(@Query() getRecipesFilterDto: GetRecipesFilterDto): Recipe[] {
+    if (Object.keys(getRecipesFilterDto).length) {
+      return this.recipesService.getRecipesWithFilters(getRecipesFilterDto);
+    } else {
+      return this.recipesService.getAllRecipes();
+    }
   }
 
   @Get('/:id')

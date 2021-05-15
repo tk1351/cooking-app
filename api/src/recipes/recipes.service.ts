@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Recipe } from './recipe.model';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
+import { GetRecipesFilterDto } from './dto/get-recipes.dto';
 
 @Injectable()
 export class RecipesService {
@@ -12,6 +13,16 @@ export class RecipesService {
 
   getRecipeById(id: number): Recipe {
     return this.recipes.find((recipe) => recipe.id == id);
+  }
+
+  getRecipesWithFilters(getRecipesFilterDto: GetRecipesFilterDto): Recipe[] {
+    const { query } = getRecipesFilterDto;
+    const recipes = this.getAllRecipes();
+    if (query) {
+      return recipes.filter((recipe) => recipe.name.includes(query));
+    }
+
+    return recipes;
   }
 
   createRecipe(createRecipeDto: CreateRecipeDto): Recipe {
