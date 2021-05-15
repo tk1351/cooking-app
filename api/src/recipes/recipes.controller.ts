@@ -7,6 +7,8 @@ import {
   Param,
   Patch,
   Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { RecipesService } from './recipes.service';
 import { Recipe } from './recipe.model';
@@ -18,7 +20,9 @@ export class RecipesController {
   constructor(private recipesService: RecipesService) {}
 
   @Get()
-  getRecipes(@Query() getRecipesFilterDto: GetRecipesFilterDto): Recipe[] {
+  getRecipes(
+    @Query(ValidationPipe) getRecipesFilterDto: GetRecipesFilterDto,
+  ): Recipe[] {
     if (Object.keys(getRecipesFilterDto).length) {
       return this.recipesService.getRecipesWithFilters(getRecipesFilterDto);
     } else {
@@ -32,6 +36,7 @@ export class RecipesController {
   }
 
   @Post()
+  @UsePipes(ValidationPipe)
   createRecipe(@Body() createRecipeDto: CreateRecipeDto): Recipe {
     return this.recipesService.createRecipe(createRecipeDto);
   }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Recipe } from './recipe.model';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { GetRecipesFilterDto } from './dto/get-recipes.dto';
@@ -12,7 +12,12 @@ export class RecipesService {
   }
 
   getRecipeById(id: number): Recipe {
-    return this.recipes.find((recipe) => recipe.id == id);
+    const found = this.recipes.find((recipe) => recipe.id == id);
+
+    if (!found) {
+      throw new NotFoundException(`ID: ${id}のrecipeは存在しません`);
+    }
+    return found;
   }
 
   getRecipesWithFilters(getRecipesFilterDto: GetRecipesFilterDto): Recipe[] {
@@ -56,6 +61,7 @@ export class RecipesService {
   }
 
   deleteRecipe(id: number): void {
-    this.recipes = this.recipes.filter((recipe) => recipe.id != id);
+    const found = this.getRecipeById(id);
+    this.recipes = this.recipes.filter((recipe) => recipe.id != found.id);
   }
 }
