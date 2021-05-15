@@ -5,6 +5,8 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
+  ValidationPipe,
 } from '@nestjs/common';
 import { IngredientsService } from './ingredients.service';
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
@@ -28,8 +30,16 @@ export class IngredientsController {
 
   @Post()
   createIngredient(
-    @Body() createIngredientDto: CreateIngredientDto,
+    @Body(ValidationPipe) createIngredientDto: CreateIngredientDto,
   ): Promise<Ingredient> {
     return this.ingredientsService.createIngredient(createIngredientDto);
+  }
+
+  @Patch('/:id')
+  updateIngredient(
+    @Param('id', ParseIntPipe) id: number,
+    @Body(ValidationPipe) createIngredientDto: CreateIngredientDto,
+  ): Promise<Ingredient> {
+    return this.ingredientsService.updateIngredient(id, createIngredientDto);
   }
 }

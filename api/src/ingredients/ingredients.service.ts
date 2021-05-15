@@ -30,4 +30,17 @@ export class IngredientsService {
   ): Promise<Ingredient> {
     return this.ingredientRepository.createIngredient(createIngredientDto);
   }
+
+  async updateIngredient(
+    id: number,
+    createIngredientDto: CreateIngredientDto,
+  ): Promise<Ingredient> {
+    const found = await this.getIngredientById(id);
+    const { name } = createIngredientDto;
+
+    found.name = name;
+
+    await found.save();
+    return found;
+  }
 }
