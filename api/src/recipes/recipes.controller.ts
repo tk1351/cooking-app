@@ -17,6 +17,8 @@ import { Recipe } from './recipe.model';
 import { GetRecipesFilterDto } from './dto/get-recipes.dto';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { MyKnownMessage } from '../message.interface';
+import { GetUser } from '../users/get-user.decorator';
+import { User } from '../users/user.entity';
 
 @Controller('recipes')
 export class RecipesController {
@@ -38,8 +40,9 @@ export class RecipesController {
   @UseGuards(AuthGuard())
   createRecipe(
     @Body(ValidationPipe) createRecipeDto: CreateRecipeDto,
+    @GetUser() user: User,
   ): Promise<Recipe> {
-    return this.recipesService.createRecipe(createRecipeDto);
+    return this.recipesService.createRecipe(createRecipeDto, user);
   }
 
   @Patch('/:id')
@@ -47,13 +50,17 @@ export class RecipesController {
   updateRecipe(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) createRecipeDto: CreateRecipeDto,
+    @GetUser() user: User,
   ): Promise<Recipe> {
-    return this.recipesService.updateRecipe(id, createRecipeDto);
+    return this.recipesService.updateRecipe(id, createRecipeDto, user);
   }
 
   @Delete('/:id')
   @UseGuards(AuthGuard())
-  deleteRecipe(@Param('id', ParseIntPipe) id: number): Promise<MyKnownMessage> {
-    return this.recipesService.deleteRecipe(id);
+  deleteRecipe(
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser() user: User,
+  ): Promise<MyKnownMessage> {
+    return this.recipesService.deleteRecipe(id, user);
   }
 }

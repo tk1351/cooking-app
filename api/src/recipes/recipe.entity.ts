@@ -32,6 +32,6 @@ export class Recipe extends BaseEntity {
   @UpdateDateColumn()
   readonly updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.recipes, { eager: true })
+  @ManyToOne(() => User, (user) => user.recipes, { eager: false })
   user: User;
 }
