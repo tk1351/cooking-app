@@ -7,13 +7,14 @@ import {
   Param,
   Patch,
   Query,
-  UsePipes,
   ValidationPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { RecipesService } from './recipes.service';
 import { Recipe } from './recipe.model';
 import { GetRecipesFilterDto } from './dto/get-recipes.dto';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
+import { MyKnownMessage } from '../message.interface';
 
 @Controller('recipes')
 export class RecipesController {
@@ -22,35 +23,32 @@ export class RecipesController {
   @Get()
   getRecipes(
     @Query(ValidationPipe) getRecipesFilterDto: GetRecipesFilterDto,
-  ): Recipe[] {
-    if (Object.keys(getRecipesFilterDto).length) {
-      return this.recipesService.getRecipesWithFilters(getRecipesFilterDto);
-    } else {
-      return this.recipesService.getAllRecipes();
-    }
+  ): Promise<Recipe[]> {
+    return this.recipesService.getRecipes(getRecipesFilterDto);
   }
 
   @Get('/:id')
-  getRecipeById(@Param('id') id: number): Recipe {
+  getRecipeById(@Param('id', ParseIntPipe) id: number): Promise<Recipe> {
     return this.recipesService.getRecipeById(id);
   }
 
   @Post()
-  @UsePipes(ValidationPipe)
-  createRecipe(@Body() createRecipeDto: CreateRecipeDto): Recipe {
+  createRecipe(
+    @Body(ValidationPipe) createRecipeDto: CreateRecipeDto,
+  ): Promise<Recipe> {
     return this.recipesService.createRecipe(createRecipeDto);
   }
 
   @Patch('/:id')
   updateRecipe(
-    @Param('id') id: number,
-    @Body() createRecipeDto: CreateRecipeDto,
-  ): Recipe {
+    @Param('id', ParseIntPipe) id: number,
+    @Body(ValidationPipe) createRecipeDto: CreateRecipeDto,
+  ): Promise<Recipe> {
     return this.recipesService.updateRecipe(id, createRecipeDto);
   }
 
   @Delete('/:id')
-  deleteRecipe(@Param('id') id: number): void {
+  deleteRecipe(@Param('id', ParseIntPipe) id: number): Promise<MyKnownMessage> {
     return this.recipesService.deleteRecipe(id);
   }
 }

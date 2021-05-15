@@ -1,18 +1,26 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Recipe } from './recipe.model';
+import { InjectRepository } from '@nestjs/typeorm';
+import { RecipeRepository } from './recipe.repository';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
+import { Recipe } from './recipe.entity';
 import { GetRecipesFilterDto } from './dto/get-recipes.dto';
+import { MyKnownMessage } from '../message.interface';
 
 @Injectable()
 export class RecipesService {
-  private recipes: Recipe[] = [];
+  constructor(
+    @InjectRepository(RecipeRepository)
+    private recipeRepository: RecipeRepository,
+  ) {}
 
-  getAllRecipes(): Recipe[] {
-    return this.recipes;
+  async getRecipes(
+    getRecipesFilterDto: GetRecipesFilterDto,
+  ): Promise<Recipe[]> {
+    return this.recipeRepository.getRecipes(getRecipesFilterDto);
   }
 
-  getRecipeById(id: number): Recipe {
-    const found = this.recipes.find((recipe) => recipe.id == id);
+  async getRecipeById(id: number): Promise<Recipe> {
+    const found = await this.recipeRepository.findOne(id);
 
     if (!found) {
       throw new NotFoundException(`ID: ${id}のrecipeは存在しません`);
@@ -20,48 +28,33 @@ export class RecipesService {
     return found;
   }
 
-  getRecipesWithFilters(getRecipesFilterDto: GetRecipesFilterDto): Recipe[] {
-    const { query } = getRecipesFilterDto;
-    const recipes = this.getAllRecipes();
-    if (query) {
-      return recipes.filter((recipe) => recipe.name.includes(query));
+  async createRecipe(createRecipeDto: CreateRecipeDto): Promise<Recipe> {
+    return this.recipeRepository.createRecipe(createRecipeDto);
+  }
+
+  async updateRecipe(
+    id: number,
+    createRecipeDto: CreateRecipeDto,
+  ): Promise<Recipe> {
+    const found = await this.getRecipeById(id);
+    const { name, time, remarks, image } = createRecipeDto;
+
+    found.name = name;
+    found.time = time;
+    found.remarks = remarks;
+    found.image = image;
+
+    await found.save();
+    return found;
+  }
+
+  async deleteRecipe(id: number): Promise<MyKnownMessage> {
+    const result = await this.recipeRepository.delete({ id });
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`ID: ${id}のrecipeは存在しません`);
     }
 
-    return recipes;
-  }
-
-  createRecipe(createRecipeDto: CreateRecipeDto): Recipe {
-    const randomId = Math.floor(Math.random() * 101);
-
-    const { name, time, remarks, image } = createRecipeDto;
-    const recipe: Recipe = {
-      id: randomId,
-      name,
-      time,
-      remarks,
-      image,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    this.recipes.push(recipe);
-    return recipe;
-  }
-
-  updateRecipe(id: number, createRecipeDto: CreateRecipeDto): Recipe {
-    const recipe = this.getRecipeById(id);
-    const { name, time, remarks, image } = createRecipeDto;
-
-    recipe.name = name;
-    recipe.time = time;
-    recipe.remarks = remarks;
-    recipe.image = image;
-
-    return recipe;
-  }
-
-  deleteRecipe(id: number): void {
-    const found = this.getRecipeById(id);
-    this.recipes = this.recipes.filter((recipe) => recipe.id != found.id);
+    return { message: 'レシピを削除しました' };
   }
 }
