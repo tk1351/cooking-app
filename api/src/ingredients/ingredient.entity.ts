@@ -5,7 +5,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from 'typeorm';
+import { Recipe } from '../recipes/recipe.entity';
 
 @Entity()
 export class Ingredient extends BaseEntity {
@@ -20,4 +22,7 @@ export class Ingredient extends BaseEntity {
 
   @UpdateDateColumn()
   readonly updatedAt: Date;
+
+  @ManyToOne(() => Recipe, (recipe) => recipe.ingredients, { eager: false })
+  recipe: Recipe;
 }

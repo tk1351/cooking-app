@@ -6,8 +6,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import { User } from '../users/user.entity';
+import { Ingredient } from '../ingredients/ingredient.entity';
 
 @Entity()
 export class Recipe extends BaseEntity {
@@ -34,4 +36,9 @@ export class Recipe extends BaseEntity {
 
   @ManyToOne(() => User, (user) => user.recipes, { eager: false })
   user: User;
+
+  @OneToMany(() => Ingredient, (ingredients) => ingredients.recipe, {
+    eager: true,
+  })
+  ingredients: Ingredient[];
 }
