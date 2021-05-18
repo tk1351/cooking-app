@@ -1,30 +1,18 @@
-import {
-  BaseEntity,
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
-} from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Recipe } from '../recipes/recipe.entity';
+import { DefaultEntity } from '../entity';
 
-@Entity()
-export class Ingredient extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  readonly id: number;
-
+@Entity({ name: 'ingredients' })
+export class Ingredient extends DefaultEntity {
   @Column()
   name: string;
 
   // TODO: 量: amount追加
 
-  @CreateDateColumn()
-  readonly createdAt: Date;
-
-  @UpdateDateColumn()
-  readonly updatedAt: Date;
-
   @ManyToOne(() => Recipe, (recipe) => recipe.ingredients, { eager: false })
+  @JoinColumn({ name: 'recipeId' })
   recipe: Recipe;
+
+  @Column()
+  readonly recipeId: number;
 }

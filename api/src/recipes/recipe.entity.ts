@@ -1,21 +1,10 @@
-import {
-  Entity,
-  BaseEntity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
-  OneToMany,
-} from 'typeorm';
+import { Entity, Column, ManyToOne, OneToMany } from 'typeorm';
 import { User } from '../users/user.entity';
 import { Ingredient } from '../ingredients/ingredient.entity';
+import { DefaultEntity } from '../entity';
 
-@Entity()
-export class Recipe extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  readonly id: number;
-
+@Entity({ name: 'recipes' })
+export class Recipe extends DefaultEntity {
   @Column()
   name: string;
 
@@ -28,16 +17,10 @@ export class Recipe extends BaseEntity {
   @Column()
   image: string;
 
-  @CreateDateColumn()
-  readonly createdAt: Date;
-
-  @UpdateDateColumn()
-  readonly updatedAt: Date;
-
   @ManyToOne(() => User, (user) => user.recipes, { eager: false })
   user: User;
 
-  @OneToMany(() => Ingredient, (ingredient) => ingredient.recipe, {
+  @OneToMany(() => Ingredient, (ingredients) => ingredients.recipe, {
     eager: true,
   })
   ingredients: Ingredient[];

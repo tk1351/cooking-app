@@ -1,23 +1,12 @@
-import {
-  BaseEntity,
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  Unique,
-  OneToMany,
-} from 'typeorm';
+import { Entity, Column, Unique, OneToMany } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserRole } from './user.model';
 import { Recipe } from '../recipes/recipe.entity';
+import { DefaultEntity } from '../entity';
 
-@Entity()
+@Entity({ name: 'users' })
 @Unique(['email'])
-export class User extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  readonly id: number;
-
+export class User extends DefaultEntity {
   @Column()
   name: string;
 
@@ -42,13 +31,7 @@ export class User extends BaseEntity {
   @Column()
   bio: string;
 
-  @CreateDateColumn()
-  readonly createdAt: Date;
-
-  @UpdateDateColumn()
-  readonly updatedAt: Date;
-
-  @OneToMany(() => Recipe, (recipe) => recipe.user, { eager: true })
+  @OneToMany(() => Recipe, (recipes) => recipes.user, { eager: true })
   recipes: Recipe[];
 
   async validatePassword(password: string): Promise<boolean> {
