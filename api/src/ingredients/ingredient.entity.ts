@@ -7,7 +7,8 @@ export class Ingredient extends DefaultEntity {
   @Column()
   name: string;
 
-  // TODO: 量: amount追加
+  @Column()
+  amount: string;
 
   @ManyToOne(() => Recipe, (recipe) => recipe.ingredients, { eager: false })
   @JoinColumn({ name: 'recipeId' })
