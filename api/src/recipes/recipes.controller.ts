@@ -19,6 +19,7 @@ import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { MyKnownMessage } from '../message.interface';
 import { GetUser } from '../users/get-user.decorator';
 import { User } from '../users/user.entity';
+import { CreateRecipeValidationPipe } from './pipes/create-recipe-validation.pipe';
 
 @Controller('recipes')
 export class RecipesController {
@@ -39,7 +40,8 @@ export class RecipesController {
   @Post()
   @UseGuards(AuthGuard())
   createRecipe(
-    @Body(ValidationPipe) createRecipeDto: CreateRecipeDto,
+    @Body(CreateRecipeValidationPipe, ValidationPipe)
+    createRecipeDto: CreateRecipeDto,
     @GetUser() user: User,
   ): Promise<Recipe> {
     return this.recipesService.createRecipe(createRecipeDto, user);

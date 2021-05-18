@@ -16,6 +16,6 @@ export class CreateRecipeDto {
   remarks: string;
   image: string;
 
-  @IsNotEmpty()
+  @IsNotEmpty({ message: '材料を入力してください' })
   ingredients: Ingredient[];
 }

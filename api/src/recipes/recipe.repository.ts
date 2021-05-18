@@ -1,34 +1,44 @@
 import { EntityRepository, Repository, getCustomRepository } from 'typeorm';
+import {
+  UnauthorizedException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { Recipe } from './recipe.entity';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { GetRecipesFilterDto } from './dto/get-recipes.dto';
 import { User } from '../users/user.entity';
-import { UnauthorizedException } from '@nestjs/common';
-import { IngredientRepository } from 'src/ingredients/ingredient.repository';
+import { IngredientRepository } from '../ingredients/ingredient.repository';
 
 @EntityRepository(Recipe)
 export class RecipeRepository extends Repository<Recipe> {
-  // TODO: Ingredientsテーブルをleft joinする
-  // return recipes => RecipeとIngredientsが入ってるようにする
   async getRecipes(
     getRecipesFilterDto: GetRecipesFilterDto,
   ): Promise<Recipe[]> {
     const { query } = getRecipesFilterDto;
 
-    const result = this.createQueryBuilder('recipe');
+    const result = this.createQueryBuilder('recipes');
 
     if (query) {
-      // SQL
+      // recipes.nameに一致するqueryを取得する
+      result.andWhere('recipes.name LIKE :query', { query: `%${query}%` });
     }
 
-    const recipes = await result.getMany();
-    return recipes;
+    // TODO: recipes.ingredients[]にあるnameも検索できるようにする
+
+    try {
+      const recipes = await result
+        .leftJoinAndSelect('recipes.ingredients', 'ingredients')
+        .getMany();
+      return recipes;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 
   async createRecipe(
     createRecipeDto: CreateRecipeDto,
     user: User,
-  ): Promise<Recipe> {
+  ): Promise<any> {
     if (user.role !== 'admin') {
       throw new UnauthorizedException('権限がありません');
     }
@@ -48,6 +58,7 @@ export class RecipeRepository extends Repository<Recipe> {
 
     const newRecipe = await recipe.save();
 
+    // 配列で渡されるingredientsのrecipeIdをingredientテーブルに渡すためmapを回す
     ingredients.map((ingredient) =>
       ingredientRepository.createIngredient({
         ...ingredient,
@@ -55,7 +66,6 @@ export class RecipeRepository extends Repository<Recipe> {
       }),
     );
     delete recipe.user;
-    delete recipe.ingredients;
 
     return recipe;
   }
