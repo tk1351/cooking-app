@@ -16,19 +16,23 @@ export class RecipeRepository extends Repository<Recipe> {
   ): Promise<Recipe[]> {
     const { query } = getRecipesFilterDto;
 
-    const result = this.createQueryBuilder('recipes');
+    const result = this.createQueryBuilder('recipes').leftJoinAndSelect(
+      'recipes.ingredients',
+      'ingredients',
+    );
 
     if (query) {
-      // recipes.nameに一致するqueryを取得する
-      result.andWhere('recipes.name LIKE :query', { query: `%${query}%` });
+      // recipes.nameとingredients.nameに一致するqueryを取得する
+      result.andWhere(
+        'recipes.name LIKE :query OR ingredients.name Like :query',
+        { query: `%${query}%` },
+      );
     }
 
-    // TODO: recipes.ingredients[]にあるnameも検索できるようにする
+    // TODO: queryが一致しない場合、不一致のメッセージを返す
 
     try {
-      const recipes = await result
-        .leftJoinAndSelect('recipes.ingredients', 'ingredients')
-        .getMany();
+      const recipes = await result.getMany();
       return recipes;
     } catch (error) {
       throw new InternalServerErrorException();
