@@ -8,5 +8,6 @@ import { IngredientRepository } from './ingredient.repository';
   imports: [TypeOrmModule.forFeature([IngredientRepository])],
   providers: [IngredientsService],
   controllers: [IngredientsController],
+  exports: [IngredientsService],
 })
 export class IngredientsModule {}

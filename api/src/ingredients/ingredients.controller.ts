@@ -13,6 +13,7 @@ import { IngredientsService } from './ingredients.service';
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
 import { Ingredient } from './ingredient.entity';
 import { MyKnownMessage } from '../message.interface';
+import { UpdateIngredientDto } from './dto/update-ingredient.dto';
 
 @Controller('ingredients')
 export class IngredientsController {
@@ -40,9 +41,9 @@ export class IngredientsController {
   @Patch('/:id')
   updateIngredient(
     @Param('id', ParseIntPipe) id: number,
-    @Body(ValidationPipe) createIngredientDto: CreateIngredientDto,
+    @Body(ValidationPipe) updateIngredientDto: UpdateIngredientDto,
   ): Promise<Ingredient> {
-    return this.ingredientsService.updateIngredient(id, createIngredientDto);
+    return this.ingredientsService.updateIngredient(id, updateIngredientDto);
   }
 
   @Delete('/:id')

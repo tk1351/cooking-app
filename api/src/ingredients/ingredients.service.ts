@@ -4,6 +4,7 @@ import { IngredientRepository } from './ingredient.repository';
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
 import { Ingredient } from './ingredient.entity';
 import { MyKnownMessage } from '../message.interface';
+import { UpdateIngredientDto } from './dto/update-ingredient.dto';
 
 @Injectable()
 export class IngredientsService {
@@ -26,6 +27,16 @@ export class IngredientsService {
     return found;
   }
 
+  // recipeIdからingredientsを取得
+  async getIngredientByRecipeId(recipeId: number): Promise<any> {
+    const found = await this.ingredientRepository
+      .createQueryBuilder('ingredients')
+      .where('ingredients.recipeId = :recipeId', { recipeId })
+      .getMany();
+
+    return found;
+  }
+
   async createIngredient(
     createIngredientDto: CreateIngredientDto,
   ): Promise<Ingredient> {
@@ -34,12 +45,13 @@ export class IngredientsService {
 
   async updateIngredient(
     id: number,
-    createIngredientDto: CreateIngredientDto,
+    updateIngredientDto: UpdateIngredientDto,
   ): Promise<Ingredient> {
     const found = await this.getIngredientById(id);
-    const { name } = createIngredientDto;
+    const { name, amount } = updateIngredientDto;
 
     found.name = name;
+    found.amount = amount;
 
     await found.save();
     return found;

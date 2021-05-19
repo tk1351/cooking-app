@@ -20,6 +20,7 @@ import { MyKnownMessage } from '../message.interface';
 import { GetUser } from '../users/get-user.decorator';
 import { User } from '../users/user.entity';
 import { CreateRecipeValidationPipe } from './pipes/create-recipe-validation.pipe';
+import { UpdateRecipeDto } from './dto/update-recipe.dto';
 
 @Controller('recipes')
 export class RecipesController {
@@ -51,10 +52,10 @@ export class RecipesController {
   @UseGuards(AuthGuard())
   updateRecipe(
     @Param('id', ParseIntPipe) id: number,
-    @Body(ValidationPipe) createRecipeDto: CreateRecipeDto,
+    @Body(ValidationPipe) updateRecipeDto: UpdateRecipeDto,
     @GetUser() user: User,
   ): Promise<Recipe> {
-    return this.recipesService.updateRecipe(id, createRecipeDto, user);
+    return this.recipesService.updateRecipe(id, updateRecipeDto, user);
   }
 
   @Delete('/:id')
