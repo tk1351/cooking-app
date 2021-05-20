@@ -8,6 +8,7 @@ import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { GetRecipesFilterDto } from './dto/get-recipes.dto';
 import { User } from '../users/user.entity';
 import { IngredientRepository } from '../ingredients/ingredient.repository';
+import { RecipeDescriptionRepository } from '../recipe-descriptions/recipe-description.repository';
 
 @EntityRepository(Recipe)
 export class RecipeRepository extends Repository<Recipe> {
@@ -16,10 +17,9 @@ export class RecipeRepository extends Repository<Recipe> {
   ): Promise<Recipe[]> {
     const { query } = getRecipesFilterDto;
 
-    const result = this.createQueryBuilder('recipes').leftJoinAndSelect(
-      'recipes.ingredients',
-      'ingredients',
-    );
+    const result = this.createQueryBuilder('recipes')
+      .leftJoinAndSelect('recipes.ingredients', 'ingredients')
+      .leftJoinAndSelect('recipes.recipeDescriptions', 'recipeDescriptions');
 
     if (query) {
       // recipes.nameとingredients.nameに一致するqueryを取得する
@@ -47,11 +47,15 @@ export class RecipeRepository extends Repository<Recipe> {
       throw new UnauthorizedException('権限がありません');
     }
 
-    const { name, time, remarks, image, ingredients } = createRecipeDto;
+    const { name, time, remarks, image, ingredients, recipeDescriptions } =
+      createRecipeDto;
 
     const recipe = this.create();
 
     const ingredientRepository = getCustomRepository(IngredientRepository);
+    const recipeDescriptionRepository = getCustomRepository(
+      RecipeDescriptionRepository,
+    );
 
     recipe.name = name;
     recipe.time = time;
@@ -59,6 +63,7 @@ export class RecipeRepository extends Repository<Recipe> {
     recipe.image = image;
     recipe.user = user;
     recipe.ingredients = ingredients;
+    recipe.recipeDescriptions = recipeDescriptions;
 
     const newRecipe = await recipe.save();
 
@@ -69,6 +74,14 @@ export class RecipeRepository extends Repository<Recipe> {
         recipe: newRecipe,
       }),
     );
+
+    recipeDescriptions.map((recipeDescription) =>
+      recipeDescriptionRepository.createRecipeDescription({
+        ...recipeDescription,
+        recipe: newRecipe,
+      }),
+    );
+
     delete recipe.user;
 
     return recipe;
