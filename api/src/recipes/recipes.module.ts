@@ -5,12 +5,14 @@ import { RecipesController } from './recipes.controller';
 import { RecipeRepository } from './recipe.repository';
 import { UsersModule } from '../users/users.module';
 import { IngredientsModule } from '../ingredients/ingredients.module';
+import { RecipeDescriptionsModule } from 'src/recipe-descriptions/recipe-descriptions.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([RecipeRepository]),
     UsersModule,
     IngredientsModule,
+    RecipeDescriptionsModule,
   ],
   providers: [RecipesService],
   controllers: [RecipesController],

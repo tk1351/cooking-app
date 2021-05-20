@@ -13,6 +13,8 @@ import { User } from '../users/user.entity';
 import { IngredientsService } from '../ingredients/ingredients.service';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { Ingredient } from '../ingredients/ingredient.entity';
+import { RecipeDescriptionsService } from '../recipe-descriptions/recipe-descriptions.service';
+import { RecipeDescription } from 'src/recipe-descriptions/recipe-description.entity';
 
 @Injectable()
 export class RecipesService {
@@ -20,6 +22,7 @@ export class RecipesService {
     @InjectRepository(RecipeRepository)
     private recipeRepository: RecipeRepository,
     private ingredientsService: IngredientsService,
+    private recipeDescriptionsService: RecipeDescriptionsService,
   ) {}
 
   async getRecipes(
@@ -32,6 +35,7 @@ export class RecipesService {
     const found = await this.recipeRepository
       .createQueryBuilder('recipes')
       .leftJoinAndSelect('recipes.ingredients', 'ingredients')
+      .leftJoinAndSelect('recipes.recipeDescriptions', 'recipeDescriptions')
       .where('recipes.id = :id', { id })
       .getOne();
 
@@ -59,8 +63,9 @@ export class RecipesService {
     // 更新対象の記事を特定する
     const found = await this.getRecipeById(id);
 
-    // 材料の更新があるか確認する
-    const { name, time, remarks, image, ingredients } = updateRecipeDto;
+    // 材料と作業工程の更新があるか確認する
+    const { name, time, remarks, image, ingredients, recipeDescriptions } =
+      updateRecipeDto;
 
     if (ingredients) {
       // 材料部分の更新をする
@@ -73,9 +78,24 @@ export class RecipesService {
       });
     }
 
+    if (recipeDescriptions) {
+      // 作業工程部分の更新をする
+      await recipeDescriptions.map((recipeDescription) => {
+        const { id, order, text } = recipeDescription;
+        this.recipeDescriptionsService.updateRecipeDescription(id, {
+          order,
+          text,
+        });
+      });
+    }
+
     // recipeIdの一致する、更新後の材料を取得する
     const newIngredients =
       await this.ingredientsService.getIngredientByRecipeId(id);
+
+    // recipeIdの一致する、更新後の作業工程を取得する
+    const newRecipeDescriptions =
+      await this.recipeDescriptionsService.getRecipeDescriptionsByRecipeId(id);
 
     // recipeの更新があるか確認する
 
@@ -85,6 +105,7 @@ export class RecipesService {
     found.remarks = remarks;
     found.image = image;
     found.ingredients = newIngredients;
+    found.recipeDescriptions = newRecipeDescriptions;
 
     const newRecipe = await found.save();
 
@@ -96,13 +117,22 @@ export class RecipesService {
     if (user.role !== 'admin') {
       throw new UnauthorizedException('権限がありません');
     }
-    // recipeIdが一致するものを取得
+    // recipeIdが一致するingredientsを取得
     const ingredientsIndex: Ingredient[] =
       await this.ingredientsService.getIngredientByRecipeId(id);
+
+    // recipeIdが一致するrecipeDescriptionsを取得
+    const recipeDescriptionsIndex: RecipeDescription[] =
+      await this.recipeDescriptionsService.getRecipeDescriptionsByRecipeId(id);
 
     // ingredientsIndexをmapして、deleteIngredientで削除する
     ingredientsIndex.map((index) =>
       this.ingredientsService.deleteIngredient(index.id),
+    );
+
+    // recipeDescriptionsIndexをmapして、deleteRecipeDescriptionで削除する
+    recipeDescriptionsIndex.map((index) =>
+      this.recipeDescriptionsService.deleteRecipeDescription(index.id),
     );
 
     const result = await this.recipeRepository.delete({ id });

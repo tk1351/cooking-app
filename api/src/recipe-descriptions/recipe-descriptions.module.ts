@@ -8,5 +8,6 @@ import { RecipeDescriptionRepository } from './recipe-description.repository';
   imports: [TypeOrmModule.forFeature([RecipeDescriptionRepository])],
   providers: [RecipeDescriptionsService],
   controllers: [RecipeDescriptionsController],
+  exports: [RecipeDescriptionsService],
 })
 export class RecipeDescriptionsModule {}
