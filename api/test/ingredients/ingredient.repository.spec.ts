@@ -43,6 +43,7 @@ describe('IngredientRepository', () => {
         ingredientRepository.createIngredient(mockCreateIngredientDto),
       ).resolves.not.toThrow();
     });
+
     it('createIngredientに失敗した場合、errorを返す', async () => {
       save.mockRejectedValue({ code: '111' });
       await expect(
