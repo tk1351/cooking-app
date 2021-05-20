@@ -3,6 +3,7 @@ import { User } from '../users/user.entity';
 import { Ingredient } from '../ingredients/ingredient.entity';
 import { DefaultEntity } from '../entity';
 import { RecipeDescription } from '../recipe-descriptions/recipe-description.entity';
+import { RecipeLike } from '../recipe-likes/recipe-like.entity';
 
 @Entity({ name: 'recipes' })
 export class Recipe extends DefaultEntity {
@@ -32,4 +33,9 @@ export class Recipe extends DefaultEntity {
     { eager: true },
   )
   recipeDescriptions: RecipeDescription[];
+
+  @OneToMany(() => RecipeLike, (recipeLikes) => recipeLikes.recipe, {
+    eager: true,
+  })
+  recipeLikes: RecipeLike[];
 }

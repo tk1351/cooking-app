@@ -3,6 +3,7 @@ import * as bcrypt from 'bcrypt';
 import { UserRole } from './user.model';
 import { Recipe } from '../recipes/recipe.entity';
 import { DefaultEntity } from '../entity';
+import { RecipeLike } from '../recipe-likes/recipe-like.entity';
 
 @Entity({ name: 'users' })
 @Unique(['email'])
@@ -33,6 +34,11 @@ export class User extends DefaultEntity {
 
   @OneToMany(() => Recipe, (recipes) => recipes.user, { eager: true })
   recipes: Recipe[];
+
+  @OneToMany(() => RecipeLike, (recipeLikes) => recipeLikes.user, {
+    eager: true,
+  })
+  recipeLikes: RecipeLike[];
 
   async validatePassword(password: string): Promise<boolean> {
     const hash = await bcrypt.hash(password, this.salt);

@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { RecipesModule } from './recipes/recipes.module';
 import { IngredientsModule } from './ingredients/ingredients.module';
 import { RecipeDescriptionsModule } from './recipe-descriptions/recipe-descriptions.module';
+import { RecipeLikesModule } from './recipe-likes/recipe-likes.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { RecipeDescriptionsModule } from './recipe-descriptions/recipe-descripti
     RecipesModule,
     IngredientsModule,
     RecipeDescriptionsModule,
+    RecipeLikesModule,
   ],
 })
 export class AppModule {}
