@@ -2,6 +2,7 @@ import { Entity, Column, ManyToOne, OneToMany } from 'typeorm';
 import { User } from '../users/user.entity';
 import { Ingredient } from '../ingredients/ingredient.entity';
 import { DefaultEntity } from '../entity';
+import { RecipeDescription } from '../recipe-descriptions/recipe-description.entity';
 
 @Entity({ name: 'recipes' })
 export class Recipe extends DefaultEntity {
@@ -24,4 +25,11 @@ export class Recipe extends DefaultEntity {
     eager: true,
   })
   ingredients: Ingredient[];
+
+  @OneToMany(
+    () => RecipeDescription,
+    (recipeDescriptions) => recipeDescriptions.recipe,
+    { eager: true },
+  )
+  recipeDescriptions: RecipeDescription[];
 }
