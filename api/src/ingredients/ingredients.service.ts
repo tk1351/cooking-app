@@ -34,7 +34,7 @@ export class IngredientsService {
       .where('ingredients.recipeId = :recipeId', { recipeId })
       .getMany();
 
-    if (!found) {
+    if (!found || found.length === 0) {
       throw new NotFoundException(
         `RecipeID: ${recipeId}のingredientは存在しません`,
       );
