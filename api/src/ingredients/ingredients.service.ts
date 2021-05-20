@@ -28,18 +28,24 @@ export class IngredientsService {
   }
 
   // recipeIdからingredientsを取得
-  async getIngredientByRecipeId(recipeId: number): Promise<any> {
+  async getIngredientByRecipeId(recipeId: number): Promise<Ingredient[]> {
     const found = await this.ingredientRepository
       .createQueryBuilder('ingredients')
       .where('ingredients.recipeId = :recipeId', { recipeId })
       .getMany();
+
+    if (!found) {
+      throw new NotFoundException(
+        `RecipeID: ${recipeId}のingredientは存在しません`,
+      );
+    }
 
     return found;
   }
 
   async createIngredient(
     createIngredientDto: CreateIngredientDto,
-  ): Promise<Ingredient> {
+  ): Promise<MyKnownMessage> {
     return this.ingredientRepository.createIngredient(createIngredientDto);
   }
 
@@ -58,7 +64,7 @@ export class IngredientsService {
   }
 
   async deleteIngredient(id: number): Promise<MyKnownMessage> {
-    const result = await this.ingredientRepository.delete(id);
+    const result = await this.ingredientRepository.delete({ id });
 
     if (result.affected === 0) {
       throw new NotFoundException(`ID: ${id}のingredientは存在しません`);

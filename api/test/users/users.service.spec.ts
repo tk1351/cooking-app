@@ -231,7 +231,7 @@ describe('Users service', () => {
   describe('deleteUserByAdmin', () => {
     it('admin権限でuserを削除する', async () => {
       userRepository.delete.mockResolvedValue({
-        affected: '1',
+        affected: 1,
       });
       expect(userRepository.delete).not.toHaveBeenCalled();
 
@@ -241,7 +241,7 @@ describe('Users service', () => {
 
     it('userが見つからない場合は、errorを返す', () => {
       userRepository.delete.mockResolvedValue({
-        affected: '0',
+        affected: 0,
       });
 
       expect(usersService.deleteUserByAdmin(1, mockAdmin)).rejects.toThrow(
@@ -251,7 +251,7 @@ describe('Users service', () => {
 
     it('admin権限がない場合は、errorを返す', () => {
       userRepository.delete.mockResolvedValue({
-        affected: '1',
+        affected: 1,
       });
 
       expect(usersService.deleteUserByAdmin(1, mockUser)).rejects.toThrow(
