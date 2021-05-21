@@ -20,6 +20,25 @@ export class RecipeLikesService {
     private recipesService: RecipesService,
   ) {}
 
+  async getAllRecipeLikes(): Promise<RecipeLike[]> {
+    return this.recipeLikeRepository.find({});
+  }
+
+  async getRecipeLikesByUserId(userId: number): Promise<RecipeLike[]> {
+    const found: RecipeLike[] = await this.recipeLikeRepository
+      .createQueryBuilder('recipe-likes')
+      .where('recipe-likes.userId = :userId', { userId })
+      .getMany();
+
+    if (!found || found.length === 0) {
+      throw new NotFoundException(
+        `UserId: ${userId}のrecipe-likesは存在しません`,
+      );
+    }
+
+    return found;
+  }
+
   async getRecipeLikesByRecipeId(recipeId: number): Promise<RecipeLike[]> {
     const found: RecipeLike[] = await this.recipeLikeRepository
       .createQueryBuilder('recipe-likes')
