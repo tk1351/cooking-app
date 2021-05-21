@@ -12,6 +12,8 @@ import { JwtPayload } from './jwt-payload.interface';
 import { User } from './user.entity';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { MyKnownMessage } from '../message.interface';
+import { RecipeLike } from '../recipe-likes/recipe-like.entity';
+import { RecipeLikesService } from '../recipe-likes/recipe-likes.service';
 
 @Injectable()
 export class UsersService {
@@ -19,6 +21,7 @@ export class UsersService {
     @InjectRepository(UserRepository)
     private userRepository: UserRepository,
     private readonly jwtService: JwtService,
+    private recipeLikesService: RecipeLikesService,
   ) {}
 
   async getAllUsers(): Promise<User[]> {
@@ -96,6 +99,15 @@ export class UsersService {
       throw new UnauthorizedException('認証情報が無効です');
     }
 
+    // userIdが一致するお気に入りを取得
+    const recipeLikesIndex: RecipeLike[] =
+      await this.recipeLikesService.getRecipeLikesByUserId(user.id);
+
+    // recipeLikesIndexをmapして、IDが一致するお気に入りを削除する
+    recipeLikesIndex.map((index) =>
+      this.recipeLikesService.deleteRecipeLikes(index.id),
+    );
+
     const result = await this.userRepository.delete({ id });
 
     // DeleteResultのaffectedが0 = 削除できるものが存在しない
@@ -111,6 +123,15 @@ export class UsersService {
     if (user.role !== 'admin') {
       throw new UnauthorizedException('管理者権限がありません');
     }
+
+    // userIdが一致するお気に入りを取得
+    const recipeLikesIndex: RecipeLike[] =
+      await this.recipeLikesService.getRecipeLikesByUserId(id);
+
+    // recipeLikesIndexをmapして、IDが一致するお気に入りを削除する
+    recipeLikesIndex.map((index) =>
+      this.recipeLikesService.deleteRecipeLikes(index.id),
+    );
 
     const result = await this.userRepository.delete({ id });
 

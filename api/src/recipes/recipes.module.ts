@@ -1,4 +1,4 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RecipesService } from './recipes.service';
 import { RecipesController } from './recipes.controller';
@@ -14,7 +14,7 @@ import { RecipeLikesModule } from '../recipe-likes/recipe-likes.module';
     UsersModule,
     IngredientsModule,
     RecipeDescriptionsModule,
-    forwardRef(() => RecipeLikesModule),
+    RecipeLikesModule,
   ],
   providers: [RecipesService],
   controllers: [RecipesController],
