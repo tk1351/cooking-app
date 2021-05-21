@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RecipeLikesController } from './recipe-likes.controller';
 import { RecipeLikesService } from './recipe-likes.service';
@@ -9,10 +9,11 @@ import { UsersModule } from '../users/users.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([RecipeLikeRepository]),
-    RecipesModule,
+    forwardRef(() => RecipesModule),
     UsersModule,
   ],
   controllers: [RecipeLikesController],
   providers: [RecipeLikesService],
+  exports: [RecipeLikesService],
 })
 export class RecipeLikesModule {}

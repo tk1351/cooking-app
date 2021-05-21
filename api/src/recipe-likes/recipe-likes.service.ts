@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  Inject,
+  forwardRef,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RecipeLikeRepository } from './recipe-like.repository';
 import { RecipesService } from '../recipes/recipes.service';
@@ -11,11 +16,12 @@ export class RecipeLikesService {
   constructor(
     @InjectRepository(RecipeLikeRepository)
     private recipeLikeRepository: RecipeLikeRepository,
+    @Inject(forwardRef(() => RecipesService))
     private recipesService: RecipesService,
   ) {}
 
   async getRecipeLikesByRecipeId(recipeId: number): Promise<RecipeLike[]> {
-    const found = await this.recipeLikeRepository
+    const found: RecipeLike[] = await this.recipeLikeRepository
       .createQueryBuilder('recipe-likes')
       .where('recipe-likes.recipeId = :recipeId', { recipeId })
       .getMany();
@@ -74,5 +80,15 @@ export class RecipeLikesService {
 
     // お気に入りを削除したらメッセージを返す
     return { message: 'お気に入りを解除しました' };
+  }
+
+  async deleteRecipeLikes(id: number): Promise<any> {
+    const result = await this.recipeLikeRepository.delete({ id });
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`ID: ${id}のrecipe-likesは存在しません`);
+    }
+
+    return { message: 'お気に入りを削除しました' };
   }
 }

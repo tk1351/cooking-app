@@ -2,6 +2,8 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  forwardRef,
+  Inject,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RecipeRepository } from './recipe.repository';
@@ -14,7 +16,9 @@ import { IngredientsService } from '../ingredients/ingredients.service';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { Ingredient } from '../ingredients/ingredient.entity';
 import { RecipeDescriptionsService } from '../recipe-descriptions/recipe-descriptions.service';
-import { RecipeDescription } from 'src/recipe-descriptions/recipe-description.entity';
+import { RecipeDescription } from '../recipe-descriptions/recipe-description.entity';
+import { RecipeLikesService } from '../recipe-likes/recipe-likes.service';
+import { RecipeLike } from '../recipe-likes/recipe-like.entity';
 
 @Injectable()
 export class RecipesService {
@@ -23,6 +27,8 @@ export class RecipesService {
     private recipeRepository: RecipeRepository,
     private ingredientsService: IngredientsService,
     private recipeDescriptionsService: RecipeDescriptionsService,
+    @Inject(forwardRef(() => RecipeLikesService))
+    private recipeLikesService: RecipeLikesService,
   ) {}
 
   async getRecipes(
@@ -126,14 +132,23 @@ export class RecipesService {
     const recipeDescriptionsIndex: RecipeDescription[] =
       await this.recipeDescriptionsService.getRecipeDescriptionsByRecipeId(id);
 
-    // ingredientsIndexをmapして、deleteIngredientで削除する
+    // recipeIdが一致するrecipeLikesを取得
+    const recipeLikesIndex: RecipeLike[] =
+      await this.recipeLikesService.getRecipeLikesByRecipeId(id);
+
+    // ingredientsIndexをmapして、IDが一致する材料を削除する
     ingredientsIndex.map((index) =>
       this.ingredientsService.deleteIngredient(index.id),
     );
 
-    // recipeDescriptionsIndexをmapして、deleteRecipeDescriptionで削除する
+    // recipeDescriptionsIndexをmapして、IDが一致する作業工程を削除する
     recipeDescriptionsIndex.map((index) =>
       this.recipeDescriptionsService.deleteRecipeDescription(index.id),
+    );
+
+    // recipeLikeIndexをmapして、idが一致するお気に入りを削除する
+    recipeLikesIndex.map((index) =>
+      this.recipeLikesService.deleteRecipeLikes(index.id),
     );
 
     const result = await this.recipeRepository.delete({ id });

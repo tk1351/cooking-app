@@ -1,11 +1,12 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RecipesService } from './recipes.service';
 import { RecipesController } from './recipes.controller';
 import { RecipeRepository } from './recipe.repository';
 import { UsersModule } from '../users/users.module';
 import { IngredientsModule } from '../ingredients/ingredients.module';
-import { RecipeDescriptionsModule } from 'src/recipe-descriptions/recipe-descriptions.module';
+import { RecipeDescriptionsModule } from '../recipe-descriptions/recipe-descriptions.module';
+import { RecipeLikesModule } from '../recipe-likes/recipe-likes.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { RecipeDescriptionsModule } from 'src/recipe-descriptions/recipe-descrip
     UsersModule,
     IngredientsModule,
     RecipeDescriptionsModule,
+    forwardRef(() => RecipeLikesModule),
   ],
   providers: [RecipesService],
   controllers: [RecipesController],
