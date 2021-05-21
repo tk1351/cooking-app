@@ -51,19 +51,8 @@ export class RecipeLikesService {
     return found;
   }
 
-  async postLike(recipeLikeDto: RecipeLikeDto): Promise<RecipeLike> {
-    const { userId, recipeId } = recipeLikeDto;
-
-    const recipeLike = this.recipeLikeRepository.create();
-    recipeLike.userId = userId;
-    recipeLike.recipeId = recipeId;
-
-    try {
-      await recipeLike.save();
-      return recipeLike;
-    } catch (error) {
-      throw new InternalServerErrorException();
-    }
+  async recipeLike(recipeLikeDto: RecipeLikeDto): Promise<RecipeLike> {
+    return this.recipeLikeRepository.recipeLike(recipeLikeDto);
   }
 
   async deleteRecipeLikes(id: number): Promise<MyKnownMessage> {

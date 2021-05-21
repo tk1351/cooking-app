@@ -2,8 +2,6 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
-  forwardRef,
-  Inject,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RecipeRepository } from './recipe.repository';
@@ -19,7 +17,6 @@ import { RecipeDescriptionsService } from '../recipe-descriptions/recipe-descrip
 import { RecipeDescription } from '../recipe-descriptions/recipe-description.entity';
 import { RecipeLikesService } from '../recipe-likes/recipe-likes.service';
 import { RecipeLike } from '../recipe-likes/recipe-like.entity';
-import { RecipeLikeRepository } from 'src/recipe-likes/recipe-like.repository';
 
 @Injectable()
 export class RecipesService {
@@ -28,7 +25,6 @@ export class RecipesService {
     private recipeRepository: RecipeRepository,
     private ingredientsService: IngredientsService,
     private recipeDescriptionsService: RecipeDescriptionsService,
-    // @Inject(forwardRef(() => RecipeLikesService))
     private recipeLikesService: RecipeLikesService,
   ) {}
 
@@ -75,7 +71,7 @@ export class RecipesService {
     }
     // お気に入りが無いとrecipeのrecipeLikesにuidとrecipeIdのオブジェクトを挿入
     // お気に入りをしたら メッセージを出す
-    await this.recipeLikesService.postLike({
+    await this.recipeLikesService.recipeLike({
       recipeId,
       userId: user.id,
     });
