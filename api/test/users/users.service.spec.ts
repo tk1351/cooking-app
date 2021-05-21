@@ -6,6 +6,7 @@ import { UserRepository } from '../../src/users/user.repository';
 import { UserRole } from '../../src/users/user.model';
 import { AuthCredentialsDto } from '../../src/users/dto/auth-credentials.dto';
 import { UpdateProfileDto } from '../../src/users/dto/update-profile.dto';
+import { RecipeLikesService } from '../../src/recipe-likes/recipe-likes.service';
 
 const mockUser = {
   id: 1,
@@ -47,6 +48,19 @@ const mockUpdateProfileDto: UpdateProfileDto = {
   bio: '',
 };
 
+const mockRecipeLikesIndex = [
+  {
+    id: 1,
+    userId: 1,
+    recipeId: 1,
+  },
+  {
+    id: 2,
+    userId: 2,
+    recipeId: 2,
+  },
+];
+
 const mockUserRepository = () => ({
   getAllUsers: jest.fn(),
   findOne: jest.fn(),
@@ -60,9 +74,17 @@ const mockJwtService = () => ({
   sign: jest.fn(),
 });
 
+const mockRecipeLikesService = () => ({
+  getRecipeLikesByUserId: jest.fn().mockResolvedValue(1),
+  deleteRecipeLikes: jest.fn().mockResolvedValue(1),
+  map: jest.fn(),
+});
+
 describe('Users service', () => {
   let usersService;
   let userRepository;
+
+  let recipeLikesService;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
@@ -70,11 +92,15 @@ describe('Users service', () => {
         UsersService,
         { provide: UserRepository, useFactory: mockUserRepository },
         { provide: JwtService, useFactory: mockJwtService },
+        { provide: RecipeLikesService, useFactory: mockRecipeLikesService },
       ],
     }).compile();
 
     usersService = await module.get<UsersService>(UsersService);
     userRepository = await module.get<UserRepository>(UserRepository);
+    recipeLikesService = await module.get<RecipeLikesService>(
+      RecipeLikesService,
+    );
   });
 
   describe('getAllUsers', () => {
@@ -203,8 +229,18 @@ describe('Users service', () => {
       expect(usersService.getUserById).not.toHaveBeenCalled();
       expect(userRepository.delete).not.toHaveBeenCalled();
 
+      recipeLikesService.getRecipeLikesByUserId.mockResolvedValue(
+        mockRecipeLikesIndex,
+      );
+
+      expect(recipeLikesService.getRecipeLikesByUserId).not.toHaveBeenCalled();
+      expect(recipeLikesService.deleteRecipeLikes).not.toHaveBeenCalled();
+
       await usersService.deleteUser(1, mockUser);
+
       expect(userRepository.delete).toHaveBeenCalledWith({ id: mockUser.id });
+      expect(recipeLikesService.getRecipeLikesByUserId).toHaveBeenCalled();
+      expect(recipeLikesService.deleteRecipeLikes).toHaveBeenCalled();
     });
 
     it('userが見つからない場合は、errorを返す', () => {
@@ -234,9 +270,18 @@ describe('Users service', () => {
         affected: 1,
       });
       expect(userRepository.delete).not.toHaveBeenCalled();
+      recipeLikesService.getRecipeLikesByUserId.mockResolvedValue(
+        mockRecipeLikesIndex,
+      );
+
+      expect(recipeLikesService.getRecipeLikesByUserId).not.toHaveBeenCalled();
+      expect(recipeLikesService.deleteRecipeLikes).not.toHaveBeenCalled();
 
       await usersService.deleteUserByAdmin(1, mockAdmin);
+
       expect(userRepository.delete).toHaveBeenCalledWith({ id: mockUser.id });
+      expect(recipeLikesService.getRecipeLikesByUserId).toHaveBeenCalled();
+      expect(recipeLikesService.deleteRecipeLikes).toHaveBeenCalled();
     });
 
     it('userが見つからない場合は、errorを返す', () => {
