@@ -49,7 +49,7 @@ export class UserRepository extends Repository<User> {
     user.email = email;
     user.salt = await bcrypt.genSalt();
     user.password = await this.hashPassword(password, user.salt);
-    user.role = UserRole.auth;
+    user.role = UserRole.user;
     user.favoriteDish = '';
     user.specialDish = '';
     user.bio = '';

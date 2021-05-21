@@ -19,7 +19,8 @@ export class RecipeRepository extends Repository<Recipe> {
 
     const result = this.createQueryBuilder('recipes')
       .leftJoinAndSelect('recipes.ingredients', 'ingredients')
-      .leftJoinAndSelect('recipes.recipeDescriptions', 'recipeDescriptions');
+      .leftJoinAndSelect('recipes.recipeDescriptions', 'recipeDescriptions')
+      .leftJoinAndSelect('recipes.recipeLikes', 'recipeLikes');
 
     if (query) {
       // recipes.nameとingredients.nameに一致するqueryを取得する

@@ -15,7 +15,7 @@ const mockUser = {
   bio: 'testBio',
   favoriteDish: 'testDish',
   specialDish: 'testDish',
-  role: UserRole.auth,
+  role: UserRole.user,
   salt: 'testSalt',
   createdAt: new Date(),
   updatedAt: new Date(),

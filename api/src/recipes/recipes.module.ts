@@ -16,5 +16,6 @@ import { RecipeDescriptionsModule } from 'src/recipe-descriptions/recipe-descrip
   ],
   providers: [RecipesService],
   controllers: [RecipesController],
+  exports: [RecipesService],
 })
 export class RecipesModule {}

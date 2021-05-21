@@ -36,6 +36,7 @@ export class RecipesService {
       .createQueryBuilder('recipes')
       .leftJoinAndSelect('recipes.ingredients', 'ingredients')
       .leftJoinAndSelect('recipes.recipeDescriptions', 'recipeDescriptions')
+      .leftJoinAndSelect('recipes.recipeLikes', 'recipeLikes')
       .where('recipes.id = :id', { id })
       .getOne();
 
