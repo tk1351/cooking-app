@@ -9,6 +9,7 @@ import { GetRecipesFilterDto } from './dto/get-recipes.dto';
 import { User } from '../users/user.entity';
 import { IngredientRepository } from '../ingredients/ingredient.repository';
 import { RecipeDescriptionRepository } from '../recipe-descriptions/recipe-description.repository';
+import { TagRepository } from '../tags/tag.repository';
 
 @EntityRepository(Recipe)
 export class RecipeRepository extends Repository<Recipe> {
@@ -21,7 +22,8 @@ export class RecipeRepository extends Repository<Recipe> {
       .leftJoinAndSelect('recipes.ingredients', 'ingredients')
       .leftJoinAndSelect('recipes.recipeDescriptions', 'recipeDescriptions')
       .leftJoinAndSelect('recipes.recipeLikes', 'recipeLikes')
-      .leftJoinAndSelect('recipes.tags', 'tags');
+      .leftJoinAndSelect('recipes.tags', 'tags')
+      .orderBy('recipes.id', 'ASC');
 
     if (query) {
       // recipes.nameとingredients.nameに一致するqueryを取得する
@@ -49,8 +51,15 @@ export class RecipeRepository extends Repository<Recipe> {
       throw new UnauthorizedException('権限がありません');
     }
 
-    const { name, time, remarks, image, ingredients, recipeDescriptions } =
-      createRecipeDto;
+    const {
+      name,
+      time,
+      remarks,
+      image,
+      ingredients,
+      recipeDescriptions,
+      tags,
+    } = createRecipeDto;
 
     const recipe = this.create();
 
@@ -58,6 +67,7 @@ export class RecipeRepository extends Repository<Recipe> {
     const recipeDescriptionRepository = getCustomRepository(
       RecipeDescriptionRepository,
     );
+    const tagRepository = getCustomRepository(TagRepository);
 
     recipe.name = name;
     recipe.time = time;
@@ -66,6 +76,7 @@ export class RecipeRepository extends Repository<Recipe> {
     recipe.user = user;
     recipe.ingredients = ingredients;
     recipe.recipeDescriptions = recipeDescriptions;
+    recipe.tags = tags;
 
     const newRecipe = await recipe.save();
 
@@ -83,6 +94,11 @@ export class RecipeRepository extends Repository<Recipe> {
         recipe: newRecipe,
       }),
     );
+
+    // tagsがオプションのため
+    if (tags) {
+      tags.map((tag) => tagRepository.createTag({ ...tag, recipe: newRecipe }));
+    }
 
     delete recipe.user;
 
