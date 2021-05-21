@@ -19,6 +19,7 @@ import { RecipeDescriptionsService } from '../recipe-descriptions/recipe-descrip
 import { RecipeDescription } from '../recipe-descriptions/recipe-description.entity';
 import { RecipeLikesService } from '../recipe-likes/recipe-likes.service';
 import { RecipeLike } from '../recipe-likes/recipe-like.entity';
+import { RecipeLikeRepository } from 'src/recipe-likes/recipe-like.repository';
 
 @Injectable()
 export class RecipesService {
@@ -27,7 +28,7 @@ export class RecipesService {
     private recipeRepository: RecipeRepository,
     private ingredientsService: IngredientsService,
     private recipeDescriptionsService: RecipeDescriptionsService,
-    @Inject(forwardRef(() => RecipeLikesService))
+    // @Inject(forwardRef(() => RecipeLikesService))
     private recipeLikesService: RecipeLikesService,
   ) {}
 
@@ -57,6 +58,29 @@ export class RecipesService {
     user: User,
   ): Promise<Recipe> {
     return this.recipeRepository.createRecipe(createRecipeDto, user);
+  }
+
+  async likeRecipe(recipeId: number, user: User): Promise<MyKnownMessage> {
+    // recipeIdからお気に入りをするrecipeを特定する
+    // recipeがない場合はnotfound
+    const found: Recipe = await this.getRecipeById(recipeId);
+
+    // recipeがこのユーザーにお気に入りされているか確認
+    const usersLike: RecipeLike[] = found.recipeLikes.filter(
+      (like) => like.userId === user.id,
+    );
+    // お気に入りされていたらメッセージを返す
+    if (usersLike.length > 0) {
+      return { message: '既にお気に入り登録されています' };
+    }
+    // お気に入りが無いとrecipeのrecipeLikesにuidとrecipeIdのオブジェクトを挿入
+    // お気に入りをしたら メッセージを出す
+    await this.recipeLikesService.postLike({
+      recipeId,
+      userId: user.id,
+    });
+
+    return { message: 'お気に入りに登録しました' };
   }
 
   async updateRecipe(
@@ -158,5 +182,28 @@ export class RecipesService {
     }
 
     return { message: 'レシピを削除しました' };
+  }
+
+  async unlikeRecipe(recipeId: number, user: User): Promise<MyKnownMessage> {
+    // recipeIdからお気に入りを解除するrecipeを特定する
+    // recipeがない場合はnot found
+    const found: Recipe = await this.getRecipeById(recipeId);
+
+    // recipeがこのユーザーにお気に入りされているか確認
+    const usersLike: RecipeLike[] = found.recipeLikes.filter(
+      (like) => like.userId === user.id,
+    );
+    // お気に入りしていなかったらメッセージを返す
+    if (usersLike.length === 0) {
+      return { message: 'お気に入りがありません' };
+    }
+    // 該当するrecipeIdのuserIdが一致するお気に入りを削除する
+    await this.recipeLikesService.unlikeRecipe({
+      userId: user.id,
+      recipeId,
+    });
+
+    // お気に入りを削除したらメッセージを返す
+    return { message: 'お気に入りを解除しました' };
   }
 }

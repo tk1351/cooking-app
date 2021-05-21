@@ -43,7 +43,7 @@ export class RecipeRepository extends Repository<Recipe> {
   async createRecipe(
     createRecipeDto: CreateRecipeDto,
     user: User,
-  ): Promise<any> {
+  ): Promise<Recipe> {
     if (user.role !== 'admin') {
       throw new UnauthorizedException('権限がありません');
     }

@@ -7,11 +7,7 @@ import { RecipesModule } from '../recipes/recipes.module';
 import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([RecipeLikeRepository]),
-    forwardRef(() => RecipesModule),
-    UsersModule,
-  ],
+  imports: [TypeOrmModule.forFeature([RecipeLikeRepository]), UsersModule],
   controllers: [RecipeLikesController],
   providers: [RecipeLikesService],
   exports: [RecipeLikesService],

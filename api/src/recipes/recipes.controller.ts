@@ -48,6 +48,15 @@ export class RecipesController {
     return this.recipesService.createRecipe(createRecipeDto, user);
   }
 
+  @Post('/:recipeId/like')
+  @UseGuards(AuthGuard())
+  likeRecipe(
+    @Param('recipeId', ParseIntPipe) recipeId: number,
+    @GetUser() user: User,
+  ) {
+    return this.recipesService.likeRecipe(recipeId, user);
+  }
+
   @Patch('/:id')
   @UseGuards(AuthGuard())
   updateRecipe(
@@ -65,5 +74,14 @@ export class RecipesController {
     @GetUser() user: User,
   ): Promise<MyKnownMessage> {
     return this.recipesService.deleteRecipe(id, user);
+  }
+
+  @Delete('/:recipeId/unlike')
+  @UseGuards(AuthGuard())
+  unlikeRecipe(
+    @Param('recipeId', ParseIntPipe) recipeId: number,
+    @GetUser() user: User,
+  ) {
+    return this.recipesService.unlikeRecipe(recipeId, user);
   }
 }

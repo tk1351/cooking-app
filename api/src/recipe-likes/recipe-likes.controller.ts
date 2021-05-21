@@ -36,21 +36,21 @@ export class RecipeLikesController {
     return this.recipeLikeService.getRecipeLikesByRecipeId(recipeId);
   }
 
-  @Post('/:recipeId')
-  @UseGuards(AuthGuard())
-  likeRecipe(
-    @Param('recipeId', ParseIntPipe) recipeId: number,
-    @GetUser() user: User,
-  ) {
-    return this.recipeLikeService.likeRecipe(recipeId, user);
-  }
+  // @Post('/:recipeId')
+  // @UseGuards(AuthGuard())
+  // likeRecipe(
+  //   @Param('recipeId', ParseIntPipe) recipeId: number,
+  //   @GetUser() user: User,
+  // ) {
+  //   return this.recipeLikeService.likeRecipe(recipeId, user);
+  // }
 
-  @Delete('/:recipeId')
-  @UseGuards(AuthGuard())
-  unlikeRecipe(
-    @Param('recipeId', ParseIntPipe) recipeId: number,
-    @GetUser() user: User,
-  ) {
-    return this.recipeLikeService.unlikeRecipe(recipeId, user);
-  }
+  // @Delete('/:recipeId')
+  // @UseGuards(AuthGuard())
+  // unlikeRecipe(
+  //   @Param('recipeId', ParseIntPipe) recipeId: number,
+  //   @GetUser() user: User,
+  // ) {
+  //   return this.recipeLikeService.unlikeRecipe(recipeId, user);
+  // }
 }
