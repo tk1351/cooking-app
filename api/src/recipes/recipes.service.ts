@@ -12,7 +12,7 @@ import { MyKnownMessage } from '../message.interface';
 import { User } from '../users/user.entity';
 import { IngredientsService } from '../ingredients/ingredients.service';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
-import { Ingredient } from '../ingredients/ingredient.entity';
+import { Ingredient } from '../ingredients/ingredients.entity';
 import { RecipeDescriptionsService } from '../recipe-descriptions/recipe-descriptions.service';
 import { RecipeDescription } from '../recipe-descriptions/recipe-description.entity';
 import { RecipeLikesService } from '../recipe-likes/recipe-likes.service';

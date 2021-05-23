@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IngredientRepository } from './ingredient.repository';
+import { IngredientRepository } from './ingredients.repository';
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
-import { Ingredient } from './ingredient.entity';
+import { Ingredient } from './ingredients.entity';
 import { MyKnownMessage } from '../message.interface';
 import { UpdateIngredientDto } from './dto/update-ingredient.dto';
 

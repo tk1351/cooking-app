@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { InternalServerErrorException } from '@nestjs/common';
-import { Ingredient } from './ingredient.entity';
+import { Ingredient } from './ingredients.entity';
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
 
 @EntityRepository(Ingredient)

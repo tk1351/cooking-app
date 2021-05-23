@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsInt, IsIn, IsOptional } from 'class-validator';
 import { Recipe } from '../recipe.entity';
-import { Ingredient } from '../../ingredients/ingredient.entity';
+import { Ingredient } from '../../ingredients/ingredients.entity';
 import { RecipeDescription } from '../../recipe-descriptions/recipe-description.entity';
 import { Tag } from '../../tags/tag.entity';
 

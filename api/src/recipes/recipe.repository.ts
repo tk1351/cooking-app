@@ -7,7 +7,7 @@ import { Recipe } from './recipe.entity';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { GetRecipesFilterDto } from './dto/get-recipes.dto';
 import { User } from '../users/user.entity';
-import { IngredientRepository } from '../ingredients/ingredient.repository';
+import { IngredientRepository } from '../ingredients/ingredients.repository';
 import { RecipeDescriptionRepository } from '../recipe-descriptions/recipe-description.repository';
 import { TagRepository } from '../tags/tag.repository';
 

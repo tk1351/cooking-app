@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { InternalServerErrorException } from '@nestjs/common';
-import { IngredientRepository } from '../../src/ingredients/ingredient.repository';
+import { IngredientRepository } from '../../src/ingredients/ingredients.repository';
 
 export const mockCreateIngredientDto = {
   name: 'testName',

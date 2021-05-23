@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { IngredientsService } from './ingredients.service';
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
-import { Ingredient } from './ingredient.entity';
+import { Ingredient } from './ingredients.entity';
 import { MyKnownMessage } from '../message.interface';
 import { UpdateIngredientDto } from './dto/update-ingredient.dto';
 
