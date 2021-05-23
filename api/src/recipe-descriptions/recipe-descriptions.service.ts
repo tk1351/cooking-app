@@ -58,7 +58,7 @@ export class RecipeDescriptionsService {
   async updateRecipeDescription(
     id: number,
     updateRecipeDescriptionDto: UpdateRecipeDescriptionDto,
-  ): Promise<MyKnownMessage> {
+  ): Promise<RecipeDescription> {
     return await this.recipeDescriptionRepository.updateRecipeDescription(
       id,
       updateRecipeDescriptionDto,

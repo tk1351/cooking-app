@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsInt, IsString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsInt,
+  IsString,
+  IsUrl,
+  IsOptional,
+} from 'class-validator';
 import { Recipe } from '../../recipes/recipes.entity';
 
 export class CreateRecipeDescriptionDto {
@@ -9,6 +15,10 @@ export class CreateRecipeDescriptionDto {
   @IsNotEmpty({ message: '作業工程の詳細を入力してください' })
   @IsString({ message: '作業工程の詳細は文字で入力してください' })
   text: string;
+
+  @IsOptional()
+  @IsUrl({}, { message: 'urlを入力してください' })
+  url: string;
 
   @IsNotEmpty()
   recipe: Recipe;

@@ -10,6 +10,9 @@ export class RecipeDescription extends DefaultEntity {
   @Column()
   text: string;
 
+  @Column({ nullable: true, type: 'varchar' })
+  url: string | null;
+
   @ManyToOne(() => Recipe, (recipe) => recipe.recipeDescriptions, {
     eager: false,
   })

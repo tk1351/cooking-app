@@ -33,11 +33,12 @@ export class RecipeDescriptionRepository extends Repository<RecipeDescription> {
   async createRecipeDescription(
     createRecipeDescription: CreateRecipeDescriptionDto,
   ): Promise<RecipeDescription> {
-    const { order, text, recipe } = createRecipeDescription;
+    const { order, text, url, recipe } = createRecipeDescription;
 
     const recipeDescription = this.create();
     recipeDescription.order = order;
     recipeDescription.text = text;
+    recipeDescription.url = url;
     recipeDescription.recipeId = recipe.id;
 
     try {
@@ -52,15 +53,16 @@ export class RecipeDescriptionRepository extends Repository<RecipeDescription> {
   async updateRecipeDescription(
     id: number,
     updateRecipeDescriptionDto: UpdateRecipeDescriptionDto,
-  ): Promise<MyKnownMessage> {
+  ): Promise<RecipeDescription> {
     const found = await this.getRecipeDescriptionById(id);
-    const { order, text } = updateRecipeDescriptionDto;
+    const { order, text, url } = updateRecipeDescriptionDto;
 
     found.order = order;
     found.text = text;
+    found.url = url;
 
     await found.save();
-    return { message: '作業工程の詳細の更新が完了しました' };
+    return found;
   }
 
   async deleteRecipeDescription(id: number): Promise<MyKnownMessage> {

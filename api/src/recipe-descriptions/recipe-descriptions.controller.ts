@@ -54,7 +54,7 @@ export class RecipeDescriptionsController {
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe)
     updateRecipeDescriptionDto: UpdateRecipeDescriptionDto,
-  ): Promise<MyKnownMessage> {
+  ): Promise<RecipeDescription> {
     return this.recipeDescriptionsService.updateRecipeDescription(
       id,
       updateRecipeDescriptionDto,
