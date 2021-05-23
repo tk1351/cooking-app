@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { IngredientsService } from '../../src/ingredients/ingredients.service';
 import { IngredientRepository } from '../../src/ingredients/ingredients.repository';
-import { mockCreateIngredientDto } from './ingredient.repository.spec';
+import { mockCreateIngredientDto } from './ingredients.repository.spec';
 
 const mockIngredients = [
   {
