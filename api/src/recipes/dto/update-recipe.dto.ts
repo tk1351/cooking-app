@@ -2,7 +2,7 @@ import { IsNotEmpty, IsInt, IsIn, IsOptional } from 'class-validator';
 import { Recipe } from '../recipes.entity';
 import { Ingredient } from '../../ingredients/ingredients.entity';
 import { RecipeDescription } from '../../recipe-descriptions/recipe-descriptions.entity';
-import { Tag } from '../../tags/tag.entity';
+import { Tag } from '../../tags/tags.entity';
 
 export class UpdateRecipeDto {
   @IsOptional()

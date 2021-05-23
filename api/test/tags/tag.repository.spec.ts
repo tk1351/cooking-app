@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { InternalServerErrorException } from '@nestjs/common';
-import { TagRepository } from '../../src/tags/tag.repository';
+import { TagRepository } from '../../src/tags/tags.repository';
 
 export const mockCreateTagDto = {
   name: 'testName',

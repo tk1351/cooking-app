@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TagsController } from './tags.controller';
 import { TagsService } from './tags.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TagRepository } from './tag.repository';
+import { TagRepository } from './tags.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([TagRepository])],

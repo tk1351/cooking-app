@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TagRepository } from './tag.repository';
+import { TagRepository } from './tags.repository';
 import { CreateTagDto } from './dto/create-tag-dto';
 import { MyKnownMessage } from '../message.interface';
-import { Tag } from './tag.entity';
+import { Tag } from './tags.entity';
 import { UpdateTagDto } from './dto/update-tag-dto';
 
 @Injectable()

@@ -4,7 +4,7 @@ import { Ingredient } from '../ingredients/ingredients.entity';
 import { DefaultEntity } from '../entity';
 import { RecipeDescription } from '../recipe-descriptions/recipe-descriptions.entity';
 import { RecipeLike } from '../recipe-likes/recipe-likes.entity';
-import { Tag } from '../tags/tag.entity';
+import { Tag } from '../tags/tags.entity';
 
 @Entity({ name: 'recipes' })
 export class Recipe extends DefaultEntity {

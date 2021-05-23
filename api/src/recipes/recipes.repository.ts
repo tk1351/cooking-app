@@ -9,7 +9,7 @@ import { GetRecipesFilterDto } from './dto/get-recipes.dto';
 import { User } from '../users/user.entity';
 import { IngredientRepository } from '../ingredients/ingredients.repository';
 import { RecipeDescriptionRepository } from '../recipe-descriptions/recipe-descriptions.repository';
-import { TagRepository } from '../tags/tag.repository';
+import { TagRepository } from '../tags/tags.repository';
 
 @EntityRepository(Recipe)
 export class RecipeRepository extends Repository<Recipe> {

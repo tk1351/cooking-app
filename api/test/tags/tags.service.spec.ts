@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { TagsService } from '../../src/tags/tags.service';
-import { TagRepository } from '../../src/tags/tag.repository';
+import { TagRepository } from '../../src/tags/tags.repository';
 import { mockCreateTagDto } from './tag.repository.spec';
 
 const mockTags = [
