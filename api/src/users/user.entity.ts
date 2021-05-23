@@ -1,7 +1,7 @@
 import { Entity, Column, Unique, OneToMany } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserRole } from './user.model';
-import { Recipe } from '../recipes/recipe.entity';
+import { Recipe } from '../recipes/recipes.entity';
 import { DefaultEntity } from '../entity';
 import { RecipeLike } from '../recipe-likes/recipe-like.entity';
 

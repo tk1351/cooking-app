@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { Recipe } from '../../recipes/recipe.entity';
+import { Recipe } from '../../recipes/recipes.entity';
 
 export class CreateIngredientDto {
   @IsNotEmpty({ message: '材料を入力してください' })

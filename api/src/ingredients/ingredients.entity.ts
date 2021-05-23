@@ -1,5 +1,5 @@
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { Recipe } from '../recipes/recipe.entity';
+import { Recipe } from '../recipes/recipes.entity';
 import { DefaultEntity } from '../entity';
 
 @Entity({ name: 'ingredients' })

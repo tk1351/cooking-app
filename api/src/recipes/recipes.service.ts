@@ -4,9 +4,9 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RecipeRepository } from './recipe.repository';
+import { RecipeRepository } from './recipes.repository';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
-import { Recipe } from './recipe.entity';
+import { Recipe } from './recipes.entity';
 import { GetRecipesFilterDto } from './dto/get-recipes.dto';
 import { MyKnownMessage } from '../message.interface';
 import { User } from '../users/user.entity';

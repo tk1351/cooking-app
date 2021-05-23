@@ -1,6 +1,6 @@
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { DefaultEntity } from '../entity';
-import { Recipe } from '../recipes/recipe.entity';
+import { Recipe } from '../recipes/recipes.entity';
 
 @Entity({ name: 'recipe-descriptions' })
 export class RecipeDescription extends DefaultEntity {

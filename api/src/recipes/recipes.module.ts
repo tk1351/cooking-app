@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RecipesService } from './recipes.service';
 import { RecipesController } from './recipes.controller';
-import { RecipeRepository } from './recipe.repository';
+import { RecipeRepository } from './recipes.repository';
 import { UsersModule } from '../users/users.module';
 import { IngredientsModule } from '../ingredients/ingredients.module';
 import { RecipeDescriptionsModule } from '../recipe-descriptions/recipe-descriptions.module';

@@ -3,7 +3,7 @@ import {
   UnauthorizedException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { Recipe } from './recipe.entity';
+import { Recipe } from './recipes.entity';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { GetRecipesFilterDto } from './dto/get-recipes.dto';
 import { User } from '../users/user.entity';
