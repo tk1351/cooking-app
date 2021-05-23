@@ -1,5 +1,5 @@
 import { Entity, Column, ManyToOne, OneToMany } from 'typeorm';
-import { User } from '../users/user.entity';
+import { User } from '../users/users.entity';
 import { Ingredient } from '../ingredients/ingredients.entity';
 import { DefaultEntity } from '../entity';
 import { RecipeDescription } from '../recipe-descriptions/recipe-descriptions.entity';

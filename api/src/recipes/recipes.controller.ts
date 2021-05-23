@@ -18,7 +18,7 @@ import { GetRecipesFilterDto } from './dto/get-recipes.dto';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { MyKnownMessage } from '../message.interface';
 import { GetUser } from '../users/get-user.decorator';
-import { User } from '../users/user.entity';
+import { User } from '../users/users.entity';
 import { CreateRecipeValidationPipe } from './pipes/create-recipe-validation.pipe';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
 

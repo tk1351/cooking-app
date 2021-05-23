@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../../src/users/users.service';
-import { UserRepository } from '../../src/users/user.repository';
+import { UserRepository } from '../../src/users/users.repository';
 import { UserRole } from '../../src/users/user.model';
 import { AuthCredentialsDto } from '../../src/users/dto/auth-credentials.dto';
 import { UpdateProfileDto } from '../../src/users/dto/update-profile.dto';

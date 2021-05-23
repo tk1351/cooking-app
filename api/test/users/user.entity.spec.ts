@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import { User } from '../../src/users/user.entity';
+import { User } from '../../src/users/users.entity';
 
 describe('User entity', () => {
   let user: User;

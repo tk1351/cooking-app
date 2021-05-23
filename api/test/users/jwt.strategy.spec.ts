@@ -1,8 +1,8 @@
 import { Test } from '@nestjs/testing';
 import { UnauthorizedException } from '@nestjs/common';
 import { JwtStrategy } from '../../src/users/jwt.strategy';
-import { UserRepository } from '../../src/users/user.repository';
-import { User } from '../../src/users/user.entity';
+import { UserRepository } from '../../src/users/users.repository';
+import { User } from '../../src/users/users.entity';
 
 const mockUserRepository = () => ({
   findOne: jest.fn(),

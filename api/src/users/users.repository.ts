@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { User } from './user.entity';
+import { User } from './users.entity';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { UserRole } from './user.model';
 import { MyKnownMessage } from '../message.interface';

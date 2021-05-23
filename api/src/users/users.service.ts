@@ -6,10 +6,10 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
-import { UserRepository } from './user.repository';
+import { UserRepository } from './users.repository';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { JwtPayload } from './jwt-payload.interface';
-import { User } from './user.entity';
+import { User } from './users.entity';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { MyKnownMessage } from '../message.interface';
 import { RecipeLike } from '../recipe-likes/recipe-likes.entity';

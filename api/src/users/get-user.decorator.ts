@@ -1,5 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { User } from './user.entity';
+import { User } from './users.entity';
 
 // headerにある 'bearer ${token}'からuserオブジェクトだけを抽出する
 export const GetUser = createParamDecorator(

@@ -1,6 +1,6 @@
 import { Entity, ManyToOne, Column, JoinColumn } from 'typeorm';
 import { DefaultEntity } from '../entity';
-import { User } from '../users/user.entity';
+import { User } from '../users/users.entity';
 import { Recipe } from '../recipes/recipes.entity';
 
 @Entity({ name: 'recipe-likes' })

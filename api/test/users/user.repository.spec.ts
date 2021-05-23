@@ -3,7 +3,7 @@ import {
   ConflictException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { UserRepository } from '../../src/users/user.repository';
+import { UserRepository } from '../../src/users/users.repository';
 
 const mockCredentialsDto = {
   email: 'test@example.com',

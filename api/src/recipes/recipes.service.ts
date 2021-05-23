@@ -9,7 +9,7 @@ import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { Recipe } from './recipes.entity';
 import { GetRecipesFilterDto } from './dto/get-recipes.dto';
 import { MyKnownMessage } from '../message.interface';
-import { User } from '../users/user.entity';
+import { User } from '../users/users.entity';
 import { IngredientsService } from '../ingredients/ingredients.service';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { Ingredient } from '../ingredients/ingredients.entity';
