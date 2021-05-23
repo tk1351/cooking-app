@@ -17,6 +17,7 @@ import { RecipeDescriptionsService } from '../recipe-descriptions/recipe-descrip
 import { RecipeDescription } from '../recipe-descriptions/recipe-description.entity';
 import { RecipeLikesService } from '../recipe-likes/recipe-likes.service';
 import { RecipeLike } from '../recipe-likes/recipe-like.entity';
+import { TagsService } from '../tags/tags.service';
 
 @Injectable()
 export class RecipesService {
@@ -26,6 +27,7 @@ export class RecipesService {
     private ingredientsService: IngredientsService,
     private recipeDescriptionsService: RecipeDescriptionsService,
     private recipeLikesService: RecipeLikesService,
+    private tagsService: TagsService,
   ) {}
 
   async getRecipes(
@@ -34,18 +36,9 @@ export class RecipesService {
     return this.recipeRepository.getRecipes(getRecipesFilterDto);
   }
 
-  async getRecipeById(id: number): Promise<Recipe> {
-    const found = await this.recipeRepository
-      .createQueryBuilder('recipes')
-      .leftJoinAndSelect('recipes.ingredients', 'ingredients')
-      .leftJoinAndSelect('recipes.recipeDescriptions', 'recipeDescriptions')
-      .leftJoinAndSelect('recipes.recipeLikes', 'recipeLikes')
-      .where('recipes.id = :id', { id })
-      .getOne();
+  async getRecipeById(id: number): Promise<Recipe | undefined> {
+    const found = await this.recipeRepository.getRecipesById(id);
 
-    if (!found) {
-      throw new NotFoundException(`ID: ${id}のrecipeは存在しません`);
-    }
     return found;
   }
 
@@ -89,54 +82,64 @@ export class RecipesService {
     }
     // 更新対象の記事を特定する
     const found = await this.getRecipeById(id);
+    if (!found) throw new NotFoundException(`ID: ${id}のrecipeは存在しません`);
 
     // 材料と作業工程の更新があるか確認する
-    const { name, time, remarks, image, ingredients, recipeDescriptions } =
-      updateRecipeDto;
-
-    if (ingredients) {
-      // 材料部分の更新をする
-      await ingredients.map((ingredient) => {
-        const { id, name, amount } = ingredient;
-        this.ingredientsService.updateIngredient(id, {
-          name,
-          amount,
-        });
-      });
-    }
-
-    if (recipeDescriptions) {
-      // 作業工程部分の更新をする
-      await recipeDescriptions.map((recipeDescription) => {
-        const { id, order, text } = recipeDescription;
-        this.recipeDescriptionsService.updateRecipeDescription(id, {
-          order,
-          text,
-        });
-      });
-    }
-
-    // recipeIdの一致する、更新後の材料を取得する
-    const newIngredients =
-      await this.ingredientsService.getIngredientByRecipeId(id);
-
-    // recipeIdの一致する、更新後の作業工程を取得する
-    const newRecipeDescriptions =
-      await this.recipeDescriptionsService.getRecipeDescriptionsByRecipeId(id);
-
-    // recipeの更新があるか確認する
+    const {
+      name,
+      time,
+      remarks,
+      image,
+      ingredients,
+      recipeDescriptions,
+      tags,
+    } = updateRecipeDto;
 
     // recipe部分の更新をする
     found.name = name;
     found.time = time;
     found.remarks = remarks;
     found.image = image;
+
+    await this.ingredientsService.deleteIngredientsByRecipeId(id);
+
+    const createIngredientDtos = ingredients.map((ingredient) => {
+      return { ...ingredient, recipe: found };
+    });
+
+    const newIngredients = await this.ingredientsService.createIngredients(
+      createIngredientDtos,
+    );
+
     found.ingredients = newIngredients;
+
+    await this.recipeDescriptionsService.deleteRecipeDescriptionsByRecipeId(id);
+
+    const createRecipeDescriptionsDtos = recipeDescriptions.map(
+      (recipeDescription) => {
+        return { ...recipeDescription, recipe: found };
+      },
+    );
+
+    const newRecipeDescriptions =
+      await this.recipeDescriptionsService.createRecipeDescriptions(
+        createRecipeDescriptionsDtos,
+      );
+
     found.recipeDescriptions = newRecipeDescriptions;
 
-    const newRecipe = await found.save();
+    await this.tagsService.deleteTagsByRecipeId(id);
+
+    const createTagDtos = tags.map((tag) => {
+      return { ...tag, recipe: found };
+    });
+
+    const newTags = await this.tagsService.createTags(createTagDtos);
+
+    found.tags = newTags;
 
     // 更新後のrecipeを返す
+    const newRecipe = await this.recipeRepository.save(found);
     return newRecipe;
   }
 

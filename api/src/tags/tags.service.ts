@@ -20,28 +20,27 @@ export class TagsService {
   async getTagById(id: number): Promise<Tag> {
     const found = await this.tagRepository.findOne(id);
 
-    if (!found) {
-      throw new NotFoundException(`ID: ${id}のtagは存在しません`);
-    }
-
     return found;
   }
 
   async getTagsByRecipeId(recipeId: number): Promise<Tag[]> {
-    const found = await this.tagRepository
-      .createQueryBuilder('tags')
-      .where('tags.recipeId = :recipeId', { recipeId })
-      .getMany();
-
-    if (!found || found.length === 0) {
-      throw new NotFoundException(`RecipeId: ${recipeId}のtagsは存在しません`);
-    }
+    const found = await this.tagRepository.getTagsByRecipeId(recipeId);
 
     return found;
   }
 
-  async createTag(createTagDto: CreateTagDto): Promise<MyKnownMessage> {
+  async createTag(createTagDto: CreateTagDto): Promise<Tag> {
     return this.tagRepository.createTag(createTagDto);
+  }
+
+  async createTags(createTagDtos: CreateTagDto[]): Promise<Tag[]> {
+    const newTags = Promise.all(
+      createTagDtos.map(async (createTagDto) => {
+        const newTag = await this.tagRepository.createTag(createTagDto);
+        return newTag;
+      }),
+    );
+    return newTags;
   }
 
   async updateTag(
@@ -65,5 +64,19 @@ export class TagsService {
     }
 
     return { message: 'タグを削除しました' };
+  }
+
+  async deleteTagsByRecipeId(recipeId: number): Promise<MyKnownMessage> {
+    const targetTags = await this.getTagsByRecipeId(recipeId);
+
+    if (targetTags.length > 0) {
+      targetTags.map(
+        async (targetTag) =>
+          await this.tagRepository.delete({
+            id: targetTag.id,
+          }),
+      );
+      return { message: 'タグを削除しました' };
+    }
   }
 }

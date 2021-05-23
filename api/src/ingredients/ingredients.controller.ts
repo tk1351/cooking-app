@@ -34,7 +34,7 @@ export class IngredientsController {
   @Post()
   createIngredient(
     @Body(ValidationPipe) createIngredientDto: CreateIngredientDto,
-  ): Promise<MyKnownMessage> {
+  ): Promise<Ingredient> {
     return this.ingredientsService.createIngredient(createIngredientDto);
   }
 

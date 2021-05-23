@@ -23,7 +23,7 @@ export class RecipeRepository extends Repository<Recipe> {
       .leftJoinAndSelect('recipes.recipeDescriptions', 'recipeDescriptions')
       .leftJoinAndSelect('recipes.recipeLikes', 'recipeLikes')
       .leftJoinAndSelect('recipes.tags', 'tags')
-      .orderBy('recipes.id', 'ASC');
+      .orderBy('recipes.createdAt', 'DESC');
 
     if (query) {
       // recipes.nameとingredients.nameに一致するqueryを取得する
@@ -41,6 +41,19 @@ export class RecipeRepository extends Repository<Recipe> {
     } catch (error) {
       throw new InternalServerErrorException();
     }
+  }
+
+  async getRecipesById(id: number): Promise<Recipe | undefined> {
+    const found = await this.createQueryBuilder('recipes')
+      .leftJoinAndSelect('recipes.user', 'user')
+      .leftJoinAndSelect('recipes.ingredients', 'ingredients')
+      .leftJoinAndSelect('recipes.recipeDescriptions', 'recipeDescriptions')
+      .leftJoinAndSelect('recipes.recipeLikes', 'recipeLikes')
+      .leftJoinAndSelect('recipes.tags', 'tags')
+      .where('recipes.id = :id', { id })
+      .getOne();
+
+    return found;
   }
 
   async createRecipe(
@@ -95,10 +108,7 @@ export class RecipeRepository extends Repository<Recipe> {
       }),
     );
 
-    // tagsがオプションのため
-    if (tags) {
-      tags.map((tag) => tagRepository.createTag({ ...tag, recipe: newRecipe }));
-    }
+    tags.map((tag) => tagRepository.createTag({ ...tag, recipe: newRecipe }));
 
     delete recipe.user;
 

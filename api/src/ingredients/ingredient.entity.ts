@@ -15,5 +15,5 @@ export class Ingredient extends DefaultEntity {
   recipe: Recipe;
 
   @Column()
-  readonly recipeId: number;
+  recipeId: number;
 }

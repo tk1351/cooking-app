@@ -27,12 +27,6 @@ export class RecipeLikesService {
       .where('recipe-likes.userId = :userId', { userId })
       .getMany();
 
-    if (!found || found.length === 0) {
-      throw new NotFoundException(
-        `UserId: ${userId}のrecipe-likesは存在しません`,
-      );
-    }
-
     return found;
   }
 
@@ -41,12 +35,6 @@ export class RecipeLikesService {
       .createQueryBuilder('recipe-likes')
       .where('recipe-likes.recipeId = :recipeId', { recipeId })
       .getMany();
-
-    if (!found || found.length === 0) {
-      throw new NotFoundException(
-        `RecipeId: ${recipeId}のrecipe-likesは存在しません`,
-      );
-    }
 
     return found;
   }

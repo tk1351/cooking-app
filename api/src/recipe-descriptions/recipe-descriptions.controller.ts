@@ -43,7 +43,7 @@ export class RecipeDescriptionsController {
   @Post()
   createRecipeDescription(
     @Body(ValidationPipe) createRecipeDescription: CreateRecipeDescriptionDto,
-  ): Promise<MyKnownMessage> {
+  ): Promise<RecipeDescription> {
     return this.recipeDescriptionsService.createRecipeDescription(
       createRecipeDescription,
     );

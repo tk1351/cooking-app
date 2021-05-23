@@ -18,35 +18,38 @@ export class IngredientsService {
   }
 
   async getIngredientById(id: number): Promise<Ingredient> {
-    const found = await this.ingredientRepository.findOne(id);
-
-    if (!found) {
-      throw new NotFoundException(`ID: ${id}のingredientは存在しません`);
-    }
+    const found = await this.ingredientRepository.getIngredientById(id);
 
     return found;
   }
 
   // recipeIdからingredientsを取得
   async getIngredientByRecipeId(recipeId: number): Promise<Ingredient[]> {
-    const found = await this.ingredientRepository
-      .createQueryBuilder('ingredients')
-      .where('ingredients.recipeId = :recipeId', { recipeId })
-      .getMany();
-
-    if (!found || found.length === 0) {
-      throw new NotFoundException(
-        `RecipeID: ${recipeId}のingredientは存在しません`,
-      );
-    }
+    const found = await this.ingredientRepository.getIngredientByRecipeId(
+      recipeId,
+    );
 
     return found;
   }
 
   async createIngredient(
     createIngredientDto: CreateIngredientDto,
-  ): Promise<MyKnownMessage> {
+  ): Promise<Ingredient> {
     return this.ingredientRepository.createIngredient(createIngredientDto);
+  }
+
+  async createIngredients(
+    createIngredientDtos: CreateIngredientDto[],
+  ): Promise<Ingredient[]> {
+    const newIngredients = Promise.all(
+      createIngredientDtos.map(async (createIngredientDto) => {
+        const newIngredient = await this.ingredientRepository.createIngredient(
+          createIngredientDto,
+        );
+        return newIngredient;
+      }),
+    );
+    return newIngredients;
   }
 
   async updateIngredient(
@@ -71,5 +74,17 @@ export class IngredientsService {
     }
 
     return { message: '材料を削除しました' };
+  }
+
+  async deleteIngredientsByRecipeId(recipeId: number): Promise<MyKnownMessage> {
+    const targetIngredients = await this.getIngredientByRecipeId(recipeId);
+
+    if (targetIngredients.length > 0) {
+      targetIngredients.map(
+        async (targetIngredient) =>
+          await this.ingredientRepository.delete({ id: targetIngredient.id }),
+      );
+      return { message: '材料を削除しました' };
+    }
   }
 }

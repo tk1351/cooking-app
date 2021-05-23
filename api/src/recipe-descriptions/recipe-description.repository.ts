@@ -2,28 +2,35 @@ import { EntityRepository, Repository } from 'typeorm';
 import { InternalServerErrorException } from '@nestjs/common';
 import { RecipeDescription } from './recipe-description.entity';
 import { CreateRecipeDescriptionDto } from './dto/create-recipe-description.dto';
-import { MyKnownMessage } from '../message.interface';
 
 @EntityRepository(RecipeDescription)
 export class RecipeDescriptionRepository extends Repository<RecipeDescription> {
   async createRecipeDescription(
     createRecipeDescription: CreateRecipeDescriptionDto,
-  ): Promise<MyKnownMessage> {
+  ): Promise<RecipeDescription> {
     const { order, text, recipe } = createRecipeDescription;
 
     const recipeDescription = this.create();
     recipeDescription.order = order;
     recipeDescription.text = text;
-    recipeDescription.recipe = recipe;
+    recipeDescription.recipeId = recipe.id;
 
     try {
       await recipeDescription.save();
 
-      delete recipeDescription.recipe;
-
-      return { message: '作業工程の詳細の登録が完了しました' };
+      return recipeDescription;
     } catch (error) {
       throw new InternalServerErrorException();
     }
+  }
+
+  async getRecipeDescriptionsByRecipeId(
+    recipeId: number,
+  ): Promise<RecipeDescription[]> {
+    const found = await this.createQueryBuilder('recipe-descriptions')
+      .where('recipe-descriptions.recipeId = :recipeId', { recipeId })
+      .getMany();
+
+    return found;
   }
 }

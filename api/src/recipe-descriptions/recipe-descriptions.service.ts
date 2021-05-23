@@ -20,37 +20,41 @@ export class RecipeDescriptionsService {
   async getRecipeDescriptionById(id: number): Promise<RecipeDescription> {
     const found = await this.recipeDescriptionRepository.findOne(id);
 
-    if (!found) {
-      throw new NotFoundException(`ID: ${id}のrecipeDescriptionは存在しません`);
-    }
-
     return found;
   }
 
   async getRecipeDescriptionsByRecipeId(
     recipeId: number,
   ): Promise<RecipeDescription[]> {
-    const found = await this.recipeDescriptionRepository
-      .createQueryBuilder('recipe-descriptions')
-      .where('recipe-descriptions.recipeId = :recipeId', { recipeId })
-      .getMany();
-
-    // recipeId自体は存在する場合、NotFoundに辿りつかないためlengthでも分岐
-    if (!found || found.length === 0) {
-      throw new NotFoundException(
-        `RecipeID: ${recipeId}のrecipe-descriptionsは存在しません`,
+    const found =
+      await this.recipeDescriptionRepository.getRecipeDescriptionsByRecipeId(
+        recipeId,
       );
-    }
 
     return found;
   }
 
   async createRecipeDescription(
     createRecipeDescription: CreateRecipeDescriptionDto,
-  ): Promise<MyKnownMessage> {
+  ): Promise<RecipeDescription> {
     return this.recipeDescriptionRepository.createRecipeDescription(
       createRecipeDescription,
     );
+  }
+
+  async createRecipeDescriptions(
+    createRecipeDescriptionsDtos: CreateRecipeDescriptionDto[],
+  ): Promise<RecipeDescription[]> {
+    const newRecipeDescriptions = Promise.all(
+      createRecipeDescriptionsDtos.map(async (createRecipeDescriptionsDto) => {
+        const newRecipeDescription =
+          await this.recipeDescriptionRepository.createRecipeDescription(
+            createRecipeDescriptionsDto,
+          );
+        return newRecipeDescription;
+      }),
+    );
+    return newRecipeDescriptions;
   }
 
   async updateRecipeDescription(
@@ -77,5 +81,23 @@ export class RecipeDescriptionsService {
     }
 
     return { message: '作業工程の詳細を削除しました' };
+  }
+
+  async deleteRecipeDescriptionsByRecipeId(
+    recipeId: number,
+  ): Promise<MyKnownMessage> {
+    const targetRecipeDescriptions = await this.getRecipeDescriptionsByRecipeId(
+      recipeId,
+    );
+
+    if (targetRecipeDescriptions.length > 0) {
+      targetRecipeDescriptions.map(
+        async (targetRecipeDescription) =>
+          await this.recipeDescriptionRepository.delete({
+            id: targetRecipeDescription.id,
+          }),
+      );
+      return { message: '作業工程の詳細を削除しました' };
+    }
   }
 }

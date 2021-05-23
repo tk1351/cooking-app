@@ -37,9 +37,7 @@ export class TagsController {
   }
 
   @Post()
-  createTag(
-    @Body(ValidationPipe) createTagDto: CreateTagDto,
-  ): Promise<MyKnownMessage> {
+  createTag(@Body(ValidationPipe) createTagDto: CreateTagDto): Promise<Tag> {
     return this.tagsService.createTag(createTagDto);
   }
 

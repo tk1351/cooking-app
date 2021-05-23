@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsInt, IsIn, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsInt, IsIn } from 'class-validator';
 import { Recipe } from '../recipe.entity';
 import { Ingredient } from '../../ingredients/ingredient.entity';
 import { RecipeDescription } from '../../recipe-descriptions/recipe-description.entity';
@@ -24,7 +24,6 @@ export class CreateRecipeDto {
   @IsNotEmpty({ message: '作業工程の詳細を入力してください' })
   recipeDescriptions: RecipeDescription[];
 
-  @IsOptional()
   @IsNotEmpty({ message: 'タグを入力してください' })
   tags: Tag[];
 }
