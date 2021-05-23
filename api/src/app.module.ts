@@ -8,6 +8,7 @@ import { IngredientsModule } from './ingredients/ingredients.module';
 import { RecipeDescriptionsModule } from './recipe-descriptions/recipe-descriptions.module';
 import { RecipeLikesModule } from './recipe-likes/recipe-likes.module';
 import { TagsModule } from './tags/tags.module';
+import { SocialsModule } from './socials/socials.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { TagsModule } from './tags/tags.module';
     RecipeDescriptionsModule,
     RecipeLikesModule,
     TagsModule,
+    SocialsModule,
   ],
 })
 export class AppModule {}
