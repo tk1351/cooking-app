@@ -14,7 +14,7 @@ import { IngredientsService } from '../ingredients/ingredients.service';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { Ingredient } from '../ingredients/ingredients.entity';
 import { RecipeDescriptionsService } from '../recipe-descriptions/recipe-descriptions.service';
-import { RecipeDescription } from '../recipe-descriptions/recipe-description.entity';
+import { RecipeDescription } from '../recipe-descriptions/recipe-descriptions.entity';
 import { RecipeLikesService } from '../recipe-likes/recipe-likes.service';
 import { RecipeLike } from '../recipe-likes/recipe-like.entity';
 import { TagsService } from '../tags/tags.service';

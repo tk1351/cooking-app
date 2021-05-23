@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RecipeDescriptionRepository } from './recipe-description.repository';
+import { RecipeDescriptionRepository } from './recipe-descriptions.repository';
 import { MyKnownMessage } from '../message.interface';
 import { CreateRecipeDescriptionDto } from './dto/create-recipe-description.dto';
-import { RecipeDescription } from './recipe-description.entity';
+import { RecipeDescription } from './recipe-descriptions.entity';
 import { UpdateRecipeDescriptionDto } from './dto/update-recipe-description.dto';
 
 @Injectable()

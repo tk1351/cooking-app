@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { InternalServerErrorException } from '@nestjs/common';
-import { RecipeDescriptionRepository } from '../../src/recipe-descriptions/recipe-description.repository';
+import { RecipeDescriptionRepository } from '../../src/recipe-descriptions/recipe-descriptions.repository';
 
 export const mockCreateRecipeDescriptionDto = {
   order: 1,

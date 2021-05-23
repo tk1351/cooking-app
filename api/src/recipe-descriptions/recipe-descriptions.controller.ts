@@ -12,7 +12,7 @@ import {
 import { RecipeDescriptionsService } from './recipe-descriptions.service';
 import { CreateRecipeDescriptionDto } from './dto/create-recipe-description.dto';
 import { MyKnownMessage } from '../message.interface';
-import { RecipeDescription } from './recipe-description.entity';
+import { RecipeDescription } from './recipe-descriptions.entity';
 import { UpdateRecipeDescriptionDto } from './dto/update-recipe-description.dto';
 
 @Controller('recipe-descriptions')

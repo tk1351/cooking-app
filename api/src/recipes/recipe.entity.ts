@@ -2,7 +2,7 @@ import { Entity, Column, ManyToOne, OneToMany } from 'typeorm';
 import { User } from '../users/user.entity';
 import { Ingredient } from '../ingredients/ingredients.entity';
 import { DefaultEntity } from '../entity';
-import { RecipeDescription } from '../recipe-descriptions/recipe-description.entity';
+import { RecipeDescription } from '../recipe-descriptions/recipe-descriptions.entity';
 import { RecipeLike } from '../recipe-likes/recipe-like.entity';
 import { Tag } from '../tags/tag.entity';
 

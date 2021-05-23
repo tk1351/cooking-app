@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsInt, IsIn } from 'class-validator';
 import { Recipe } from '../recipe.entity';
 import { Ingredient } from '../../ingredients/ingredients.entity';
-import { RecipeDescription } from '../../recipe-descriptions/recipe-description.entity';
+import { RecipeDescription } from '../../recipe-descriptions/recipe-descriptions.entity';
 import { Tag } from '../../tags/tag.entity';
 
 export class CreateRecipeDto {
