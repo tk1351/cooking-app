@@ -2,6 +2,7 @@ import { EntityRepository, Repository, getCustomRepository } from 'typeorm';
 import {
   UnauthorizedException,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { Recipe } from './recipes.entity';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
@@ -10,6 +11,12 @@ import { User } from '../users/users.entity';
 import { IngredientRepository } from '../ingredients/ingredients.repository';
 import { RecipeDescriptionRepository } from '../recipe-descriptions/recipe-descriptions.repository';
 import { TagRepository } from '../tags/tags.repository';
+import { RecipeLikeRepository } from '../recipe-likes/recipe-likes.repository';
+import { MyKnownMessage } from '../message.interface';
+import { Ingredient } from '../ingredients/ingredients.entity';
+import { RecipeDescription } from '../recipe-descriptions/recipe-descriptions.entity';
+import { RecipeLike } from '../recipe-likes/recipe-likes.entity';
+import { Tag } from '../tags/tags.entity';
 
 @EntityRepository(Recipe)
 export class RecipeRepository extends Repository<Recipe> {
@@ -64,6 +71,12 @@ export class RecipeRepository extends Repository<Recipe> {
       throw new UnauthorizedException('権限がありません');
     }
 
+    const ingredientRepository = getCustomRepository(IngredientRepository);
+    const recipeDescriptionRepository = getCustomRepository(
+      RecipeDescriptionRepository,
+    );
+    const tagRepository = getCustomRepository(TagRepository);
+
     const {
       name,
       time,
@@ -75,12 +88,6 @@ export class RecipeRepository extends Repository<Recipe> {
     } = createRecipeDto;
 
     const recipe = this.create();
-
-    const ingredientRepository = getCustomRepository(IngredientRepository);
-    const recipeDescriptionRepository = getCustomRepository(
-      RecipeDescriptionRepository,
-    );
-    const tagRepository = getCustomRepository(TagRepository);
 
     recipe.name = name;
     recipe.time = time;
@@ -113,5 +120,57 @@ export class RecipeRepository extends Repository<Recipe> {
     delete recipe.user;
 
     return recipe;
+  }
+
+  async deleteRecipe(id: number, user: User): Promise<MyKnownMessage> {
+    if (user.role !== 'admin') {
+      throw new UnauthorizedException('権限がありません');
+    }
+
+    const ingredientRepository = getCustomRepository(IngredientRepository);
+    const recipeDescriptionRepository = getCustomRepository(
+      RecipeDescriptionRepository,
+    );
+    const recipeLikeRepository = getCustomRepository(RecipeLikeRepository);
+    const tagRepository = getCustomRepository(TagRepository);
+
+    // recipeIdが一致するingredientsを取得
+    const ingredientsIndex: Ingredient[] =
+      await ingredientRepository.getIngredientByRecipeId(id);
+
+    // recipeIdが一致するrecipeDescriptionsを取得
+    const recipeDescriptionsIndex: RecipeDescription[] =
+      await recipeDescriptionRepository.getRecipeDescriptionsByRecipeId(id);
+
+    // recipeIdが一致するrecipeLikesを取得
+    const recipeLikesIndex: RecipeLike[] =
+      await recipeLikeRepository.getRecipeLikesByRecipeId(id);
+
+    const tagsIndex: Tag[] = await tagRepository.getTagsByRecipeId(id);
+
+    // ingredientsIndexをmapして、IDが一致する材料を削除する
+    ingredientsIndex.map((index) =>
+      ingredientRepository.deleteIngredient(index.id),
+    );
+
+    // recipeDescriptionsIndexをmapして、IDが一致する作業工程を削除する
+    recipeDescriptionsIndex.map((index) =>
+      recipeDescriptionRepository.deleteRecipeDescription(index.id),
+    );
+
+    // recipeLikeIndexをmapして、idが一致するお気に入りを削除する
+    recipeLikesIndex.map((index) =>
+      recipeLikeRepository.deleteRecipeLikes(index.id),
+    );
+
+    tagsIndex.map((index) => tagRepository.deleteTag(index.id));
+
+    const result = await this.delete({ id });
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`ID: ${id}のrecipeは存在しません`);
+    }
+
+    return { message: 'レシピを削除しました' };
   }
 }

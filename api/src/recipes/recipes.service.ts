@@ -16,8 +16,6 @@ import { RecipeLike } from '../recipe-likes/recipe-likes.entity';
 import { TagsService } from '../tags/tags.service';
 import { RecipeDescriptionsService } from '../recipe-descriptions/recipe-descriptions.service';
 import { IngredientsService } from '../ingredients/ingredients.service';
-import { Ingredient } from '../ingredients/ingredients.entity';
-import { RecipeDescription } from '../recipe-descriptions/recipe-descriptions.entity';
 
 @Injectable()
 export class RecipesService {
@@ -144,43 +142,7 @@ export class RecipesService {
   }
 
   async deleteRecipe(id: number, user: User): Promise<MyKnownMessage> {
-    if (user.role !== 'admin') {
-      throw new UnauthorizedException('権限がありません');
-    }
-    // recipeIdが一致するingredientsを取得
-    const ingredientsIndex: Ingredient[] =
-      await this.ingredientsService.getIngredientByRecipeId(id);
-
-    // recipeIdが一致するrecipeDescriptionsを取得
-    const recipeDescriptionsIndex: RecipeDescription[] =
-      await this.recipeDescriptionsService.getRecipeDescriptionsByRecipeId(id);
-
-    // recipeIdが一致するrecipeLikesを取得
-    const recipeLikesIndex: RecipeLike[] =
-      await this.recipeLikesService.getRecipeLikesByRecipeId(id);
-
-    // ingredientsIndexをmapして、IDが一致する材料を削除する
-    ingredientsIndex.map((index) =>
-      this.ingredientsService.deleteIngredient(index.id),
-    );
-
-    // recipeDescriptionsIndexをmapして、IDが一致する作業工程を削除する
-    recipeDescriptionsIndex.map((index) =>
-      this.recipeDescriptionsService.deleteRecipeDescription(index.id),
-    );
-
-    // recipeLikeIndexをmapして、idが一致するお気に入りを削除する
-    recipeLikesIndex.map((index) =>
-      this.recipeLikesService.deleteRecipeLikes(index.id),
-    );
-
-    const result = await this.recipeRepository.delete({ id });
-
-    if (result.affected === 0) {
-      throw new NotFoundException(`ID: ${id}のrecipeは存在しません`);
-    }
-
-    return { message: 'レシピを削除しました' };
+    return await this.recipeRepository.deleteRecipe(id, user);
   }
 
   async unlikeRecipe(recipeId: number, user: User): Promise<MyKnownMessage> {

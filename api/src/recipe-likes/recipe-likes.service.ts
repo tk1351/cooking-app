@@ -26,7 +26,7 @@ export class RecipeLikesService {
   }
 
   async getRecipeLikesByRecipeId(recipeId: number): Promise<RecipeLike[]> {
-    return await this.getRecipeLikesByRecipeId(recipeId);
+    return await this.recipeLikeRepository.getRecipeLikesByRecipeId(recipeId);
   }
 
   async recipeLike(recipeLikeDto: RecipeLikeDto): Promise<RecipeLike> {
