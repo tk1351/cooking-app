@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RecipeDescriptionRepository } from './recipe-descriptions.repository';
 import { MyKnownMessage } from '../message.interface';
@@ -14,13 +14,11 @@ export class RecipeDescriptionsService {
   ) {}
 
   async getAllRecipeDescriptions(): Promise<RecipeDescription[]> {
-    return await this.recipeDescriptionRepository.find({});
+    return await this.recipeDescriptionRepository.getAllRecipeDescriptions();
   }
 
   async getRecipeDescriptionById(id: number): Promise<RecipeDescription> {
-    const found = await this.recipeDescriptionRepository.findOne(id);
-
-    return found;
+    return await this.recipeDescriptionRepository.getRecipeDescriptionById(id);
   }
 
   async getRecipeDescriptionsByRecipeId(
@@ -61,43 +59,21 @@ export class RecipeDescriptionsService {
     id: number,
     updateRecipeDescriptionDto: UpdateRecipeDescriptionDto,
   ): Promise<MyKnownMessage> {
-    const found = await this.getRecipeDescriptionById(id);
-    const { order, text } = updateRecipeDescriptionDto;
-
-    found.order = order;
-    found.text = text;
-
-    await found.save();
-    return { message: '作業工程の詳細の更新が完了しました' };
+    return await this.recipeDescriptionRepository.updateRecipeDescription(
+      id,
+      updateRecipeDescriptionDto,
+    );
   }
 
   async deleteRecipeDescription(id: number): Promise<MyKnownMessage> {
-    const result = await this.recipeDescriptionRepository.delete({ id });
-
-    if (result.affected === 0) {
-      throw new NotFoundException(
-        `ID: ${id}のrecipe-descriptionは存在しません`,
-      );
-    }
-
-    return { message: '作業工程の詳細を削除しました' };
+    return await this.recipeDescriptionRepository.deleteRecipeDescription(id);
   }
 
   async deleteRecipeDescriptionsByRecipeId(
     recipeId: number,
   ): Promise<MyKnownMessage> {
-    const targetRecipeDescriptions = await this.getRecipeDescriptionsByRecipeId(
+    return await this.recipeDescriptionRepository.deleteRecipeDescriptionsByRecipeId(
       recipeId,
     );
-
-    if (targetRecipeDescriptions.length > 0) {
-      targetRecipeDescriptions.map(
-        async (targetRecipeDescription) =>
-          await this.recipeDescriptionRepository.delete({
-            id: targetRecipeDescription.id,
-          }),
-      );
-      return { message: '作業工程の詳細を削除しました' };
-    }
   }
 }

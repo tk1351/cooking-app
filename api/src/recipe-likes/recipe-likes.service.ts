@@ -18,25 +18,15 @@ export class RecipeLikesService {
   ) {}
 
   async getAllRecipeLikes(): Promise<RecipeLike[]> {
-    return this.recipeLikeRepository.find({});
+    return await this.recipeLikeRepository.getAllRecipeLikes();
   }
 
   async getRecipeLikesByUserId(userId: number): Promise<RecipeLike[]> {
-    const found: RecipeLike[] = await this.recipeLikeRepository
-      .createQueryBuilder('recipe-likes')
-      .where('recipe-likes.userId = :userId', { userId })
-      .getMany();
-
-    return found;
+    return await this.recipeLikeRepository.getRecipeLikesByUserId(userId);
   }
 
   async getRecipeLikesByRecipeId(recipeId: number): Promise<RecipeLike[]> {
-    const found: RecipeLike[] = await this.recipeLikeRepository
-      .createQueryBuilder('recipe-likes')
-      .where('recipe-likes.recipeId = :recipeId', { recipeId })
-      .getMany();
-
-    return found;
+    return await this.getRecipeLikesByRecipeId(recipeId);
   }
 
   async recipeLike(recipeLikeDto: RecipeLikeDto): Promise<RecipeLike> {
@@ -44,25 +34,10 @@ export class RecipeLikesService {
   }
 
   async deleteRecipeLikes(id: number): Promise<MyKnownMessage> {
-    const result = await this.recipeLikeRepository.delete({ id });
-
-    if (result.affected === 0) {
-      throw new NotFoundException(`ID: ${id}のrecipe-likesは存在しません`);
-    }
-
-    return { message: 'お気に入りを削除しました' };
+    return await this.recipeLikeRepository.deleteRecipeLikes(id);
   }
 
   async unlikeRecipe(recipeUnlikeDto: RecipeUnlikeDto): Promise<void> {
-    const { userId, recipeId } = recipeUnlikeDto;
-
-    try {
-      await this.recipeLikeRepository.delete({
-        userId,
-        recipeId,
-      });
-    } catch (error) {
-      throw new InternalServerErrorException();
-    }
+    return await this.recipeLikeRepository.unlikeRecipe(recipeUnlikeDto);
   }
 }

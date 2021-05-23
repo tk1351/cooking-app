@@ -14,13 +14,11 @@ export class TagsService {
   ) {}
 
   async getAllTags(): Promise<Tag[]> {
-    return this.tagRepository.find({});
+    return await this.tagRepository.getAllTags();
   }
 
   async getTagById(id: number): Promise<Tag> {
-    const found = await this.tagRepository.findOne(id);
-
-    return found;
+    return await this.tagRepository.getTagById(id);
   }
 
   async getTagsByRecipeId(recipeId: number): Promise<Tag[]> {
@@ -47,36 +45,14 @@ export class TagsService {
     id: number,
     updateTagDto: UpdateTagDto,
   ): Promise<MyKnownMessage> {
-    const found = await this.getTagById(id);
-    const { name } = updateTagDto;
-
-    found.name = name;
-
-    await found.save();
-    return { message: 'タグ名の更新が完了しました' };
+    return await this.tagRepository.updateTag(id, updateTagDto);
   }
 
   async deleteTag(id: number): Promise<MyKnownMessage> {
-    const result = await this.tagRepository.delete({ id });
-
-    if (result.affected === 0) {
-      throw new NotFoundException(`ID: ${id}のtagは存在しません`);
-    }
-
-    return { message: 'タグを削除しました' };
+    return await this.tagRepository.deleteTag(id);
   }
 
   async deleteTagsByRecipeId(recipeId: number): Promise<MyKnownMessage> {
-    const targetTags = await this.getTagsByRecipeId(recipeId);
-
-    if (targetTags.length > 0) {
-      targetTags.map(
-        async (targetTag) =>
-          await this.tagRepository.delete({
-            id: targetTag.id,
-          }),
-      );
-      return { message: 'タグを削除しました' };
-    }
+    return await this.tagRepository.deleteTagsByRecipeId(recipeId);
   }
 }

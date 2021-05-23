@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IngredientRepository } from './ingredients.repository';
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
@@ -14,7 +14,7 @@ export class IngredientsService {
   ) {}
 
   async getAllIngredients(): Promise<Ingredient[]> {
-    return await this.ingredientRepository.find({});
+    return await this.ingredientRepository.getAllIngredients();
   }
 
   async getIngredientById(id: number): Promise<Ingredient> {
@@ -56,35 +56,19 @@ export class IngredientsService {
     id: number,
     updateIngredientDto: UpdateIngredientDto,
   ): Promise<Ingredient> {
-    const found = await this.getIngredientById(id);
-    const { name, amount } = updateIngredientDto;
-
-    found.name = name;
-    found.amount = amount;
-
-    await found.save();
-    return found;
+    return await this.ingredientRepository.updateIngredient(
+      id,
+      updateIngredientDto,
+    );
   }
 
   async deleteIngredient(id: number): Promise<MyKnownMessage> {
-    const result = await this.ingredientRepository.delete({ id });
-
-    if (result.affected === 0) {
-      throw new NotFoundException(`ID: ${id}のingredientは存在しません`);
-    }
-
-    return { message: '材料を削除しました' };
+    return await this.ingredientRepository.deleteIngredient(id);
   }
 
   async deleteIngredientsByRecipeId(recipeId: number): Promise<MyKnownMessage> {
-    const targetIngredients = await this.getIngredientByRecipeId(recipeId);
-
-    if (targetIngredients.length > 0) {
-      targetIngredients.map(
-        async (targetIngredient) =>
-          await this.ingredientRepository.delete({ id: targetIngredient.id }),
-      );
-      return { message: '材料を削除しました' };
-    }
+    return await this.ingredientRepository.deleteIngredientsByRecipeId(
+      recipeId,
+    );
   }
 }

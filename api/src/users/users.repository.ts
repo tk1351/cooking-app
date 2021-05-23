@@ -2,15 +2,32 @@ import { Repository, EntityRepository } from 'typeorm';
 import {
   ConflictException,
   InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { User } from './users.entity';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { UserRole } from './user.model';
 import { MyKnownMessage } from '../message.interface';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
+  async getAllUsers(): Promise<User[]> {
+    try {
+      const result = await this.find({});
+      return result;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getUserById(id: number): Promise<User> {
+    const user = await this.findOne(id);
+
+    return user;
+  }
+
   async registerAdmin(
     authCredentialsDto: AuthCredentialsDto,
   ): Promise<MyKnownMessage> {
@@ -83,5 +100,27 @@ export class UserRepository extends Repository<User> {
   // passwordの暗号化
   private async hashPassword(password: string, salt: string): Promise<string> {
     return bcrypt.hash(password, salt);
+  }
+
+  async updateUserProfile(
+    id: number,
+    updateProfileDto: UpdateProfileDto,
+    user: User,
+  ): Promise<User> {
+    const found = await this.getUserById(id);
+
+    if (found.id !== user.id) {
+      throw new UnauthorizedException('認証情報が無効です');
+    }
+
+    const { name, specialDish, favoriteDish, bio } = updateProfileDto;
+
+    found.name = name;
+    found.specialDish = specialDish;
+    found.favoriteDish = favoriteDish;
+    found.bio = bio;
+
+    await found.save();
+    return found;
   }
 }

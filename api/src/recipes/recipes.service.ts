@@ -1,7 +1,7 @@
 import {
   Injectable,
-  NotFoundException,
   UnauthorizedException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RecipeRepository } from './recipes.repository';
@@ -10,23 +10,23 @@ import { Recipe } from './recipes.entity';
 import { GetRecipesFilterDto } from './dto/get-recipes.dto';
 import { MyKnownMessage } from '../message.interface';
 import { User } from '../users/users.entity';
-import { IngredientsService } from '../ingredients/ingredients.service';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
-import { Ingredient } from '../ingredients/ingredients.entity';
-import { RecipeDescriptionsService } from '../recipe-descriptions/recipe-descriptions.service';
-import { RecipeDescription } from '../recipe-descriptions/recipe-descriptions.entity';
 import { RecipeLikesService } from '../recipe-likes/recipe-likes.service';
 import { RecipeLike } from '../recipe-likes/recipe-likes.entity';
 import { TagsService } from '../tags/tags.service';
+import { RecipeDescriptionsService } from '../recipe-descriptions/recipe-descriptions.service';
+import { IngredientsService } from '../ingredients/ingredients.service';
+import { Ingredient } from '../ingredients/ingredients.entity';
+import { RecipeDescription } from '../recipe-descriptions/recipe-descriptions.entity';
 
 @Injectable()
 export class RecipesService {
   constructor(
     @InjectRepository(RecipeRepository)
     private recipeRepository: RecipeRepository,
+    private recipeLikesService: RecipeLikesService,
     private ingredientsService: IngredientsService,
     private recipeDescriptionsService: RecipeDescriptionsService,
-    private recipeLikesService: RecipeLikesService,
     private tagsService: TagsService,
   ) {}
 
@@ -37,7 +37,7 @@ export class RecipesService {
   }
 
   async getRecipeById(id: number): Promise<Recipe | undefined> {
-    const found = await this.recipeRepository.getRecipesById(id);
+    const found = await this.recipeRepository.getRecipeById(id);
 
     return found;
   }

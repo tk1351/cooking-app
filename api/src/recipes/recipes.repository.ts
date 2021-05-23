@@ -43,7 +43,7 @@ export class RecipeRepository extends Repository<Recipe> {
     }
   }
 
-  async getRecipesById(id: number): Promise<Recipe | undefined> {
+  async getRecipeById(id: number): Promise<Recipe | undefined> {
     const found = await this.createQueryBuilder('recipes')
       .leftJoinAndSelect('recipes.user', 'user')
       .leftJoinAndSelect('recipes.ingredients', 'ingredients')
