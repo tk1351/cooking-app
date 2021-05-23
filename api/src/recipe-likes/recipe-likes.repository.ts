@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { InternalServerErrorException } from '@nestjs/common';
-import { RecipeLike } from './recipe-like.entity';
+import { RecipeLike } from './recipe-likes.entity';
 import { RecipeLikeDto } from './dto/recipe-like-dto';
 
 @EntityRepository(RecipeLike)

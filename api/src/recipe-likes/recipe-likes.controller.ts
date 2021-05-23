@@ -1,6 +1,6 @@
 import { Controller, Param, ParseIntPipe, Get } from '@nestjs/common';
 import { RecipeLikesService } from './recipe-likes.service';
-import { RecipeLike } from './recipe-like.entity';
+import { RecipeLike } from './recipe-likes.entity';
 
 @Controller('recipe-likes')
 export class RecipeLikesController {

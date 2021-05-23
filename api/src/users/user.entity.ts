@@ -3,7 +3,7 @@ import * as bcrypt from 'bcrypt';
 import { UserRole } from './user.model';
 import { Recipe } from '../recipes/recipes.entity';
 import { DefaultEntity } from '../entity';
-import { RecipeLike } from '../recipe-likes/recipe-like.entity';
+import { RecipeLike } from '../recipe-likes/recipe-likes.entity';
 
 @Entity({ name: 'users' })
 @Unique(['email'])

@@ -16,7 +16,7 @@ import { Ingredient } from '../ingredients/ingredients.entity';
 import { RecipeDescriptionsService } from '../recipe-descriptions/recipe-descriptions.service';
 import { RecipeDescription } from '../recipe-descriptions/recipe-descriptions.entity';
 import { RecipeLikesService } from '../recipe-likes/recipe-likes.service';
-import { RecipeLike } from '../recipe-likes/recipe-like.entity';
+import { RecipeLike } from '../recipe-likes/recipe-likes.entity';
 import { TagsService } from '../tags/tags.service';
 
 @Injectable()

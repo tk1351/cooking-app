@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { RecipeLikesService } from '../../src/recipe-likes/recipe-likes.service';
-import { RecipeLikeRepository } from '../../src/recipe-likes/recipe-like.repository';
+import { RecipeLikeRepository } from '../../src/recipe-likes/recipe-likes.repository';
 
 const mockRecipeLikes = [
   {

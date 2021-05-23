@@ -3,7 +3,7 @@ import { User } from '../users/user.entity';
 import { Ingredient } from '../ingredients/ingredients.entity';
 import { DefaultEntity } from '../entity';
 import { RecipeDescription } from '../recipe-descriptions/recipe-descriptions.entity';
-import { RecipeLike } from '../recipe-likes/recipe-like.entity';
+import { RecipeLike } from '../recipe-likes/recipe-likes.entity';
 import { Tag } from '../tags/tag.entity';
 
 @Entity({ name: 'recipes' })

@@ -12,7 +12,7 @@ import { JwtPayload } from './jwt-payload.interface';
 import { User } from './user.entity';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { MyKnownMessage } from '../message.interface';
-import { RecipeLike } from '../recipe-likes/recipe-like.entity';
+import { RecipeLike } from '../recipe-likes/recipe-likes.entity';
 import { RecipeLikesService } from '../recipe-likes/recipe-likes.service';
 
 @Injectable()

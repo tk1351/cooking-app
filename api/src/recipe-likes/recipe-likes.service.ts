@@ -4,8 +4,8 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RecipeLikeRepository } from './recipe-like.repository';
-import { RecipeLike } from './recipe-like.entity';
+import { RecipeLikeRepository } from './recipe-likes.repository';
+import { RecipeLike } from './recipe-likes.entity';
 import { RecipeLikeDto } from './dto/recipe-like-dto';
 import { RecipeUnlikeDto } from './dto/recipe-unlike-dto';
 import { MyKnownMessage } from '../message.interface';
