@@ -14,6 +14,20 @@ export class IngredientRepository extends Repository<Ingredient> {
     return await this.find({});
   }
 
+  async getIngredientById(id: number): Promise<Ingredient> {
+    const found = await this.findOne(id);
+
+    return found;
+  }
+
+  async getIngredientByRecipeId(recipeId: number): Promise<Ingredient[]> {
+    const found = await this.createQueryBuilder('ingredients')
+      .where('ingredients.recipeId = :recipeId', { recipeId })
+      .getMany();
+
+    return found;
+  }
+
   async createIngredient(
     createIngredientDto: CreateIngredientDto,
   ): Promise<Ingredient> {
@@ -31,20 +45,6 @@ export class IngredientRepository extends Repository<Ingredient> {
     } catch (error) {
       throw new InternalServerErrorException();
     }
-  }
-
-  async getIngredientById(id: number): Promise<Ingredient> {
-    const found = await this.findOne(id);
-
-    return found;
-  }
-
-  async getIngredientByRecipeId(recipeId: number): Promise<Ingredient[]> {
-    const found = await this.createQueryBuilder('ingredients')
-      .where('ingredients.recipeId = :recipeId', { recipeId })
-      .getMany();
-
-    return found;
   }
 
   async updateIngredient(
