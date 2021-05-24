@@ -45,7 +45,7 @@ export class TagsController {
   updateTag(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) updateTagDto: UpdateTagDto,
-  ): Promise<MyKnownMessage> {
+  ): Promise<Tag> {
     return this.tagsService.updateTag(id, updateTagDto);
   }
 

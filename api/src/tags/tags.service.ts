@@ -41,10 +41,7 @@ export class TagsService {
     return newTags;
   }
 
-  async updateTag(
-    id: number,
-    updateTagDto: UpdateTagDto,
-  ): Promise<MyKnownMessage> {
+  async updateTag(id: number, updateTagDto: UpdateTagDto): Promise<Tag> {
     return await this.tagRepository.updateTag(id, updateTagDto);
   }
 

@@ -10,7 +10,6 @@ import { User } from './users.entity';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { UserRole } from './user.model';
 import { MyKnownMessage } from '../message.interface';
-import { UpdateProfileDto } from './dto/update-profile.dto';
 import { RecipeLikeRepository } from '../recipe-likes/recipe-likes.repository';
 import { RecipeLike } from '../recipe-likes/recipe-likes.entity';
 import { SocialsRepository } from '../socials/socials.repository';
@@ -116,28 +115,6 @@ export class UserRepository extends Repository<User> {
   private async hashPassword(password: string, salt: string): Promise<string> {
     return bcrypt.hash(password, salt);
   }
-
-  // async updateUserProfile(
-  //   id: number,
-  //   updateProfileDto: UpdateProfileDto,
-  //   user: User,
-  // ): Promise<User> {
-  //   const found = await this.getUserById(id);
-
-  //   if (found.id !== user.id) {
-  //     throw new UnauthorizedException('認証情報が無効です');
-  //   }
-
-  //   const { name, specialDish, favoriteDish, bio } = updateProfileDto;
-
-  //   found.name = name;
-  //   found.specialDish = specialDish;
-  //   found.favoriteDish = favoriteDish;
-  //   found.bio = bio;
-
-  //   await found.save();
-  //   return found;
-  // }
 
   async deleteUser(id: number, user: User): Promise<MyKnownMessage> {
     const recipeLikeRepository = getCustomRepository(RecipeLikeRepository);

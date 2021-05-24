@@ -44,17 +44,14 @@ export class TagRepository extends Repository<Tag> {
     }
   }
 
-  async updateTag(
-    id: number,
-    updateTagDto: UpdateTagDto,
-  ): Promise<MyKnownMessage> {
+  async updateTag(id: number, updateTagDto: UpdateTagDto): Promise<Tag> {
     const found = await this.getTagById(id);
     const { name } = updateTagDto;
 
     found.name = name;
 
     await found.save();
-    return { message: 'タグ名の更新が完了しました' };
+    return found;
   }
 
   async deleteTag(id: number): Promise<MyKnownMessage> {
