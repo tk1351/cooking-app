@@ -29,11 +29,12 @@ export class SocialsRepository extends Repository<Social> {
   }
 
   async createSocial(createSocialsDto: CreateSocialsDto): Promise<Social> {
-    const { category, url } = createSocialsDto;
+    const { category, url, user } = createSocialsDto;
 
     const social = this.create();
     social.category = category;
     social.url = url;
+    social.userId = user.id;
 
     try {
       await social.save();

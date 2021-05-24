@@ -8,5 +8,6 @@ import { SocialsRepository } from './socials.repository';
   imports: [TypeOrmModule.forFeature([SocialsRepository])],
   controllers: [SocialsController],
   providers: [SocialsService],
+  exports: [SocialsService],
 })
 export class SocialsModule {}

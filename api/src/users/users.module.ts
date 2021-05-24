@@ -8,6 +8,7 @@ import { UserRepository } from './users.repository';
 import { jwtConstants } from './constants';
 import { JwtStrategy } from './jwt.strategy';
 import { RecipeLikesModule } from '../recipe-likes/recipe-likes.module';
+import { SocialsModule } from '../socials/socials.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { RecipeLikesModule } from '../recipe-likes/recipe-likes.module';
     }),
     TypeOrmModule.forFeature([UserRepository]),
     RecipeLikesModule,
+    SocialsModule,
   ],
   controllers: [UsersController],
   providers: [UsersService, JwtStrategy],

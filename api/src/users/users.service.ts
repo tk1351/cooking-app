@@ -7,7 +7,7 @@ import { JwtPayload } from './jwt-payload.interface';
 import { User } from './users.entity';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { MyKnownMessage } from '../message.interface';
-import { RecipeLikesService } from '../recipe-likes/recipe-likes.service';
+import { SocialsService } from '../socials/socials.service';
 
 @Injectable()
 export class UsersService {
@@ -15,7 +15,7 @@ export class UsersService {
     @InjectRepository(UserRepository)
     private userRepository: UserRepository,
     private readonly jwtService: JwtService,
-    private recipeLikesService: RecipeLikesService,
+    private socialsService: SocialsService,
   ) {}
 
   async getAllUsers(): Promise<User[]> {
@@ -59,12 +59,36 @@ export class UsersService {
     id: number,
     updateProfileDto: UpdateProfileDto,
     user: User,
-  ): Promise<User> {
-    return await this.userRepository.updateUserProfile(
-      id,
-      updateProfileDto,
-      user,
+  ): Promise<any> {
+    const found = await this.getUserById(id);
+
+    if (found.id !== user.id) {
+      throw new UnauthorizedException('認証情報が無効です');
+    }
+
+    const { name, specialDish, favoriteDish, bio, socials } = updateProfileDto;
+
+    found.name = name;
+    found.specialDish = specialDish;
+    found.favoriteDish = favoriteDish;
+    found.bio = bio;
+
+    await this.socialsService.deleteSocialsByUserId(id);
+
+    const createSocialsDtos = socials.map((social) => {
+      return { ...social, user: found };
+    });
+
+    const newSocials = await this.socialsService.createSocials(
+      createSocialsDtos,
     );
+
+    found.socials = newSocials;
+
+    // console.log('found', found);
+
+    const newUser = await this.userRepository.save(found);
+    return newUser;
   }
 
   async deleteUser(id: number, user: User): Promise<MyKnownMessage> {

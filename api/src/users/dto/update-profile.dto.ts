@@ -5,6 +5,7 @@ import {
   MaxLength,
   IsOptional,
 } from 'class-validator';
+import { Social } from '../../socials/socials.entity';
 
 export class UpdateProfileDto {
   @IsOptional()
@@ -27,4 +28,8 @@ export class UpdateProfileDto {
   @IsString({ message: '自己紹介には文字を入力してください' })
   @MaxLength(400, { message: '自己紹介は400字以内で入力してください' })
   bio: string;
+
+  @IsOptional()
+  @IsNotEmpty({ message: 'SNSのURLを入力してください' })
+  socials: Social[];
 }

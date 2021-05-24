@@ -29,6 +29,20 @@ export class SocialsService {
     return await this.socialsRepository.createSocial(createSocialsDto);
   }
 
+  async createSocials(
+    createSocialsDtos: CreateSocialsDto[],
+  ): Promise<Social[]> {
+    const newSocials = Promise.all(
+      createSocialsDtos.map(async (createSocialsDto) => {
+        const newSocial = await this.socialsRepository.createSocial(
+          createSocialsDto,
+        );
+        return newSocial;
+      }),
+    );
+    return newSocials;
+  }
+
   async updateSocial(
     id: number,
     updateSocialsDto: UpdateSocialsDto,
