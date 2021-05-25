@@ -1,5 +1,4 @@
 import { Test } from '@nestjs/testing';
-import { NotFoundException } from '@nestjs/common';
 import { IngredientsService } from '../../src/ingredients/ingredients.service';
 import { IngredientRepository } from '../../src/ingredients/ingredients.repository';
 import { mockCreateIngredientDto } from './ingredients.repository.spec';
@@ -26,13 +25,12 @@ const mockUpdateIngredientDto = {
 
 const mockIngredientRepository = () => ({
   getAllIngredients: jest.fn(),
-  findOne: jest.fn(),
-  createQueryBuilder: jest.fn(() => ({
-    where: jest.fn().mockReturnThis(),
-    getMany: jest.fn().mockResolvedValue(mockIngredients),
-  })),
+  getIngredientById: jest.fn(),
+  getIngredientByRecipeId: jest.fn(),
   createIngredient: jest.fn(),
-  delete: jest.fn(),
+  updateIngredient: jest.fn(),
+  deleteIngredient: jest.fn(),
+  deleteIngredientsByRecipeId: jest.fn(),
 });
 
 describe('Ingredients Service', () => {
@@ -57,38 +55,35 @@ describe('Ingredients Service', () => {
 
   describe('getAllIngredients', () => {
     it('全てのingredientsをrepositoryから取得する', async () => {
-      ingredientsService.getAllIngredients = jest
-        .fn()
-        .mockResolvedValue(mockIngredients);
-      expect(ingredientsService.getAllIngredients).not.toHaveBeenCalled();
+      ingredientRepository.getAllIngredients.mockResolvedValue(mockIngredients);
 
       const result = await ingredientsService.getAllIngredients();
-      expect(ingredientsService.getAllIngredients).toHaveBeenCalled();
+      expect(ingredientRepository.getAllIngredients).toHaveBeenCalled();
       expect(result).toEqual(mockIngredients);
     });
   });
 
   describe('getIngredientById', () => {
-    it('ingredientRepository.findOne()を呼び、成功するとingredientを返す', async () => {
-      ingredientRepository.findOne.mockResolvedValue(mockIngredients[0]);
+    it('getIngredientByIdを呼び、成功するとingredientを返す', async () => {
+      ingredientRepository.getIngredientById.mockResolvedValue(
+        mockIngredients[0],
+      );
 
       const result = await ingredientsService.getIngredientById(1);
       expect(result).toEqual(mockIngredients[0]);
-      expect(ingredientRepository.findOne).toHaveBeenCalledWith(1);
-    });
-
-    it('ingredientが無い場合、errorを返す', () => {
-      ingredientRepository.findOne.mockResolvedValue(null);
-      expect(ingredientsService.getIngredientById(1)).rejects.toThrow(
-        NotFoundException,
-      );
+      expect(ingredientRepository.getIngredientById).toHaveBeenCalledWith(1);
     });
   });
 
   describe('getIngredientByRecipeId', () => {
     it('recipeIdをパラメーターとして渡し、成功するとingredientを返す', async () => {
+      ingredientRepository.getIngredientByRecipeId.mockResolvedValue(
+        mockIngredients[0],
+      );
+
       const result = await ingredientsService.getIngredientByRecipeId(1);
-      expect(result).toEqual(mockIngredients);
+      expect(ingredientRepository.getIngredientByRecipeId).toHaveBeenCalled();
+      expect(result).toEqual(mockIngredients[0]);
     });
   });
 
@@ -101,60 +96,51 @@ describe('Ingredients Service', () => {
         mockCreateIngredientDto,
       );
       expect(result).toEqual('someIngredient');
-      const { name, amount, recipe, createdAt, updatedAt } =
-        mockCreateIngredientDto;
-      expect(ingredientRepository.createIngredient).toHaveBeenCalledWith({
-        name,
-        amount,
-        recipe,
-        createdAt,
-        updatedAt,
-      });
     });
   });
 
   describe('updateIngredient', () => {
     it('ingredientを更新する', async () => {
-      const save = jest.fn().mockResolvedValue(true);
-
-      ingredientsService.getIngredientById = jest.fn().mockResolvedValue({
-        id: 1,
-        mockUpdateIngredientDto,
-        save,
-      });
-
-      expect(ingredientsService.getIngredientById).not.toHaveBeenCalled();
-      expect(save).not.toHaveBeenCalled();
+      ingredientRepository.updateIngredient.mockResolvedValue(
+        'updateIngredient',
+      );
+      expect(ingredientRepository.updateIngredient).not.toHaveBeenCalled();
 
       const result = await ingredientsService.updateIngredient(
         1,
         mockUpdateIngredientDto,
       );
-      expect(ingredientsService.getIngredientById).toHaveBeenCalled();
-      expect(save).toHaveBeenCalled();
-      expect(result.mockUpdateIngredientDto).toEqual(mockUpdateIngredientDto);
+
+      expect(ingredientRepository.updateIngredient).toHaveBeenCalled();
+      expect(result).toEqual('updateIngredient');
     });
   });
 
   describe('deleteIngredient', () => {
     it('ingredientを削除する', async () => {
-      ingredientRepository.delete.mockResolvedValue({
+      ingredientRepository.deleteIngredient.mockResolvedValue({
         affected: 1,
       });
-      expect(ingredientRepository.delete).not.toHaveBeenCalled();
+      expect(ingredientRepository.deleteIngredient).not.toHaveBeenCalled();
 
       await ingredientsService.deleteIngredient(1);
-      expect(ingredientRepository.delete).toHaveBeenCalled();
+      expect(ingredientRepository.deleteIngredient).toHaveBeenCalled();
     });
+  });
 
-    it('ingredientが無い場合は、errorを返す', async () => {
-      ingredientRepository.delete.mockResolvedValue({
-        affected: 0,
+  describe('deleteIngredientsByRecipeId', () => {
+    it('recipeIdが一致するingredientを削除する', async () => {
+      ingredientRepository.deleteIngredientsByRecipeId.mockResolvedValue({
+        affected: 1,
       });
+      expect(
+        ingredientRepository.deleteIngredientsByRecipeId,
+      ).not.toHaveBeenCalled();
 
-      expect(ingredientsService.deleteIngredient(1)).rejects.toThrow(
-        NotFoundException,
-      );
+      await ingredientsService.deleteIngredientsByRecipeId(1);
+      expect(
+        ingredientRepository.deleteIngredientsByRecipeId,
+      ).toHaveBeenCalled();
     });
   });
 });

@@ -33,6 +33,8 @@ const mockCredentialsDto = {
   password: 'testPassword',
 };
 
+jest.mock('typeorm', () => ({ getCustomRepository: jest.fn() }));
+
 describe('UserRepository', () => {
   let userRepository;
 

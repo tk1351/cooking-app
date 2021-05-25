@@ -25,13 +25,13 @@ const mockUpdateRecipeDescriptionDto = {
 };
 
 const mockRecipeDescriptionRepository = () => ({
-  findOne: jest.fn(),
-  createQueryBuilder: jest.fn(() => ({
-    where: jest.fn().mockReturnThis(),
-    getMany: jest.fn().mockResolvedValue(mockRecipeDescriptions),
-  })),
+  getAllRecipeDescriptions: jest.fn(),
+  getRecipeDescriptionById: jest.fn(),
+  getRecipeDescriptionsByRecipeId: jest.fn(),
   createRecipeDescription: jest.fn(),
-  delete: jest.fn(),
+  updateRecipeDescription: jest.fn(),
+  deleteRecipeDescription: jest.fn(),
+  deleteRecipeDescriptionsByRecipeId: jest.fn(),
 });
 
 describe('RecipeDescriptions Service', () => {
@@ -59,24 +59,21 @@ describe('RecipeDescriptions Service', () => {
 
   describe('getAllRecipeDescriptions', () => {
     it('全てのrecipeDescriptionsをrepositoryから取得する', async () => {
-      recipeDescriptionsService.getAllRecipeDescriptions = jest
-        .fn()
-        .mockResolvedValue(mockRecipeDescriptions);
-      expect(
-        recipeDescriptionsService.getAllRecipeDescriptions,
-      ).not.toHaveBeenCalled();
+      recipeDescriptionRepository.getAllRecipeDescriptions.mockResolvedValue(
+        mockRecipeDescriptions,
+      );
 
       const result = await recipeDescriptionsService.getAllRecipeDescriptions();
       expect(
-        recipeDescriptionsService.getAllRecipeDescriptions,
+        recipeDescriptionRepository.getAllRecipeDescriptions,
       ).toHaveBeenCalled();
       expect(result).toEqual(mockRecipeDescriptions);
     });
   });
 
   describe('getRecipeDescriptionById', () => {
-    it('recipeDescriptionRepository.findOne()を呼び、成功するとrecipeDescriptionを返す', async () => {
-      recipeDescriptionRepository.findOne.mockResolvedValue(
+    it('getRecipeDescriptionByIdを呼び、成功するとrecipeDescriptionを返す', async () => {
+      recipeDescriptionRepository.getRecipeDescriptionById.mockResolvedValue(
         mockRecipeDescriptions[0],
       );
 
@@ -84,22 +81,24 @@ describe('RecipeDescriptions Service', () => {
         1,
       );
       expect(result).toEqual(mockRecipeDescriptions[0]);
-      expect(recipeDescriptionRepository.findOne).toHaveBeenCalledWith(1);
-    });
-
-    it('recipeDescriptionが無い場合、errorを返す', () => {
-      recipeDescriptionRepository.findOne.mockResolvedValue(null);
       expect(
-        recipeDescriptionsService.getRecipeDescriptionById(1),
-      ).rejects.toThrow(NotFoundException);
+        recipeDescriptionRepository.getRecipeDescriptionById,
+      ).toHaveBeenCalledWith(1);
     });
   });
 
   describe('getRecipeDescriptionsByRecipeId', () => {
     it('recipeIdをパラメーターとして渡し、成功するとrecipeDescriptionを返す', async () => {
+      recipeDescriptionRepository.getRecipeDescriptionsByRecipeId.mockResolvedValue(
+        mockRecipeDescriptions[0],
+      );
+
       const result =
         await recipeDescriptionsService.getRecipeDescriptionsByRecipeId(1);
-      expect(result).toEqual(mockRecipeDescriptions);
+      expect(
+        recipeDescriptionRepository.getRecipeDescriptionsByRecipeId,
+      ).toHaveBeenCalled();
+      expect(result).toEqual(mockRecipeDescriptions[0]);
     });
   });
 
@@ -116,69 +115,60 @@ describe('RecipeDescriptions Service', () => {
         mockCreateRecipeDescriptionDto,
       );
       expect(result).toEqual('someRecipeDesc');
-      const { order, text, recipe, createdAt, updatedAt } =
-        mockCreateRecipeDescriptionDto;
-
-      expect(
-        recipeDescriptionRepository.createRecipeDescription,
-      ).toHaveBeenCalledWith({
-        order,
-        text,
-        recipe,
-        createdAt,
-        updatedAt,
-      });
     });
   });
 
   describe('updateRecipeDescription', () => {
     it('recipeDescriptionを更新する', async () => {
-      const save = jest.fn().mockResolvedValue(true);
-
-      recipeDescriptionsService.getRecipeDescriptionById = jest
-        .fn()
-        .mockResolvedValue({
-          id: 1,
-          mockUpdateRecipeDescriptionDto,
-          save,
-        });
-
+      recipeDescriptionRepository.updateRecipeDescription.mockResolvedValue(
+        'updateRecipeDescription',
+      );
       expect(
-        recipeDescriptionsService.getRecipeDescriptionById,
+        recipeDescriptionRepository.updateRecipeDescription,
       ).not.toHaveBeenCalled();
-      expect(save).not.toHaveBeenCalled();
 
       const result = await recipeDescriptionsService.updateRecipeDescription(
         1,
         mockUpdateRecipeDescriptionDto,
       );
       expect(
-        recipeDescriptionsService.getRecipeDescriptionById,
+        recipeDescriptionRepository.updateRecipeDescription,
       ).toHaveBeenCalled();
-      expect(save).toHaveBeenCalled();
-      expect(result).toEqual({ message: '作業工程の詳細の更新が完了しました' });
+      expect(result).toEqual('updateRecipeDescription');
     });
   });
 
   describe('deleteRecipeDescription', () => {
     it('recipeDescriptionを削除する', async () => {
-      recipeDescriptionRepository.delete.mockResolvedValue({
+      recipeDescriptionRepository.deleteRecipeDescription.mockResolvedValue({
         affected: 1,
       });
-      expect(recipeDescriptionRepository.delete).not.toHaveBeenCalled();
+      expect(
+        recipeDescriptionRepository.deleteRecipeDescription,
+      ).not.toHaveBeenCalled();
 
       await recipeDescriptionsService.deleteRecipeDescription(1);
-      expect(recipeDescriptionRepository.delete).toHaveBeenCalled();
-    });
-
-    it('recipeDescriptionが無い場合は、errorを返す', async () => {
-      recipeDescriptionRepository.delete.mockResolvedValue({
-        affected: 0,
-      });
-
       expect(
-        recipeDescriptionsService.deleteRecipeDescription(1),
-      ).rejects.toThrow(NotFoundException);
+        recipeDescriptionRepository.deleteRecipeDescription,
+      ).toHaveBeenCalled();
+    });
+  });
+
+  describe('deleteRecipeDescriptionsByRecipeId', () => {
+    it('recipeIdが一致するrecipe-descriptionを削除する', async () => {
+      recipeDescriptionRepository.deleteRecipeDescriptionsByRecipeId.mockResolvedValue(
+        {
+          affected: 1,
+        },
+      );
+      expect(
+        recipeDescriptionRepository.deleteRecipeDescriptionsByRecipeId,
+      ).not.toHaveBeenCalled();
+
+      await recipeDescriptionsService.deleteRecipeDescriptionsByRecipeId(1);
+      expect(
+        recipeDescriptionRepository.deleteRecipeDescriptionsByRecipeId,
+      ).toHaveBeenCalled();
     });
   });
 });

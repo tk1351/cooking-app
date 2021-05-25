@@ -85,8 +85,6 @@ export class UsersService {
 
     found.socials = newSocials;
 
-    // console.log('found', found);
-
     const newUser = await this.userRepository.save(found);
     return newUser;
   }
