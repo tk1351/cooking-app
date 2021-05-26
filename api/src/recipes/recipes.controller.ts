@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RecipesService } from './recipes.service';
-import { Recipe } from './recipe.model';
+import { Recipe } from './recipes.entity';
 import { GetRecipesFilterDto } from './dto/get-recipes.dto';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { MyKnownMessage } from '../message.interface';
@@ -53,7 +53,7 @@ export class RecipesController {
   likeRecipe(
     @Param('recipeId', ParseIntPipe) recipeId: number,
     @GetUser() user: User,
-  ) {
+  ): Promise<MyKnownMessage> {
     return this.recipesService.likeRecipe(recipeId, user);
   }
 
@@ -81,7 +81,7 @@ export class RecipesController {
   unlikeRecipe(
     @Param('recipeId', ParseIntPipe) recipeId: number,
     @GetUser() user: User,
-  ) {
+  ): Promise<MyKnownMessage> {
     return this.recipesService.unlikeRecipe(recipeId, user);
   }
 }

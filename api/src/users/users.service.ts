@@ -59,7 +59,7 @@ export class UsersService {
     id: number,
     updateProfileDto: UpdateProfileDto,
     user: User,
-  ): Promise<any> {
+  ): Promise<User> {
     const found = await this.getUserById(id);
 
     if (found.id !== user.id) {
