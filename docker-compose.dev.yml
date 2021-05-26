@@ -1,6 +1,17 @@
 version: '3.8'
 
 services:
+  app:
+    build:
+      context: .
+      dockerfile: app/Dockerfile.dev
+    ports:
+      - 3000:3000
+    volumes:
+      - ./app:/app
+    tty: true
+    command: 'yarn dev'
+
   api:
     build:
       context: .
