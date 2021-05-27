@@ -1,7 +1,12 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { unwrapResult } from '@reduxjs/toolkit'
+import { LoginUser } from '../../re-ducks/auth/type'
+import { useAppDispatch } from '../../re-ducks/hooks'
+import { loginUser } from '../../re-ducks/auth/authSlice'
 
 const Login = () => {
+  const dispatch = useAppDispatch()
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -13,9 +18,13 @@ const Login = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    return console.log('formData', formData)
+    const userData: LoginUser = { email, password }
+    const resultAction = await dispatch(loginUser(userData))
+    if (loginUser.fulfilled.match(resultAction)) {
+      unwrapResult(resultAction)
+    }
   }
   return (
     <>
