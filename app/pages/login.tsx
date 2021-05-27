@@ -1,13 +1,14 @@
 import React from 'react'
 import Navbar from '../components/common/Navbar'
+import Login from '../components/auth/Login'
 
-const Login = () => {
+const login = () => {
   return (
     <>
       <Navbar />
-      <div>Login</div>
+      <Login />
     </>
   )
 }
 
-export default Login
+export default login

@@ -6,6 +6,8 @@ import {
   StylesProvider,
 } from '@material-ui/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
+import { Provider } from 'react-redux'
+import { store } from '../re-ducks/store'
 import theme from '../src/theme'
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
@@ -16,12 +18,14 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     }
   }, [])
   return (
-    <StylesProvider injectFirst>
-      <MaterialUIThemeProvider theme={theme}>
-        <CssBaseline />
-        <Component {...pageProps} />
-      </MaterialUIThemeProvider>
-    </StylesProvider>
+    <Provider store={store}>
+      <StylesProvider injectFirst>
+        <MaterialUIThemeProvider theme={theme}>
+          <CssBaseline />
+          <Component {...pageProps} />
+        </MaterialUIThemeProvider>
+      </StylesProvider>
+    </Provider>
   )
 }
 export default MyApp
