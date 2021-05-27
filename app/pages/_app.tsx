@@ -11,8 +11,8 @@ import theme from '../src/theme'
 const MyApp = ({ Component, pageProps }: AppProps) => {
   useEffect(() => {
     const jssStyles = document.querySelector('#jss-server-side')
-    if (jssStyles) {
-      jssStyles.parentElement.removeChild(jssStyles)
+    if (jssStyles && jssStyles.parentNode) {
+      jssStyles.parentNode.removeChild(jssStyles)
     }
   }, [])
   return (
