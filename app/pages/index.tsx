@@ -1,20 +1,7 @@
 import Head from 'next/head'
 import Navbar from '../components/common/Navbar'
-import axios from 'axios'
-import { useEffect } from 'react'
 
 const Home = () => {
-  // useEffect(() => {
-  //   const users: any = axios.get<any>('/api/users'))
-  //   return users
-  // }, [])
-
-  const onClick = async () => {
-    await axios.get('/api/users').then((data) => {
-      console.log(data)
-    })
-  }
-
   return (
     <div>
       <Head>
@@ -26,7 +13,6 @@ const Home = () => {
       <main>
         <Navbar />
         <h1>Welcome to Cooking-app!</h1>
-        <button onClick={() => onClick()}>button</button>
       </main>
     </div>
   )

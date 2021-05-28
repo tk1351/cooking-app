@@ -1,4 +1,10 @@
-import { DefaultType, RecipeLike, Social, MyKnownError } from '../defaultType'
+import {
+  DefaultType,
+  RecipeLike,
+  Social,
+  MyKnownError,
+  MyKnownMessage,
+} from '../defaultType'
 import { Recipe } from '../recipe/type'
 
 export interface User extends DefaultType {
@@ -18,10 +24,16 @@ export interface AuthState {
     token: string | null
     isAuthenticated: boolean
     loading: boolean
-    user: User | null
   }
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
-  error: MyKnownError[] | null
+  message: MyKnownMessage | null
+  error: MyKnownError | null
+}
+
+export interface RegisterUser {
+  name: string
+  email: string
+  password: string
 }
 
 export interface LoginUser {

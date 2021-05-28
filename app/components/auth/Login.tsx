@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { LoginUser } from '../../re-ducks/auth/type'
 import { useAppDispatch } from '../../re-ducks/hooks'
@@ -11,6 +12,8 @@ const Login = () => {
     email: '',
     password: '',
   })
+
+  const router = useRouter()
 
   const { email, password } = formData
 
@@ -24,6 +27,8 @@ const Login = () => {
     const resultAction = await dispatch(loginUser(userData))
     if (loginUser.fulfilled.match(resultAction)) {
       unwrapResult(resultAction)
+
+      await router.push('/')
     }
   }
   return (

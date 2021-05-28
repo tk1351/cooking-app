@@ -14,6 +14,7 @@ import { RecipeLikeRepository } from '../recipe-likes/recipe-likes.repository';
 import { RecipeLike } from '../recipe-likes/recipe-likes.entity';
 import { SocialsRepository } from '../socials/socials.repository';
 import { Social } from '../socials/socials.entity';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -40,13 +41,11 @@ export class UserRepository extends Repository<User> {
     return found;
   }
 
-  async registerAdmin(
-    authCredentialsDto: AuthCredentialsDto,
-  ): Promise<MyKnownMessage> {
-    const { email, password } = authCredentialsDto;
+  async registerAdmin(createUserDto: CreateUserDto): Promise<MyKnownMessage> {
+    const { name, email, password } = createUserDto;
 
     const user = this.create();
-    user.name = '';
+    user.name = name;
     user.email = email;
     user.salt = await bcrypt.genSalt();
     user.password = await this.hashPassword(password, user.salt);
@@ -69,13 +68,11 @@ export class UserRepository extends Repository<User> {
     }
   }
 
-  async register(
-    authCredentialsDto: AuthCredentialsDto,
-  ): Promise<MyKnownMessage> {
-    const { email, password } = authCredentialsDto;
+  async register(createUserDto: CreateUserDto): Promise<MyKnownMessage> {
+    const { name, email, password } = createUserDto;
 
     const user = this.create();
-    user.name = '';
+    user.name = name;
     user.email = email;
     user.salt = await bcrypt.genSalt();
     user.password = await this.hashPassword(password, user.salt);

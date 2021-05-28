@@ -25,6 +25,12 @@ export interface Social extends DefaultType {
   url: string
 }
 
-export interface MyKnownError {
+export interface MyKnownMessage {
   message: string
+}
+
+export interface MyKnownError {
+  statusCode: number
+  message: string[] | string
+  error: string
 }
