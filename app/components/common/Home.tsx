@@ -4,11 +4,15 @@ import { useAppSelector } from '../../re-ducks/hooks'
 import {
   selectAuthLoading,
   selectIsAuthenticated,
+  selectUserRole,
 } from '../../re-ducks/auth/authSlice'
 
 const Home = () => {
   const loading = useAppSelector(selectAuthLoading)
   const isAuthenticated = useAppSelector(selectIsAuthenticated)
+  const userRole = useAppSelector(selectUserRole)
+
+  console.log('role', userRole)
 
   const guestView = (
     <>
@@ -22,6 +26,22 @@ const Home = () => {
     </>
   )
 
+  const adminView = (
+    <>
+      <h2>管理者ページ</h2>
+    </>
+  )
+
+  const Views = () => {
+    if (isAuthenticated && userRole === 'user') {
+      return userView
+    } else if (isAuthenticated && userRole === 'admin') {
+      return adminView
+    } else {
+      return guestView
+    }
+  }
+
   return (
     <div>
       <Head>
@@ -32,7 +52,11 @@ const Home = () => {
 
       <main>
         <h1>Welcome to Cooking-app!</h1>
-        {!loading && <>{isAuthenticated ? userView : guestView}</>}
+        {!loading && (
+          <>
+            <Views />
+          </>
+        )}
       </main>
     </div>
   )

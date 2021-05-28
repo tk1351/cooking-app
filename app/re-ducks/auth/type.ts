@@ -24,6 +24,7 @@ export interface AuthState {
     token: string | null
     isAuthenticated: boolean
     loading: boolean
+    user: { id: number; name: string; role: 'admin' | 'user' } | null
   }
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
   message: MyKnownMessage | null

@@ -15,6 +15,7 @@ import {
   selectIsAuthenticated,
   logout,
   fetchCurrentUser,
+  selectUserRole,
 } from '../../re-ducks/auth/authSlice'
 
 const Navbar = () => {
@@ -22,6 +23,7 @@ const Navbar = () => {
 
   const loading = useAppSelector(selectAuthLoading)
   const isAuthenticated = useAppSelector(selectIsAuthenticated)
+  const userRole = useAppSelector(selectUserRole)
 
   const clearAuthState = async () => {
     await dispatch(logout())
@@ -74,6 +76,36 @@ const Navbar = () => {
     </>
   )
 
+  const adminLinks = (
+    <>
+      <div>
+        <div>
+          <SearchIcon />
+          <InputBase placeholder="レシピを検索する" />
+          <Button color="inherit">検索</Button>
+        </div>
+      </div>
+      <div>
+        <Button color="inherit">
+          <Link href="/mypage">マイページ</Link>
+        </Button>
+        <Button color="inherit" onClick={() => clearAuthState()}>
+          ログアウト
+        </Button>
+      </div>
+    </>
+  )
+
+  const Links = () => {
+    if (isAuthenticated && userRole === 'user') {
+      return userLinks
+    } else if (isAuthenticated && userRole === 'admin') {
+      return adminLinks
+    } else {
+      return guestLinks
+    }
+  }
+
   return (
     <div>
       <AppBar position="static">
@@ -81,7 +113,11 @@ const Navbar = () => {
           <IconButton edge="start" color="inherit" aria-label="open drawer">
             <Link href="/">Cooking-app</Link>
           </IconButton>
-          {!loading && <>{isAuthenticated ? userLinks : guestLinks}</>}
+          {!loading && (
+            <>
+              <Links />
+            </>
+          )}
         </Toolbar>
       </AppBar>
     </div>

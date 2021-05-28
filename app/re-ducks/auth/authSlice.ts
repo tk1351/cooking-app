@@ -9,6 +9,7 @@ const initialState: AuthState = {
     token: null,
     isAuthenticated: false,
     loading: true,
+    user: null,
   },
   status: 'idle',
   message: null,
@@ -16,19 +17,20 @@ const initialState: AuthState = {
 }
 
 export const fetchCurrentUser = createAsyncThunk<
-  { id: number; name: string; role: string },
+  { id: number; name: string; role: 'admin' | 'user' },
   void,
   AsyncThunkConfig<MyKnownError>
 >('auth/loadUser', async (_, { rejectWithValue }) => {
   try {
     const url = '/api/auth'
     const token = localStorage.getItem('token')
-    const res = await axios.get<{ id: number; name: string; role: string }>(
-      url,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
+    const res = await axios.get<{
+      id: number
+      name: string
+      role: 'admin' | 'user'
+    }>(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
     return res.data
   } catch (error) {
     return rejectWithValue(error.response.data)
@@ -74,6 +76,7 @@ const authSlice = createSlice({
   reducers: {
     logout(state) {
       state.auth.token = null
+      state.auth.user = null
       state.auth.isAuthenticated = false
       state.auth.loading = true
       state.status = 'idle'
@@ -85,16 +88,18 @@ const authSlice = createSlice({
     builder.addCase(fetchCurrentUser.pending, (state) => {
       state.status = 'loading'
     })
-    builder.addCase(fetchCurrentUser.fulfilled, (state) => {
+    builder.addCase(fetchCurrentUser.fulfilled, (state, action) => {
       state.status = 'succeeded'
       state.auth.token = localStorage.getItem('token')
       state.auth.isAuthenticated = true
+      state.auth.user = action.payload
       state.auth.loading = false
     })
     builder.addCase(fetchCurrentUser.rejected, (state, action) => {
       if (action.payload) {
         state.status = 'failed'
         state.auth.token = null
+        state.auth.user = null
         state.error = action.payload
         state.auth.isAuthenticated = false
         state.auth.loading = false
@@ -147,5 +152,6 @@ export const { logout } = authSlice.actions
 export const selectAuthLoading = (state: RootState) => state.auth.auth.loading
 export const selectIsAuthenticated = (state: RootState) =>
   state.auth.auth.isAuthenticated
+export const selectUserRole = (state: RootState) => state.auth.auth.user?.role
 
 export default authSlice.reducer

@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { LoginUser } from '../../re-ducks/auth/type'
 import { useAppDispatch } from '../../re-ducks/hooks'
-import { loginUser } from '../../re-ducks/auth/authSlice'
+import { loginUser, fetchCurrentUser } from '../../re-ducks/auth/authSlice'
 import { useIsAuthenticated } from '../common/useIsAuthenticated'
 
 const Login = () => {
@@ -31,6 +31,7 @@ const Login = () => {
     if (loginUser.fulfilled.match(resultAction)) {
       unwrapResult(resultAction)
 
+      await dispatch(fetchCurrentUser())
       await router.push('/')
     }
   }
