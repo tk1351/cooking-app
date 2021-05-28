@@ -9,6 +9,7 @@ import { RecipeDescriptionsModule } from './recipe-descriptions/recipe-descripti
 import { RecipeLikesModule } from './recipe-likes/recipe-likes.module';
 import { TagsModule } from './tags/tags.module';
 import { SocialsModule } from './socials/socials.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { SocialsModule } from './socials/socials.module';
     RecipeLikesModule,
     TagsModule,
     SocialsModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
