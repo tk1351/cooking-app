@@ -8,6 +8,7 @@ import { User } from './users.entity';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { MyKnownMessage } from '../message.interface';
 import { SocialsService } from '../socials/socials.service';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -26,16 +27,12 @@ export class UsersService {
     return await this.userRepository.getUserById(id);
   }
 
-  async registerAdmin(
-    authCredentialsDto: AuthCredentialsDto,
-  ): Promise<MyKnownMessage> {
-    return this.userRepository.registerAdmin(authCredentialsDto);
+  async registerAdmin(createUserDto: CreateUserDto): Promise<MyKnownMessage> {
+    return this.userRepository.registerAdmin(createUserDto);
   }
 
-  async register(
-    authCredentialsDto: AuthCredentialsDto,
-  ): Promise<MyKnownMessage> {
-    return this.userRepository.register(authCredentialsDto);
+  async register(createUserDto: CreateUserDto): Promise<MyKnownMessage> {
+    return this.userRepository.register(createUserDto);
   }
 
   async login(

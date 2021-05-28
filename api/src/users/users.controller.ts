@@ -17,6 +17,7 @@ import { User } from './users.entity';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { GetUser } from './get-user.decorator';
 import { MyKnownMessage } from '../message.interface';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -34,16 +35,16 @@ export class UsersController {
 
   @Post('/register/admin')
   registerAdmin(
-    @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
+    @Body(ValidationPipe) createUserDto: CreateUserDto,
   ): Promise<MyKnownMessage> {
-    return this.usersService.registerAdmin(authCredentialsDto);
+    return this.usersService.registerAdmin(createUserDto);
   }
 
   @Post('/register')
   register(
-    @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
+    @Body(ValidationPipe) createUserDto: CreateUserDto,
   ): Promise<MyKnownMessage> {
-    return this.usersService.register(authCredentialsDto);
+    return this.usersService.register(createUserDto);
   }
 
   @Post('/login')

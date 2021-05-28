@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
-import { AsyncThunkConfig } from '../store'
+import { AsyncThunkConfig, RootState } from '../store'
 import { AuthState, LoginUser, RegisterUser } from './type'
 import { MyKnownError, MyKnownMessage } from '../defaultType'
 
@@ -15,6 +15,26 @@ const initialState: AuthState = {
   error: null,
 }
 
+export const fetchCurrentUser = createAsyncThunk<
+  { id: number; name: string; role: string },
+  void,
+  AsyncThunkConfig<MyKnownError>
+>('auth/loadUser', async (_, { rejectWithValue }) => {
+  try {
+    const url = '/api/auth'
+    const token = localStorage.getItem('token')
+    const res = await axios.get<{ id: number; name: string; role: string }>(
+      url,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+    return res.data
+  } catch (error) {
+    return rejectWithValue(error.response.data)
+  }
+})
+
 export const registerUser = createAsyncThunk<
   MyKnownMessage,
   RegisterUser,
@@ -26,6 +46,7 @@ export const registerUser = createAsyncThunk<
     const message: MyKnownMessage = { message: res.data.message }
     return message
   } catch (error) {
+    localStorage.removeItem('token')
     return rejectWithValue(error.response.data)
   }
 })
@@ -50,8 +71,36 @@ export const loginUser = createAsyncThunk<
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    logout(state) {
+      state.auth.token = null
+      state.auth.isAuthenticated = false
+      state.auth.loading = true
+      state.status = 'idle'
+      localStorage.removeItem('token')
+    },
+  },
   extraReducers: (builder) => {
+    // tokenからユーザー情報を取得
+    builder.addCase(fetchCurrentUser.pending, (state) => {
+      state.status = 'loading'
+    })
+    builder.addCase(fetchCurrentUser.fulfilled, (state) => {
+      state.status = 'succeeded'
+      state.auth.token = localStorage.getItem('token')
+      state.auth.isAuthenticated = true
+      state.auth.loading = false
+    })
+    builder.addCase(fetchCurrentUser.rejected, (state, action) => {
+      if (action.payload) {
+        state.status = 'failed'
+        state.auth.token = null
+        state.error = action.payload
+        state.auth.isAuthenticated = false
+        state.auth.loading = false
+      }
+    })
+
     // ユーザー登録
     builder.addCase(registerUser.pending, (state) => {
       state.status = 'loading'
@@ -92,5 +141,11 @@ const authSlice = createSlice({
     })
   },
 })
+
+export const { logout } = authSlice.actions
+
+export const selectAuthLoading = (state: RootState) => state.auth.auth.loading
+export const selectIsAuthenticated = (state: RootState) =>
+  state.auth.auth.isAuthenticated
 
 export default authSlice.reducer

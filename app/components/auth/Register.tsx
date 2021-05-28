@@ -5,8 +5,11 @@ import { unwrapResult } from '@reduxjs/toolkit'
 import { RegisterUser } from '../../re-ducks/auth/type'
 import { useAppDispatch } from '../../re-ducks/hooks'
 import { registerUser } from '../../re-ducks/auth/authSlice'
+import { useIsAuthenticated } from '../common/useIsAuthenticated'
 
 const Register = () => {
+  useIsAuthenticated()
+
   const dispatch = useAppDispatch()
   const [formData, setFormData] = useState({
     name: '',

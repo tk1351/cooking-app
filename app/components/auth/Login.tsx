@@ -5,8 +5,11 @@ import { unwrapResult } from '@reduxjs/toolkit'
 import { LoginUser } from '../../re-ducks/auth/type'
 import { useAppDispatch } from '../../re-ducks/hooks'
 import { loginUser } from '../../re-ducks/auth/authSlice'
+import { useIsAuthenticated } from '../common/useIsAuthenticated'
 
 const Login = () => {
+  useIsAuthenticated()
+
   const dispatch = useAppDispatch()
   const [formData, setFormData] = useState({
     email: '',
@@ -53,7 +56,7 @@ const Login = () => {
             onChange={(e) => onChange(e)}
           />
         </div>
-        <input type="submit" value="登録" />
+        <input type="submit" value="ログイン" />
       </form>
       <p>
         ユーザー登録がお済みでない方はこちら
