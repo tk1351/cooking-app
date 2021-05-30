@@ -1,31 +1,39 @@
-import React, { useState } from 'react'
+import React, { VFC } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { unwrapResult } from '@reduxjs/toolkit'
+import { useForm, SubmitHandler, Controller } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { LoginUser } from '../../re-ducks/auth/type'
 import { useAppDispatch } from '../../re-ducks/hooks'
 import { loginUser, fetchCurrentUser } from '../../re-ducks/auth/authSlice'
 import { useIsAuthenticated } from '../common/useIsAuthenticated'
+import TextForm from '../form/TextForm'
+import FormButton from '../form/FormButton'
+import { loginValidationSchema } from '../form/validations/loginValidation'
 
-const Login = () => {
+interface ILoginInputs {
+  email: string
+  password: string
+}
+
+const defaultValues = {
+  email: '',
+  password: '',
+}
+
+const Login: VFC = () => {
   useIsAuthenticated()
 
   const dispatch = useAppDispatch()
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+  const { control, handleSubmit } = useForm<ILoginInputs>({
+    defaultValues,
+    resolver: yupResolver(loginValidationSchema),
   })
 
   const router = useRouter()
 
-  const { email, password } = formData
-
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
-
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const onSubmit: SubmitHandler<ILoginInputs> = async ({ email, password }) => {
     const userData: LoginUser = { email, password }
     const resultAction = await dispatch(loginUser(userData))
     if (loginUser.fulfilled.match(resultAction)) {
@@ -35,29 +43,51 @@ const Login = () => {
       await router.push('/')
     }
   }
+
   return (
     <>
       <h1>ログイン</h1>
-      <form onSubmit={(e) => onSubmit(e)}>
-        <div>
-          <input
-            type="text"
-            placeholder="メールアドレス"
-            name="email"
-            value={email}
-            onChange={(e) => onChange(e)}
-          />
-        </div>
-        <div>
-          <input
-            type="text"
-            placeholder="パスワード"
-            name="password"
-            value={password}
-            onChange={(e) => onChange(e)}
-          />
-        </div>
-        <input type="submit" value="ログイン" />
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <Controller
+          name="email"
+          control={control}
+          render={({ field: { onChange, ref }, formState: { errors } }) => (
+            <TextForm
+              label={'メールアドレス'}
+              placeholder={'メールアドレスを入力してください'}
+              type="email"
+              name="email"
+              variant="outlined"
+              onChange={onChange}
+              inputRef={ref}
+              error={Boolean(errors.email)}
+              helperText={errors.email && errors.email.message}
+            />
+          )}
+        />
+        <Controller
+          name="password"
+          control={control}
+          render={({ field: { onChange, ref }, formState: { errors } }) => (
+            <TextForm
+              label={'パスワード'}
+              placeholder={'パスワードを入力してください'}
+              type="text"
+              name="password"
+              variant="outlined"
+              onChange={onChange}
+              inputRef={ref}
+              error={Boolean(errors.password)}
+              helperText={errors.password && errors.password.message}
+            />
+          )}
+        />
+        <FormButton
+          type="submit"
+          variant="contained"
+          color="primary"
+          label={'ログイン'}
+        />
       </form>
       <p>
         ユーザー登録がお済みでない方はこちら

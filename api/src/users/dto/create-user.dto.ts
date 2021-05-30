@@ -10,8 +10,8 @@ import {
 export class CreateUserDto {
   @IsNotEmpty({ message: 'ユーザー名を入力してください' })
   @IsString({ message: 'ユーザー名は文字で入力してください' })
-  @MinLength(4, { message: '名前は4字以上入力してください' })
-  @MaxLength(20, { message: '名前は20字以内で入力してください' })
+  @MinLength(4, { message: 'ユーザー名は4字以上入力してください' })
+  @MaxLength(20, { message: 'ユーザー名は20字以内で入力してください' })
   name: string;
 
   @IsNotEmpty({ message: 'メールアドレスを入力してください' })
