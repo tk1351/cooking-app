@@ -1,25 +1,25 @@
 import {
   DefaultType,
-  RecipeLike,
-  Social,
+  IRecipeLike,
+  ISocial,
   MyKnownError,
   MyKnownMessage,
 } from '../defaultType'
-import { Recipe } from '../recipe/type'
+import { IRecipe } from '../recipe/type'
 
-export interface User extends DefaultType {
+export interface IUser extends DefaultType {
   name: string
   email: string
   role: 'admin' | 'user'
   favoriteDish: string
   specialDish: string
   bio: string
-  recipes: Recipe[]
-  recipeLikes: RecipeLike[]
-  socials: Social[]
+  recipes: IRecipe[]
+  recipeLikes: IRecipeLike[]
+  socials: ISocial[]
 }
 
-export interface AuthState {
+export interface IAuthState {
   auth: {
     token: string | null
     isAuthenticated: boolean
@@ -31,13 +31,13 @@ export interface AuthState {
   error: MyKnownError | null
 }
 
-export interface RegisterUser {
+export interface IRegisterUser {
   name: string
   email: string
   password: string
 }
 
-export interface LoginUser {
+export interface ILoginUser {
   email: string
   password: string
 }

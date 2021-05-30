@@ -1,10 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { AsyncThunkConfig, RootState } from '../store'
-import { AuthState, LoginUser, RegisterUser } from './type'
+import { IAuthState, ILoginUser, IRegisterUser } from './type'
 import { MyKnownError, MyKnownMessage } from '../defaultType'
 
-const initialState: AuthState = {
+const initialState: IAuthState = {
   auth: {
     token: null,
     isAuthenticated: false,
@@ -39,7 +39,7 @@ export const fetchCurrentUser = createAsyncThunk<
 
 export const registerUser = createAsyncThunk<
   MyKnownMessage,
-  RegisterUser,
+  IRegisterUser,
   AsyncThunkConfig<MyKnownError>
 >('auth/registerUser', async (userData, { rejectWithValue }) => {
   try {
@@ -55,7 +55,7 @@ export const registerUser = createAsyncThunk<
 
 export const loginUser = createAsyncThunk<
   { accessToken: string },
-  LoginUser,
+  ILoginUser,
   AsyncThunkConfig<MyKnownError>
 >('auth/loginUser', async (userData, { rejectWithValue }) => {
   try {

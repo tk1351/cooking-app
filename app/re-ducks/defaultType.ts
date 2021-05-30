@@ -4,23 +4,23 @@ export interface DefaultType {
   updatedAt: Date
 }
 
-export interface Ingredient extends DefaultType {
+export interface IIngredient extends DefaultType {
   name: string
   amount: string
   recipeId: number
 }
 
-export interface RecipeLike extends DefaultType {
+export interface IRecipeLike extends DefaultType {
   userId: number
   recipeId: number
 }
 
-export interface Tag extends DefaultType {
+export interface ITag extends DefaultType {
   name: string
   recipeId: number
 }
 
-export interface Social extends DefaultType {
+export interface ISocial extends DefaultType {
   category: number
   url: string
 }
