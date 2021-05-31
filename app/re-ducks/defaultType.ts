@@ -10,6 +10,12 @@ export interface IIngredient extends DefaultType {
   recipeId: number
 }
 
+export interface IRecipeDescription extends DefaultType {
+  order: number
+  text: string
+  url: string
+}
+
 export interface IRecipeLike extends DefaultType {
   userId: number
   recipeId: number

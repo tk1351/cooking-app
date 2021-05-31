@@ -4,6 +4,7 @@ import {
   IRecipeLike,
   ITag,
   MyKnownError,
+  IRecipeDescription,
 } from '../defaultType'
 import { IUser } from '../auth/type'
 
@@ -14,6 +15,7 @@ export interface IRecipe extends DefaultType {
   image: string
   user: IUser
   ingredients: IIngredient[]
+  recipeDescriptions: IRecipeDescription[]
   recipeLikes: IRecipeLike[]
   tags: ITag[]
 }

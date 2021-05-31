@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { IRecipeState, IRecipe } from './type'
-import { AsyncThunkConfig } from '../store'
+import { AsyncThunkConfig, RootState } from '../store'
 import { MyKnownError } from '../defaultType'
 import { IRecipeInputs } from '../../components/form/type'
 
@@ -14,14 +14,28 @@ const initialState: IRecipeState = {
 }
 
 export const fetchAllRecipes = createAsyncThunk<
-  { recipes: IRecipe[] },
+  IRecipe[],
   void,
   AsyncThunkConfig<MyKnownError>
 >('recipe/fetchAllRecipes', async (_, { rejectWithValue }) => {
   try {
     const url = '/api/recipes'
     const res = await axios.get<IRecipe[]>(url)
-    return { recipes: res.data }
+    return res.data
+  } catch (error) {
+    return rejectWithValue(error.response.data)
+  }
+})
+
+export const fetchRecipeById = createAsyncThunk<
+  IRecipe,
+  number,
+  AsyncThunkConfig<MyKnownError>
+>('recipe/fetchRecipeById', async (id, { rejectWithValue }) => {
+  try {
+    const url = `/api/recipes/${id}`
+    const res = await axios.get<IRecipe>(url)
+    return res.data
   } catch (error) {
     return rejectWithValue(error.response.data)
   }
@@ -56,7 +70,7 @@ const recipeSlice = createSlice({
     builder.addCase(fetchAllRecipes.fulfilled, (state, action) => {
       state.status = 'succeeded'
       state.recipe = null
-      state.recipes = action.payload.recipes
+      state.recipes = action.payload
       state.loading = false
       state.error = null
     })
@@ -66,6 +80,25 @@ const recipeSlice = createSlice({
         state.recipes = []
         state.error = action.payload
         state.loading = false
+      }
+    })
+    // idが一致するレシピを取得する
+    builder.addCase(fetchRecipeById.pending, (state) => {
+      state.status = 'loading'
+    })
+    builder.addCase(fetchRecipeById.fulfilled, (state, action) => {
+      state.status = 'succeeded'
+      state.recipe = action.payload
+      state.recipes = []
+      state.loading = false
+      state.error = null
+    })
+    builder.addCase(fetchRecipeById.rejected, (state, action) => {
+      if (action.payload) {
+        state.status = 'failed'
+        state.error = action.payload
+        state.loading = false
+        state.recipe = null
       }
     })
     // レシピを投稿する
@@ -88,5 +121,9 @@ const recipeSlice = createSlice({
     })
   },
 })
+
+export const selectRecipeLoading = (state: RootState) => state.recipe.loading
+export const selectAllRecipes = (state: RootState) => state.recipe.recipes
+export const selectRecipe = (state: RootState) => state.recipe.recipe
 
 export default recipeSlice.reducer

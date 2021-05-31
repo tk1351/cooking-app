@@ -1,19 +1,14 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import Head from 'next/head'
-import { useAppSelector, useAppDispatch } from '../../re-ducks/hooks'
+import { useAppSelector } from '../../re-ducks/hooks'
 import {
   selectAuthLoading,
   selectIsAuthenticated,
   selectUserRole,
 } from '../../re-ducks/auth/authSlice'
-import { fetchAllRecipes } from '../../re-ducks/recipe/recipeSlice'
+import Recipes from '../recipe/Recipes'
 
 const Home = () => {
-  const dispatch = useAppDispatch()
-  useEffect(() => {
-    dispatch(fetchAllRecipes())
-  }, [])
-
   const loading = useAppSelector(selectAuthLoading)
   const isAuthenticated = useAppSelector(selectIsAuthenticated)
   const userRole = useAppSelector(selectUserRole)
@@ -61,6 +56,7 @@ const Home = () => {
         {!loading && (
           <>
             <Views />
+            <Recipes />
           </>
         )}
       </main>
