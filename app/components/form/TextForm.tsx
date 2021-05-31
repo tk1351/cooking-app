@@ -7,9 +7,10 @@ interface ITextFormProps {
   placeholder: string
   type: string
   name: string
+  value?: number
   variant: 'filled' | 'outlined' | 'standard'
   onChange: (...event: any[]) => void
-  inputRef: RefCallBack
+  inputRef?: RefCallBack
   error: boolean
   helperText: string | undefined
 }
@@ -24,6 +25,7 @@ const TextForm: VFC<ITextFormProps> = (props) => {
         placeholder={props.placeholder}
         type={props.type}
         name={props.name}
+        value={props.value}
         variant={props.variant}
         onChange={props.onChange}
         inputRef={props.inputRef}

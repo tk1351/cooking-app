@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { LoginUser } from '../../re-ducks/auth/type'
+import { ILoginUser } from '../../re-ducks/auth/type'
 import { useAppDispatch } from '../../re-ducks/hooks'
 import { loginUser, fetchCurrentUser } from '../../re-ducks/auth/authSlice'
 import { useIsAuthenticated } from '../common/useIsAuthenticated'
@@ -17,7 +17,7 @@ interface ILoginInputs {
   password: string
 }
 
-const defaultValues = {
+const defaultValues: ILoginInputs = {
   email: '',
   password: '',
 }
@@ -34,7 +34,7 @@ const Login: VFC = () => {
   const router = useRouter()
 
   const onSubmit: SubmitHandler<ILoginInputs> = async ({ email, password }) => {
-    const userData: LoginUser = { email, password }
+    const userData: ILoginUser = { email, password }
     const resultAction = await dispatch(loginUser(userData))
     if (loginUser.fulfilled.match(resultAction)) {
       unwrapResult(resultAction)

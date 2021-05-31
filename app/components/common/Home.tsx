@@ -1,13 +1,19 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Head from 'next/head'
-import { useAppSelector } from '../../re-ducks/hooks'
+import { useAppSelector, useAppDispatch } from '../../re-ducks/hooks'
 import {
   selectAuthLoading,
   selectIsAuthenticated,
   selectUserRole,
 } from '../../re-ducks/auth/authSlice'
+import { fetchAllRecipes } from '../../re-ducks/recipe/recipeSlice'
 
 const Home = () => {
+  const dispatch = useAppDispatch()
+  useEffect(() => {
+    dispatch(fetchAllRecipes())
+  }, [])
+
   const loading = useAppSelector(selectAuthLoading)
   const isAuthenticated = useAppSelector(selectIsAuthenticated)
   const userRole = useAppSelector(selectUserRole)

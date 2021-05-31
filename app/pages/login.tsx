@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { VFC } from 'react'
 import Navbar from '../components/common/Navbar'
 import Login from '../components/auth/Login'
 
-const login = () => {
+const login: VFC = () => {
   return (
     <>
       <Navbar />

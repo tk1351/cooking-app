@@ -2,7 +2,7 @@ import React, { VFC } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { unwrapResult } from '@reduxjs/toolkit'
-import { RegisterUser } from '../../re-ducks/auth/type'
+import { IRegisterUser } from '../../re-ducks/auth/type'
 import { useAppDispatch } from '../../re-ducks/hooks'
 import { registerUser } from '../../re-ducks/auth/authSlice'
 import { useIsAuthenticated } from '../common/useIsAuthenticated'
@@ -19,7 +19,7 @@ interface IRegisterInputs {
   confirmPassword: string
 }
 
-const defaultValues = {
+const defaultValues: IRegisterInputs = {
   name: '',
   email: '',
   password: '',
@@ -42,7 +42,7 @@ const Register: VFC = () => {
     email,
     password,
   }) => {
-    const userData: RegisterUser = { name, email, password }
+    const userData: IRegisterUser = { name, email, password }
     const resultAction = await dispatch(registerUser(userData))
     if (registerUser.fulfilled.match(resultAction)) {
       unwrapResult(resultAction)

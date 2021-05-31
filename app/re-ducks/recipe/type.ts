@@ -1,4 +1,10 @@
-import { DefaultType, IIngredient, IRecipeLike, ITag } from '../defaultType'
+import {
+  DefaultType,
+  IIngredient,
+  IRecipeLike,
+  ITag,
+  MyKnownError,
+} from '../defaultType'
 import { IUser } from '../auth/type'
 
 export interface IRecipe extends DefaultType {
@@ -10,4 +16,12 @@ export interface IRecipe extends DefaultType {
   ingredients: IIngredient[]
   recipeLikes: IRecipeLike[]
   tags: ITag[]
+}
+
+export interface IRecipeState {
+  recipe: IRecipe | null
+  recipes: IRecipe[]
+  loading: boolean
+  status: 'idle' | 'loading' | 'succeeded' | 'failed'
+  error: MyKnownError | null
 }

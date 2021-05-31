@@ -6,8 +6,8 @@ export class CreateIngredientDto {
   @IsString({ message: '材料は文字で入力してください' })
   name: string;
 
-  @IsNotEmpty({ message: '量を入力してください' })
-  @IsString({ message: '量を文字で入力してください' })
+  @IsNotEmpty({ message: '分量を入力してください' })
+  @IsString({ message: '分量を文字で入力してください' })
   amount: string;
 
   @IsNotEmpty()

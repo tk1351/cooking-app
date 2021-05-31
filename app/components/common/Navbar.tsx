@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { VFC } from 'react'
 import Link from 'next/link'
 import {
   AppBar,
@@ -18,7 +18,7 @@ import {
   selectUserRole,
 } from '../../re-ducks/auth/authSlice'
 
-const Navbar = () => {
+const Navbar: VFC = () => {
   const dispatch = useAppDispatch()
 
   const loading = useAppSelector(selectAuthLoading)
@@ -88,6 +88,9 @@ const Navbar = () => {
       <div>
         <Button color="inherit">
           <Link href="/mypage">マイページ</Link>
+        </Button>
+        <Button color="inherit">
+          <Link href="/admin/recipeform">レシピ投稿</Link>
         </Button>
         <Button color="inherit" onClick={() => clearAuthState()}>
           ログアウト
