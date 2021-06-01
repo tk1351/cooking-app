@@ -1,4 +1,4 @@
-import React, { VFC } from 'react'
+import React, { VFC, useState } from 'react'
 import {
   useForm,
   SubmitHandler,
@@ -11,7 +11,10 @@ import {
   Select,
   MenuItem,
   FormHelperText,
+  Box,
+  IconButton,
 } from '@material-ui/core'
+import { PhotoCamera } from '@material-ui/icons'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { useIsAdmin } from '../common/useIsAdmin'
@@ -21,6 +24,7 @@ import { recipeValidationSchema } from '../form/validations/recipeValidation'
 import { useAppDispatch } from '../../re-ducks/hooks'
 import { createRecipe } from '../../re-ducks/recipe/recipeSlice'
 import { IRecipeInputs } from '../form/type'
+import { firebaseStorage } from '../../src/utils/firebase'
 
 const defaultValues: IRecipeInputs = {
   name: '',
@@ -48,10 +52,15 @@ const RecipeForm: VFC = () => {
 
   const dispatch = useAppDispatch()
 
-  const { control, handleSubmit } = useForm<IRecipeInputs>({
+  const [recipeImage, setRecipeImage] = useState<File | null>(null)
+  const [preview, setPreview] = useState('')
+
+  const { control, handleSubmit, watch } = useForm<IRecipeInputs>({
     defaultValues,
     resolver: yupResolver(recipeValidationSchema),
   })
+
+  console.log(watch('image'))
 
   // 材料の配列フォーム定義
   const {
@@ -74,10 +83,46 @@ const RecipeForm: VFC = () => {
     remove: tagRemove,
   } = useFieldArray({ control, name: 'tags' })
 
+  const onChangeImageHandler = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (e.target.files![0]) {
+      setRecipeImage(e.target.files![0])
+      setPreview(window.URL.createObjectURL(e.target.files![0]))
+      e.target.value = ''
+    }
+  }
+  console.log('recipeImage', recipeImage)
+
   const onSubmit: SubmitHandler<IRecipeInputs> = async (data) => {
-    const resultAction = await dispatch(createRecipe(data))
-    if (createRecipe.fulfilled.match(resultAction)) {
-      unwrapResult(resultAction)
+    let imageUrl = ''
+
+    if (recipeImage) {
+      const str =
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+      const num = 16
+      const randomChar = Array.from(
+        crypto.getRandomValues(new Uint32Array(num))
+      )
+        .map((n) => str[n % str.length])
+        .join('')
+      const fileName = randomChar + '_' + data.image
+
+      await firebaseStorage.ref(`images/${fileName}`).put(recipeImage)
+      imageUrl = await firebaseStorage
+        .ref('images')
+        .child(fileName)
+        .getDownloadURL()
+
+      try {
+        const newData = { ...data, image: imageUrl }
+        const resultAction = await dispatch(createRecipe(newData))
+        if (createRecipe.fulfilled.match(resultAction)) {
+          unwrapResult(resultAction)
+        }
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 
@@ -337,23 +382,33 @@ const RecipeForm: VFC = () => {
             />
           )}
         />
-        <Controller
+        {/* <Controller
           name="image"
           control={control}
           render={({ field: { onChange, ref }, formState: { errors } }) => (
-            <TextForm
-              label={'完成写真'}
-              placeholder={'完成写真を投稿してください'}
-              type="text"
-              name="image"
-              variant="outlined"
-              onChange={onChange}
-              inputRef={ref}
-              error={Boolean(errors.image)}
-              helperText={errors.image && errors.image.message}
-            />
+            <Box>
+              <IconButton color="primary" component="span">
+                <label>
+                  <PhotoCamera fontSize="large" />
+                  <input
+                    type="file"
+                    ref={ref}
+                    onChange={onChangeImageHandler}
+                  />
+                </label>
+              </IconButton>
+            </Box>
           )}
-        />
+        /> */}
+        <Box>
+          <IconButton color="primary" component="span">
+            <label>
+              <PhotoCamera fontSize="large" />
+              <input name="image" type="file" onChange={onChangeImageHandler} />
+            </label>
+          </IconButton>
+        </Box>
+        {preview && <img src={preview} />}
         <FormButton
           type="submit"
           variant="contained"

@@ -9,6 +9,7 @@ import {
   Typography,
   CardActions,
   Button,
+  makeStyles,
 } from '@material-ui/core'
 import { useAppDispatch, useAppSelector } from '../../re-ducks/hooks'
 import {
@@ -17,8 +18,16 @@ import {
   selectRecipeLoading,
 } from '../../re-ducks/recipe/recipeSlice'
 
+const useStyles = makeStyles({
+  media: {
+    maxWidth: 345,
+    height: 140,
+  },
+})
+
 const Recipe: VFC = () => {
   const dispatch = useAppDispatch()
+  const classes = useStyles()
 
   const loading = useAppSelector(selectRecipeLoading)
   const recipe = useAppSelector(selectRecipe)
@@ -39,7 +48,7 @@ const Recipe: VFC = () => {
           {recipe && (
             <Card>
               <CardActionArea>
-                <CardMedia image={recipe.image} />
+                <CardMedia className={classes.media} image={recipe.image} />
                 <CardContent>
                   <Typography gutterBottom variant="h4" component="h2">
                     {recipe.name}

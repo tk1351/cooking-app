@@ -8,19 +8,28 @@ import {
   Typography,
   CardActions,
   Button,
+  makeStyles,
 } from '@material-ui/core'
 import { IRecipe } from '../../re-ducks/recipe/type'
 import Link from 'next/link'
+
+const useStyles = makeStyles({
+  media: {
+    maxWidth: 345,
+    height: 140,
+  },
+})
 
 type Props = {
   recipe: IRecipe
 }
 
 const RecipeItem: VFC<Props> = ({ recipe }) => {
+  const classes = useStyles()
   return (
     <Card>
       <CardActionArea>
-        <CardMedia image={recipe.image} />
+        <CardMedia className={classes.media} image={recipe.image} />
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
             {recipe.name}
