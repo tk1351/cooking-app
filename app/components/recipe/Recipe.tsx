@@ -16,7 +16,9 @@ import {
   fetchRecipeById,
   selectRecipe,
   selectRecipeLoading,
+  deleteRecipe,
 } from '../../re-ducks/recipe/recipeSlice'
+import { selectUserRole } from '../../re-ducks/auth/authSlice'
 
 const useStyles = makeStyles({
   media: {
@@ -31,6 +33,7 @@ const Recipe: VFC = () => {
 
   const loading = useAppSelector(selectRecipeLoading)
   const recipe = useAppSelector(selectRecipe)
+  const userRole = useAppSelector(selectUserRole)
 
   const router = useRouter()
   const { recipeId } = router.query
@@ -38,6 +41,13 @@ const Recipe: VFC = () => {
   useEffect(() => {
     dispatch(fetchRecipeById(Number(recipeId)))
   }, [])
+
+  const onDeleteRecipeClicked = async (id: number) => {
+    if (window.confirm('レシピを削除してもよろしいですか？')) {
+      await dispatch(deleteRecipe(id))
+      router.push('/')
+    }
+  }
 
   return (
     <div>
@@ -105,9 +115,25 @@ const Recipe: VFC = () => {
                 <Button size="small" color="primary">
                   Share
                 </Button>
-                <Button size="small" color="primary">
-                  ♡
-                </Button>
+                {userRole === 'admin' ? (
+                  <Button
+                    onClick={() => onDeleteRecipeClicked(recipe.id)}
+                    size="small"
+                    color="primary"
+                    type="button"
+                  >
+                    削除
+                  </Button>
+                ) : (
+                  <></>
+                )}
+                {userRole === 'user' ? (
+                  <Button size="small" color="primary">
+                    ♡
+                  </Button>
+                ) : (
+                  <></>
+                )}
               </CardActions>
             </Card>
           )}

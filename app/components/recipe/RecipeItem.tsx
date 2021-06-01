@@ -10,8 +10,11 @@ import {
   Button,
   makeStyles,
 } from '@material-ui/core'
-import { IRecipe } from '../../re-ducks/recipe/type'
 import Link from 'next/link'
+import { IRecipe } from '../../re-ducks/recipe/type'
+import { useAppSelector, useAppDispatch } from '../../re-ducks/hooks'
+import { selectUserRole } from '../../re-ducks/auth/authSlice'
+import { deleteRecipe } from '../../re-ducks/recipe/recipeSlice'
 
 const useStyles = makeStyles({
   media: {
@@ -26,6 +29,15 @@ type Props = {
 
 const RecipeItem: VFC<Props> = ({ recipe }) => {
   const classes = useStyles()
+
+  const dispatch = useAppDispatch()
+  const userRole = useAppSelector(selectUserRole)
+
+  const onDeleteRecipeClicked = async () => {
+    if (window.confirm('レシピを削除してもよろしいですか？')) {
+      await dispatch(deleteRecipe(recipe.id))
+    }
+  }
   return (
     <Card>
       <CardActionArea>
@@ -46,6 +58,18 @@ const RecipeItem: VFC<Props> = ({ recipe }) => {
         <Button size="small" color="primary">
           <Link href={`/recipe/${recipe.id}`}>詳細</Link>
         </Button>
+        {userRole === 'admin' ? (
+          <Button
+            onClick={onDeleteRecipeClicked}
+            size="small"
+            color="primary"
+            type="button"
+          >
+            削除
+          </Button>
+        ) : (
+          <></>
+        )}
       </CardActions>
     </Card>
   )

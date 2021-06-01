@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
-import { IRecipeState, IRecipe } from './type'
+import { IRecipeState, IRecipe, IUpdateRecipeInputs } from './type'
 import { AsyncThunkConfig, RootState } from '../store'
-import { MyKnownError } from '../defaultType'
+import { MyKnownError, MyKnownMessage } from '../defaultType'
 import { IRecipeInputs } from '../../components/form/type'
 
 const initialState: IRecipeState = {
@@ -53,6 +53,46 @@ export const createRecipe = createAsyncThunk<
       headers: { Authorization: `Bearer ${token}` },
     })
     return res.data
+  } catch (error) {
+    return rejectWithValue(error.response.data)
+  }
+})
+
+// recipeの更新
+// 引数として updateRecipeDtoとidとtoken
+// 返り値は Recipe
+export const updateRecipe = createAsyncThunk<
+  IRecipe,
+  { postData: IUpdateRecipeInputs; id: number },
+  AsyncThunkConfig<MyKnownError>
+>('recipe/updateRecipe', async ({ postData, id }, { rejectWithValue }) => {
+  try {
+    const token = localStorage.getItem('token')
+    const url = `/api/recipes/${id}`
+    const res = await axios.patch<IRecipe>(url, postData, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return res.data
+  } catch (error) {
+    return rejectWithValue(error.response.data)
+  }
+})
+
+// recipeの削除
+// 引数としてidとtoken
+// 返り値はMyKnownMessage
+export const deleteRecipe = createAsyncThunk<
+  { message: MyKnownMessage; id: number },
+  number,
+  AsyncThunkConfig<MyKnownError>
+>('recipe/deleteRecipe', async (id, { rejectWithValue }) => {
+  try {
+    const token = localStorage.getItem('token')
+    const url = `/api/recipes/${id}`
+    const res = await axios.delete<MyKnownMessage>(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return { message: res.data, id }
   } catch (error) {
     return rejectWithValue(error.response.data)
   }
@@ -115,6 +155,37 @@ const recipeSlice = createSlice({
       if (action.payload) {
         state.status = 'failed'
         state.recipe = null
+        state.error = action.payload
+        state.loading = false
+      }
+    })
+    // レシピを更新する
+    builder.addCase(updateRecipe.pending, (state) => {
+      state.status = 'loading'
+    })
+    builder.addCase(updateRecipe.fulfilled, (state) => {
+      state.status = 'succeeded'
+    })
+    builder.addCase(updateRecipe.rejected, (state) => {
+      state.status = 'failed'
+    })
+
+    // レシピを削除する
+    builder.addCase(deleteRecipe.pending, (state) => {
+      state.status = 'loading'
+    })
+    builder.addCase(deleteRecipe.fulfilled, (state, action) => {
+      state.status = 'succeeded'
+      const deleteRecipeIndex = state.recipes.findIndex(
+        (recipe: IRecipe) => recipe.id === action.payload.id
+      )
+      state.recipes.splice(deleteRecipeIndex, 1)
+      state.loading = false
+      state.error = null
+    })
+    builder.addCase(deleteRecipe.rejected, (state, action) => {
+      if (action.payload) {
+        state.status = 'failed'
         state.error = action.payload
         state.loading = false
       }

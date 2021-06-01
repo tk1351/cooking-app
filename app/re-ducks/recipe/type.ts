@@ -27,3 +27,13 @@ export interface IRecipeState {
   status: 'idle' | 'loading' | 'succeeded' | 'failed'
   error: MyKnownError | null
 }
+
+export interface IUpdateRecipeInputs {
+  name: string
+  time: 5 | 10 | 15 | 20 | 30 | 40 | 50 | 60
+  remarks: string
+  image: string
+  ingredients: IIngredient[]
+  recipeDescriptions: IRecipeDescription[]
+  tags: ITag[]
+}

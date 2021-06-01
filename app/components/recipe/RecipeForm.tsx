@@ -17,6 +17,7 @@ import {
 import { PhotoCamera } from '@material-ui/icons'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { unwrapResult } from '@reduxjs/toolkit'
+import { useRouter } from 'next/router'
 import { useIsAdmin } from '../common/useIsAdmin'
 import TextForm from '../form/TextForm'
 import FormButton from '../form/FormButton'
@@ -94,6 +95,8 @@ const RecipeForm: VFC = () => {
   }
   console.log('recipeImage', recipeImage)
 
+  const router = useRouter()
+
   const onSubmit: SubmitHandler<IRecipeInputs> = async (data) => {
     let imageUrl = ''
 
@@ -119,6 +122,7 @@ const RecipeForm: VFC = () => {
         const resultAction = await dispatch(createRecipe(newData))
         if (createRecipe.fulfilled.match(resultAction)) {
           unwrapResult(resultAction)
+          router.push('/')
         }
       } catch (error) {
         console.error(error)
