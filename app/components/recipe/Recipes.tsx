@@ -1,34 +1,18 @@
-import React, { VFC, useEffect } from 'react'
-import { useAppDispatch, useAppSelector } from '../../re-ducks/hooks'
-import {
-  fetchAllRecipes,
-  selectAllRecipes,
-  selectRecipeLoading,
-} from '../../re-ducks/recipe/recipeSlice'
+import React, { VFC } from 'react'
 import RecipeItem from './RecipeItem'
+import { IRecipe } from '../../re-ducks/recipe/type'
 
-const Recipes: VFC = () => {
-  const dispatch = useAppDispatch()
+type Props = {
+  recipes: IRecipe[]
+}
 
-  const recipes = useAppSelector(selectAllRecipes)
-  const loading = useAppSelector(selectRecipeLoading)
-
-  useEffect(() => {
-    dispatch(fetchAllRecipes())
-  }, [])
-
+const Recipes: VFC<Props> = ({ recipes }) => {
   return (
     <div>
-      {loading ? (
-        <>読み込み中</>
-      ) : (
-        <>
-          <h1>レシピ一覧</h1>
-          {recipes.map((recipe) => (
-            <RecipeItem key={recipe.id} recipe={recipe} />
-          ))}
-        </>
-      )}
+      <h1>レシピ一覧</h1>
+      {recipes.map((recipe) => (
+        <RecipeItem key={recipe.id} recipe={recipe} />
+      ))}
     </div>
   )
 }

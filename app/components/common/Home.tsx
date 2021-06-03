@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { VFC } from 'react'
 import Head from 'next/head'
 import { useAppSelector } from '../../re-ducks/hooks'
 import {
@@ -7,8 +7,13 @@ import {
   selectUserRole,
 } from '../../re-ducks/auth/authSlice'
 import Recipes from '../recipe/Recipes'
+import { IRecipe } from '../../re-ducks/recipe/type'
 
-const Home = () => {
+type Props = {
+  recipes: IRecipe[]
+}
+
+const Home: VFC<Props> = (props) => {
   const loading = useAppSelector(selectAuthLoading)
   const isAuthenticated = useAppSelector(selectIsAuthenticated)
   const userRole = useAppSelector(selectUserRole)
@@ -56,7 +61,7 @@ const Home = () => {
         {!loading && (
           <>
             <Views />
-            <Recipes />
+            <Recipes {...props} />
           </>
         )}
       </main>
