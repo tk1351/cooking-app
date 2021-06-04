@@ -59,14 +59,19 @@ const RecipeItem: VFC<Props> = ({ recipe }) => {
           <Link href={`/recipe/${recipe.id}`}>詳細</Link>
         </Button>
         {userRole === 'admin' ? (
-          <Button
-            onClick={onDeleteRecipeClicked}
-            size="small"
-            color="primary"
-            type="button"
-          >
-            削除
-          </Button>
+          <>
+            <Button size="small" color="primary">
+              <Link href={`/recipe/edit/${recipe.id}`}>編集</Link>
+            </Button>
+            <Button
+              onClick={onDeleteRecipeClicked}
+              size="small"
+              color="primary"
+              type="button"
+            >
+              削除
+            </Button>
+          </>
         ) : (
           <></>
         )}

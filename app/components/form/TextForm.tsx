@@ -13,6 +13,7 @@ interface ITextFormProps {
   inputRef?: RefCallBack
   error: boolean
   helperText: string | undefined
+  defaultValue?: any
 }
 
 const TextForm: VFC<ITextFormProps> = (props) => {
@@ -31,6 +32,7 @@ const TextForm: VFC<ITextFormProps> = (props) => {
         inputRef={props.inputRef}
         error={props.error}
         helperText={props.helperText}
+        defaultValue={props.defaultValue}
       />
     </div>
   )

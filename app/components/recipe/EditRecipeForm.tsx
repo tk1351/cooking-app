@@ -1,11 +1,8 @@
-import React, { VFC, useState } from 'react'
+import React, { VFC, useEffect, useState } from 'react'
+import { useIsAdmin } from '../common/useIsAdmin'
+import { useRouter } from 'next/router'
 import {
-  useForm,
-  SubmitHandler,
-  Controller,
-  useFieldArray,
-} from 'react-hook-form'
-import {
+  Button,
   FormControl,
   InputLabel,
   Select,
@@ -14,73 +11,76 @@ import {
   Box,
   IconButton,
 } from '@material-ui/core'
+import {
+  useForm,
+  SubmitHandler,
+  Controller,
+  useFieldArray,
+} from 'react-hook-form'
 import { PhotoCamera } from '@material-ui/icons'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { unwrapResult } from '@reduxjs/toolkit'
-import { useRouter } from 'next/router'
-import { useIsAdmin } from '../common/useIsAdmin'
 import TextForm from '../form/TextForm'
 import FormButton from '../form/FormButton'
-import { recipeValidationSchema } from '../form/validations/recipeValidation'
 import { useAppDispatch } from '../../re-ducks/hooks'
-import { createRecipe } from '../../re-ducks/recipe/recipeSlice'
-import { IRecipeInputs } from '../form/type'
+import { updateRecipe } from '../../re-ducks/recipe/recipeSlice'
+import { IRecipe, IUpdateRecipeInputs } from '../../re-ducks/recipe/type'
 import { firebaseStorage } from '../../src/utils/firebase'
 
-const defaultValues: IRecipeInputs = {
-  name: '',
-  time: 5,
-  remarks: '',
-  image: '',
-  ingredients: [
-    {
-      name: '',
-      amount: '',
-    },
-  ],
-  recipeDescriptions: [
-    {
-      order: 1,
-      text: '',
-      url: '',
-    },
-  ],
-  tags: [{ name: '' }],
+type Props = {
+  recipe: IRecipe
 }
 
-const RecipeForm: VFC = () => {
+const EditRecipeForm: VFC<Props> = ({ recipe }) => {
   useIsAdmin()
-
   const dispatch = useAppDispatch()
 
   const [recipeImage, setRecipeImage] = useState<File | null>(null)
   const [preview, setPreview] = useState('')
 
-  const { control, handleSubmit } = useForm<IRecipeInputs>({
+  useEffect(() => {
+    setPreview(recipe.image)
+  }, [])
+
+  const defaultValues: IUpdateRecipeInputs = {
+    name: recipe.name,
+    time: recipe.time,
+    remarks: recipe.remarks,
+    image: recipe.image,
+    ingredients: recipe.ingredients,
+    recipeDescriptions: recipe.recipeDescriptions,
+    tags: recipe.tags,
+  }
+
+  const { control, handleSubmit } = useForm<IUpdateRecipeInputs>({
     defaultValues,
-    resolver: yupResolver(recipeValidationSchema),
   })
 
-  // 材料の配列フォーム定義
   const {
     fields: ingredientFields,
     append: ingredientAppend,
     remove: ingredientRemove,
-  } = useFieldArray({ control, name: 'ingredients' })
-
-  // 調理工程の配列フォーム定義
+  } = useFieldArray({
+    name: 'ingredients',
+    control,
+  })
   const {
     fields: recipeDescriptionFields,
     append: recipeDescriptionAppend,
     remove: recipeDescriptionRemove,
-  } = useFieldArray({ control, name: 'recipeDescriptions' })
-
-  // タグの配列フォーム定義
+  } = useFieldArray({
+    name: 'recipeDescriptions',
+    control,
+  })
   const {
     fields: tagFields,
     append: tagAppend,
     remove: tagRemove,
-  } = useFieldArray({ control, name: 'tags' })
+  } = useFieldArray({
+    name: 'tags',
+    control,
+  })
+
+  const router = useRouter()
 
   const onChangeImageHandler = async (
     e: React.ChangeEvent<HTMLInputElement>
@@ -92,12 +92,10 @@ const RecipeForm: VFC = () => {
     }
   }
 
-  const router = useRouter()
-
-  const onSubmit: SubmitHandler<IRecipeInputs> = async (data) => {
+  const onSubmit: SubmitHandler<IUpdateRecipeInputs> = async (data) => {
     let imageUrl = ''
 
-    if (recipeImage) {
+    if (recipeImage !== null) {
       const str =
         'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
       const num = 16
@@ -116,8 +114,28 @@ const RecipeForm: VFC = () => {
 
       try {
         const newData = { ...data, image: imageUrl }
-        const resultAction = await dispatch(createRecipe(newData))
-        if (createRecipe.fulfilled.match(resultAction)) {
+        const resultAction = await dispatch(
+          updateRecipe({
+            postData: newData,
+            id: recipe.id,
+          })
+        )
+        if (updateRecipe.fulfilled.match(resultAction)) {
+          unwrapResult(resultAction)
+          router.push('/')
+        }
+      } catch (error) {
+        console.error(error)
+      }
+    } else {
+      try {
+        const resultAction = await dispatch(
+          updateRecipe({
+            postData: data,
+            id: recipe.id,
+          })
+        )
+        if (updateRecipe.fulfilled.match(resultAction)) {
           unwrapResult(resultAction)
           router.push('/')
         }
@@ -129,7 +147,7 @@ const RecipeForm: VFC = () => {
 
   return (
     <div>
-      <h1>レシピ投稿</h1>
+      <h1>レシピ編集</h1>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Controller
           name="name"
@@ -141,6 +159,7 @@ const RecipeForm: VFC = () => {
               type="text"
               name="name"
               variant="outlined"
+              defaultValue={recipe.name}
               onChange={onChange}
               inputRef={ref}
               error={Boolean(errors.name)}
@@ -157,8 +176,8 @@ const RecipeForm: VFC = () => {
               <Select
                 label={'調理時間'}
                 name="time"
-                defaultValue={5}
-                value={value ? value : 5}
+                defaultValue={recipe.time}
+                value={value ? value : recipe.time}
                 onChange={onChange}
                 error={Boolean(errors.time)}
               >
@@ -179,8 +198,8 @@ const RecipeForm: VFC = () => {
         />
         {/* 材料 */}
         <ul>
-          {ingredientFields.map((field, index) => (
-            <li key={field.id}>
+          {ingredientFields.map((item, index) => (
+            <li key={item.id}>
               <Controller
                 name={`ingredients[${index}].name`}
                 control={control}
@@ -193,6 +212,7 @@ const RecipeForm: VFC = () => {
                     placeholder={'材料名を入力してください'}
                     type="text"
                     name={`ingredients[${index}].name`}
+                    defaultValue={item.name}
                     variant="outlined"
                     onChange={onChange}
                     inputRef={ref}
@@ -215,6 +235,7 @@ const RecipeForm: VFC = () => {
                     placeholder={'分量を入力してください'}
                     type="text"
                     name={`ingredients[${index}].amount`}
+                    defaultValue={item.amount}
                     variant="outlined"
                     onChange={onChange}
                     error={Boolean(
@@ -233,13 +254,21 @@ const RecipeForm: VFC = () => {
             </li>
           ))}
         </ul>
-        <button type="button" onClick={() => ingredientAppend({})}>
+        <button
+          type="button"
+          onClick={() =>
+            ingredientAppend({
+              name: '',
+              amount: '',
+            })
+          }
+        >
           +
         </button>
         {/* 調理工程 */}
         <ul>
-          {recipeDescriptionFields.map((field, index) => (
-            <li key={field.id}>
+          {recipeDescriptionFields.map((item, index) => (
+            <li key={item.id}>
               <Controller
                 name={`recipeDescriptions[${index}].order`}
                 control={control}
@@ -252,7 +281,7 @@ const RecipeForm: VFC = () => {
                     placeholder={'調理工程の順番を入力してください'}
                     type="number"
                     name={`recipeDescriptions[${index}].order`}
-                    value={index + 1}
+                    defaultValue={item.order}
                     variant="outlined"
                     onChange={onChange}
                     inputRef={ref}
@@ -279,6 +308,7 @@ const RecipeForm: VFC = () => {
                     placeholder={'調理工程の詳細を入力してください'}
                     type="text"
                     name={`recipeDescriptions[${index}].text`}
+                    defaultValue={item.text}
                     variant="outlined"
                     onChange={onChange}
                     inputRef={ref}
@@ -305,6 +335,7 @@ const RecipeForm: VFC = () => {
                     placeholder={'必要な場合は動画のURLを入力してください'}
                     type="text"
                     name={`recipeDescriptions[${index}].url`}
+                    defaultValue={item.url}
                     variant="outlined"
                     onChange={onChange}
                     inputRef={ref}
@@ -328,13 +359,22 @@ const RecipeForm: VFC = () => {
             </li>
           ))}
         </ul>
-        <button type="button" onClick={() => recipeDescriptionAppend({})}>
+        <button
+          type="button"
+          onClick={() =>
+            recipeDescriptionAppend({
+              order: recipe.recipeDescriptions.length + 1,
+              text: '',
+              url: '',
+            })
+          }
+        >
           +
         </button>
         {/* タグ */}
         <ul>
-          {tagFields.map((field, index) => (
-            <li key={field.id}>
+          {tagFields.map((item, index) => (
+            <li key={item.id}>
               <Controller
                 name={`tags[${index}].name`}
                 control={control}
@@ -347,6 +387,7 @@ const RecipeForm: VFC = () => {
                     placeholder={'タグ名を入力してください'}
                     type="text"
                     name={`tags[${index}].name`}
+                    defaultValue={item.name}
                     variant="outlined"
                     onChange={onChange}
                     inputRef={ref}
@@ -363,7 +404,14 @@ const RecipeForm: VFC = () => {
             </li>
           ))}
         </ul>
-        <button type="button" onClick={() => tagAppend({})}>
+        <button
+          type="button"
+          onClick={() =>
+            tagAppend({
+              name: '',
+            })
+          }
+        >
           +
         </button>
         <Controller
@@ -375,6 +423,7 @@ const RecipeForm: VFC = () => {
               placeholder={'補足を入力してください'}
               type="text"
               name="remarks"
+              defaultValue={recipe.remarks}
               variant="outlined"
               onChange={onChange}
               inputRef={ref}
@@ -399,8 +448,9 @@ const RecipeForm: VFC = () => {
           label="投稿"
         />
       </form>
+      <Button onClick={() => router.back()}>戻る</Button>
     </div>
   )
 }
 
-export default RecipeForm
+export default EditRecipeForm

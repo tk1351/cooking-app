@@ -13,6 +13,6 @@ export interface IRecipeInputs {
     url: string
   }[]
   tags: {
-    text: string
+    name: string
   }[]
 }
