@@ -1,13 +1,6 @@
 import React, { VFC } from 'react'
 import Link from 'next/link'
-import {
-  AppBar,
-  Toolbar,
-  IconButton,
-  InputBase,
-  Button,
-} from '@material-ui/core'
-import SearchIcon from '@material-ui/icons/Search'
+import { AppBar, Toolbar, IconButton, Button } from '@material-ui/core'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { useAppDispatch, useAppSelector } from '../../re-ducks/hooks'
 import {
@@ -17,6 +10,7 @@ import {
   fetchCurrentUser,
   selectUserRole,
 } from '../../re-ducks/auth/authSlice'
+import SearchForm from '../form/SearchForm'
 
 const Navbar: VFC = () => {
   const dispatch = useAppDispatch()
@@ -36,11 +30,7 @@ const Navbar: VFC = () => {
   const guestLinks = (
     <>
       <div>
-        <div>
-          <SearchIcon />
-          <InputBase placeholder="レシピを検索する" />
-          <Button color="inherit">検索</Button>
-        </div>
+        <SearchForm />
       </div>
       <div>
         <Button color="inherit">
@@ -56,11 +46,7 @@ const Navbar: VFC = () => {
   const userLinks = (
     <>
       <div>
-        <div>
-          <SearchIcon />
-          <InputBase placeholder="レシピを検索する" />
-          <Button color="inherit">検索</Button>
-        </div>
+        <SearchForm />
       </div>
       <div>
         <Button color="inherit">
@@ -79,11 +65,7 @@ const Navbar: VFC = () => {
   const adminLinks = (
     <>
       <div>
-        <div>
-          <SearchIcon />
-          <InputBase placeholder="レシピを検索する" />
-          <Button color="inherit">検索</Button>
-        </div>
+        <SearchForm />
       </div>
       <div>
         <Button color="inherit">

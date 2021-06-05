@@ -37,3 +37,7 @@ export interface IUpdateRecipeInputs {
   recipeDescriptions: IRecipeDescription[]
   tags: ITag[]
 }
+
+export interface IQuery {
+  query: string
+}

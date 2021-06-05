@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
-import { IRecipeState, IRecipe, IUpdateRecipeInputs } from './type'
+import { IRecipeState, IRecipe, IUpdateRecipeInputs, IQuery } from './type'
 import { AsyncThunkConfig, RootState } from '../store'
 import { MyKnownError, MyKnownMessage } from '../defaultType'
 import { IRecipeInputs } from '../../components/form/type'
@@ -35,6 +35,20 @@ export const fetchRecipeById = createAsyncThunk<
   try {
     const url = `/api/recipes/${id}`
     const res = await axios.get<IRecipe>(url)
+    return res.data
+  } catch (error) {
+    return rejectWithValue(error.response.data)
+  }
+})
+
+export const searchRecipesByQuery = createAsyncThunk<
+  IRecipe[],
+  string,
+  AsyncThunkConfig<MyKnownError>
+>('recipe/searchRecipesByQuery', async (query, { rejectWithValue }) => {
+  try {
+    const url = `/api/recipes?query=${query}`
+    const res = await axios.get<IRecipe[]>(url)
     return res.data
   } catch (error) {
     return rejectWithValue(error.response.data)
@@ -141,6 +155,24 @@ const recipeSlice = createSlice({
         state.recipe = null
       }
     })
+    // queryが関係するレシピを取得する
+    builder.addCase(searchRecipesByQuery.pending, (state) => {
+      state.status = 'loading'
+    })
+    builder.addCase(searchRecipesByQuery.fulfilled, (state, action) => {
+      state.status = 'succeeded'
+      state.recipes = action.payload
+      state.loading = false
+      state.error = null
+    })
+    builder.addCase(searchRecipesByQuery.rejected, (state, action) => {
+      if (action.payload) {
+        state.status = 'failed'
+        state.recipes = []
+        state.error = action.payload
+        state.loading = false
+      }
+    })
     // レシピを投稿する
     builder.addCase(createRecipe.pending, (state) => {
       state.status = 'loading'
@@ -194,7 +226,7 @@ const recipeSlice = createSlice({
 })
 
 export const selectRecipeLoading = (state: RootState) => state.recipe.loading
-export const selectAllRecipes = (state: RootState) => state.recipe.recipes
+export const selectRecipes = (state: RootState) => state.recipe.recipes
 export const selectRecipe = (state: RootState) => state.recipe.recipe
 
 export default recipeSlice.reducer
