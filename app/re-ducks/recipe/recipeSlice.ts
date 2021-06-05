@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
-import { IRecipeState, IRecipe, IUpdateRecipeInputs, IQuery } from './type'
+import { IRecipeState, IRecipe, IUpdateRecipeInputs } from './type'
 import { AsyncThunkConfig, RootState } from '../store'
 import { MyKnownError, MyKnownMessage } from '../defaultType'
 import { IRecipeInputs } from '../../components/form/type'
@@ -12,48 +12,6 @@ const initialState: IRecipeState = {
   status: 'idle',
   error: null,
 }
-
-export const fetchAllRecipes = createAsyncThunk<
-  IRecipe[],
-  void,
-  AsyncThunkConfig<MyKnownError>
->('recipe/fetchAllRecipes', async (_, { rejectWithValue }) => {
-  try {
-    const url = '/api/recipes'
-    const res = await axios.get<IRecipe[]>(url)
-    return res.data
-  } catch (error) {
-    return rejectWithValue(error.response.data)
-  }
-})
-
-export const fetchRecipeById = createAsyncThunk<
-  IRecipe,
-  number,
-  AsyncThunkConfig<MyKnownError>
->('recipe/fetchRecipeById', async (id, { rejectWithValue }) => {
-  try {
-    const url = `/api/recipes/${id}`
-    const res = await axios.get<IRecipe>(url)
-    return res.data
-  } catch (error) {
-    return rejectWithValue(error.response.data)
-  }
-})
-
-export const searchRecipesByQuery = createAsyncThunk<
-  IRecipe[],
-  string,
-  AsyncThunkConfig<MyKnownError>
->('recipe/searchRecipesByQuery', async (query, { rejectWithValue }) => {
-  try {
-    const url = `/api/recipes?query=${query}`
-    const res = await axios.get<IRecipe[]>(url)
-    return res.data
-  } catch (error) {
-    return rejectWithValue(error.response.data)
-  }
-})
 
 export const createRecipe = createAsyncThunk<
   IRecipe,
@@ -72,9 +30,6 @@ export const createRecipe = createAsyncThunk<
   }
 })
 
-// recipeの更新
-// 引数として updateRecipeDtoとidとtoken
-// 返り値は Recipe
 export const updateRecipe = createAsyncThunk<
   IRecipe,
   { postData: IUpdateRecipeInputs; id: number },
@@ -92,9 +47,6 @@ export const updateRecipe = createAsyncThunk<
   }
 })
 
-// recipeの削除
-// 引数としてidとtoken
-// 返り値はMyKnownMessage
 export const deleteRecipe = createAsyncThunk<
   { message: MyKnownMessage; id: number },
   number,
@@ -117,62 +69,6 @@ const recipeSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    // 全てのレシピを取得する
-    builder.addCase(fetchAllRecipes.pending, (state) => {
-      state.status = 'loading'
-    })
-    builder.addCase(fetchAllRecipes.fulfilled, (state, action) => {
-      state.status = 'succeeded'
-      state.recipe = null
-      state.recipes = action.payload
-      state.loading = false
-      state.error = null
-    })
-    builder.addCase(fetchAllRecipes.rejected, (state, action) => {
-      if (action.payload) {
-        state.status = 'failed'
-        state.recipes = []
-        state.error = action.payload
-        state.loading = false
-      }
-    })
-    // idが一致するレシピを取得する
-    builder.addCase(fetchRecipeById.pending, (state) => {
-      state.status = 'loading'
-    })
-    builder.addCase(fetchRecipeById.fulfilled, (state, action) => {
-      state.status = 'succeeded'
-      state.recipe = action.payload
-      state.recipes = []
-      state.loading = false
-      state.error = null
-    })
-    builder.addCase(fetchRecipeById.rejected, (state, action) => {
-      if (action.payload) {
-        state.status = 'failed'
-        state.error = action.payload
-        state.loading = false
-        state.recipe = null
-      }
-    })
-    // queryが関係するレシピを取得する
-    builder.addCase(searchRecipesByQuery.pending, (state) => {
-      state.status = 'loading'
-    })
-    builder.addCase(searchRecipesByQuery.fulfilled, (state, action) => {
-      state.status = 'succeeded'
-      state.recipes = action.payload
-      state.loading = false
-      state.error = null
-    })
-    builder.addCase(searchRecipesByQuery.rejected, (state, action) => {
-      if (action.payload) {
-        state.status = 'failed'
-        state.recipes = []
-        state.error = action.payload
-        state.loading = false
-      }
-    })
     // レシピを投稿する
     builder.addCase(createRecipe.pending, (state) => {
       state.status = 'loading'

@@ -3,18 +3,13 @@ import { useRouter } from 'next/router'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import SearchIcon from '@material-ui/icons/Search'
 import { InputBase, Button } from '@material-ui/core'
-import { unwrapResult } from '@reduxjs/toolkit'
 import { IQuery } from '../../re-ducks/recipe/type'
-import { useAppDispatch } from '../../re-ducks/hooks'
-import { searchRecipesByQuery } from '../../re-ducks/recipe/recipeSlice'
 
 const defaultValues: IQuery = {
   query: '',
 }
 
 const SearchForm: VFC = () => {
-  const dispatch = useAppDispatch()
-
   const router = useRouter()
 
   const { control, handleSubmit } = useForm<IQuery>({
