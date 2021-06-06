@@ -34,7 +34,7 @@ const SearchForm: VFC = () => {
         <Controller
           name="query"
           control={control}
-          render={({ field: { onChange, ref }, formState: { errors } }) => (
+          render={({ field: { onChange, ref } }) => (
             <InputBase
               placeholder="レシピを検索する"
               onChange={onChange}

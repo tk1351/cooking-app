@@ -8,13 +8,13 @@ type Props = {
   recipes: IRecipe[]
 }
 
-const Search: VFC<Props> = ({ recipes }) => {
+const Tag: VFC<Props> = ({ recipes }) => {
   const router = useRouter()
-  const { query } = router.query
+  const { name } = router.query
   return (
     <div>
       <h1>
-        {query}の検索結果：{recipes.length}件
+        #{name} 検索結果：{recipes.length}件
       </h1>
       {recipes.map((recipe) => (
         <RecipeItem key={recipe.id} recipe={recipe} />
@@ -24,4 +24,4 @@ const Search: VFC<Props> = ({ recipes }) => {
   )
 }
 
-export default Search
+export default Tag

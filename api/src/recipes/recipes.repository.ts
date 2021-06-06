@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Recipe } from './recipes.entity';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
-import { GetRecipesFilterDto } from './dto/get-recipes.dto';
+import { GetRecipesFilterDto, GetRecipesByTagDto } from './dto/get-recipes.dto';
 import { User } from '../users/users.entity';
 import { IngredientRepository } from '../ingredients/ingredients.repository';
 import { RecipeDescriptionRepository } from '../recipe-descriptions/recipe-descriptions.repository';
@@ -61,6 +61,36 @@ export class RecipeRepository extends Repository<Recipe> {
       .getOne();
 
     return found;
+  }
+
+  async getRecipesByTag(
+    getRecipesByTag: GetRecipesByTagDto,
+  ): Promise<Recipe[]> {
+    const { name } = getRecipesByTag;
+
+    try {
+      const result = await this.createQueryBuilder('recipes')
+        .leftJoinAndSelect('recipes.ingredients', 'ingredients')
+        .leftJoinAndSelect('recipes.recipeDescriptions', 'recipeDescriptions')
+        .leftJoinAndSelect('recipes.recipeLikes', 'recipeLikes')
+        .leftJoinAndSelect('recipes.tags', 'tags')
+        .where(
+          (qb) =>
+            'recipes.id IN' +
+            qb
+              .subQuery()
+              .select('tags.recipeId')
+              .from('tags', 'tags')
+              .where('tags.name = :name', { name })
+              .getQuery(),
+        )
+        .orderBy('recipes.createdAt', 'DESC')
+        .getMany();
+
+      return result;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 
   async createRecipe(

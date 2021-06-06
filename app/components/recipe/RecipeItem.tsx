@@ -15,6 +15,7 @@ import { IRecipe } from '../../re-ducks/recipe/type'
 import { useAppSelector, useAppDispatch } from '../../re-ducks/hooks'
 import { selectUserRole } from '../../re-ducks/auth/authSlice'
 import { deleteRecipe } from '../../re-ducks/recipe/recipeSlice'
+import { useRouter } from 'next/router'
 
 const useStyles = makeStyles({
   media: {
@@ -30,6 +31,8 @@ type Props = {
 const RecipeItem: VFC<Props> = ({ recipe }) => {
   const classes = useStyles()
 
+  const router = useRouter()
+
   const dispatch = useAppDispatch()
   const userRole = useAppSelector(selectUserRole)
 
@@ -38,6 +41,14 @@ const RecipeItem: VFC<Props> = ({ recipe }) => {
       await dispatch(deleteRecipe(recipe.id))
     }
   }
+
+  const onClick = async (name: string) => {
+    router.push({
+      pathname: '/tag',
+      query: { name },
+    })
+  }
+
   return (
     <Card>
       <CardActionArea>
@@ -49,6 +60,15 @@ const RecipeItem: VFC<Props> = ({ recipe }) => {
           <Typography variant="body2" color="textSecondary" component="p">
             {format(new Date(recipe.createdAt), 'yyyy-MM-dd')}
           </Typography>
+          {recipe.tags.map((tag) => (
+            <Button
+              size="small"
+              color="primary"
+              onClick={() => onClick(tag.name)}
+            >
+              #{tag.name}
+            </Button>
+          ))}
         </CardContent>
       </CardActionArea>
       <CardActions>

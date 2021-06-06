@@ -5,3 +5,8 @@ export class GetRecipesFilterDto {
   @IsNotEmpty({ message: 'queryを入力してください' })
   query: string;
 }
+
+export class GetRecipesByTagDto {
+  @IsNotEmpty({ message: 'tagを入力してください' })
+  name: string;
+}

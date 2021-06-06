@@ -1,22 +1,22 @@
 import React, { VFC } from 'react'
 import { GetServerSideProps } from 'next'
 import axios from 'axios'
-import Navbar from '../components/common/Navbar'
-import Search from '../components/recipe/Search'
 import { IRecipe } from '../re-ducks/recipe/type'
+import Navbar from '../components/common/Navbar'
+import Tag from '../components/recipe/Tag'
 
-const search: VFC<{ recipes: IRecipe[] }> = (props) => {
+const tag: VFC<{ recipes: IRecipe[] }> = (props) => {
   return (
     <div>
       <Navbar />
-      <Search {...props} />
+      <Tag {...props} />
     </div>
   )
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const query = context.query.query as string
-  const url = `http://api:8080/recipes?query=${encodeURI(query)}`
+  const tagName = context.query.name as string
+  const url = `http://api:8080/recipes/tag?name=${encodeURI(tagName)}`
   const res = await axios.get<IRecipe[]>(url)
   return {
     props: {
@@ -25,4 +25,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 }
 
-export default search
+export default tag

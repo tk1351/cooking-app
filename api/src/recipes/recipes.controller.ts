@@ -14,7 +14,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { RecipesService } from './recipes.service';
 import { Recipe } from './recipes.entity';
-import { GetRecipesFilterDto } from './dto/get-recipes.dto';
+import { GetRecipesFilterDto, GetRecipesByTagDto } from './dto/get-recipes.dto';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { MyKnownMessage } from '../message.interface';
 import { GetUser } from '../users/get-user.decorator';
@@ -31,6 +31,13 @@ export class RecipesController {
     @Query(ValidationPipe) getRecipesFilterDto: GetRecipesFilterDto,
   ): Promise<Recipe[]> {
     return this.recipesService.getRecipes(getRecipesFilterDto);
+  }
+
+  @Get('/tag')
+  getRecipesByTag(
+    @Query(ValidationPipe) getRecipesByTag: GetRecipesByTagDto,
+  ): Promise<Recipe[]> {
+    return this.recipesService.getRecipesByTag(getRecipesByTag);
   }
 
   @Get('/:id')
