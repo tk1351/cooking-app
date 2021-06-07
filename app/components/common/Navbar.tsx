@@ -9,6 +9,7 @@ import {
   logout,
   fetchCurrentUser,
   selectUserRole,
+  selectUserId,
 } from '../../re-ducks/auth/authSlice'
 import SearchForm from '../form/SearchForm'
 
@@ -18,6 +19,7 @@ const Navbar: VFC = () => {
   const loading = useAppSelector(selectAuthLoading)
   const isAuthenticated = useAppSelector(selectIsAuthenticated)
   const userRole = useAppSelector(selectUserRole)
+  const userId = useAppSelector(selectUserId)
 
   const clearAuthState = async () => {
     await dispatch(logout())
@@ -53,7 +55,7 @@ const Navbar: VFC = () => {
           <Link href="/mypage">マイページ</Link>
         </Button>
         <Button color="inherit">
-          <Link href="/favorites">お気に入り</Link>
+          <Link href={`/user/${userId}/likes`}>お気に入り</Link>
         </Button>
         <Button color="inherit" onClick={() => clearAuthState()}>
           ログアウト

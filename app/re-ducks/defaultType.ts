@@ -1,3 +1,5 @@
+import { IRecipe } from './recipe/type'
+
 export interface DefaultType {
   id: number
   createdAt: Date
@@ -19,6 +21,7 @@ export interface IRecipeDescription extends DefaultType {
 export interface IRecipeLike extends DefaultType {
   userId: number
   recipeId: number
+  recipe: IRecipe
 }
 
 export interface ITag extends DefaultType {
