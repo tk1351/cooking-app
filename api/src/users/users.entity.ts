@@ -12,13 +12,13 @@ export class User extends DefaultEntity {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ select: false })
   email: string;
 
-  @Column()
+  @Column({ select: false })
   password: string;
 
-  @Column()
+  @Column({ select: false })
   salt: string;
 
   @Column()

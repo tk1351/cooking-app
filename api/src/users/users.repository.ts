@@ -35,6 +35,11 @@ export class UserRepository extends Repository<User> {
   async getUserById(id: number): Promise<User> {
     const found = await this.createQueryBuilder('users')
       .leftJoinAndSelect('users.socials', 'socials')
+      .leftJoinAndSelect('users.recipeLikes', 'recipeLikes')
+      .leftJoinAndSelect('recipeLikes.recipe', 'recipe')
+      .leftJoinAndSelect('recipe.ingredients', 'ingredients')
+      .leftJoinAndSelect('recipe.recipeDescriptions', 'recipeDescriptions')
+      .leftJoinAndSelect('recipe.tags', 'tags')
       .where('users.id = :id', { id })
       .getOne();
 
@@ -99,7 +104,14 @@ export class UserRepository extends Repository<User> {
     authCredentialsDto: AuthCredentialsDto,
   ): Promise<string> {
     const { email, password } = authCredentialsDto;
-    const user = await this.findOne({ email });
+
+    // select: falseの要素を明示的に返して、getOne()する
+    const user = await this.createQueryBuilder('users')
+      .addSelect('users.email')
+      .addSelect('users.password')
+      .addSelect('users.salt')
+      .where('users.email = :email', { email })
+      .getOne();
 
     if (user && (await user.validatePassword(password))) {
       return user.email;
