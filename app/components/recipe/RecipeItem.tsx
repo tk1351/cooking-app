@@ -62,6 +62,7 @@ const RecipeItem: VFC<Props> = ({ recipe }) => {
           </Typography>
           {recipe.tags.map((tag) => (
             <Button
+              key={tag.id}
               size="small"
               color="primary"
               onClick={() => onClick(tag.name)}

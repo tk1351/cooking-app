@@ -30,6 +30,23 @@ export const createRecipe = createAsyncThunk<
   }
 })
 
+export const likeRecipe = createAsyncThunk<
+  MyKnownMessage,
+  number,
+  AsyncThunkConfig<MyKnownError>
+>('recipe/likeRecipe', async (id, { rejectWithValue }) => {
+  try {
+    const token = localStorage.getItem('token')
+    const url = `/api/recipes/${id}/like`
+    const res = await axios.post<MyKnownMessage>(url, id, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return res.data
+  } catch (error) {
+    return rejectWithValue(error.response.data)
+  }
+})
+
 export const updateRecipe = createAsyncThunk<
   IRecipe,
   { postData: IUpdateRecipeInputs; id: number },
@@ -64,6 +81,23 @@ export const deleteRecipe = createAsyncThunk<
   }
 })
 
+export const unlikeRecipe = createAsyncThunk<
+  MyKnownMessage,
+  number,
+  AsyncThunkConfig<MyKnownError>
+>('recipe/unlikeRecipe', async (id, { rejectWithValue }) => {
+  try {
+    const token = localStorage.getItem('token')
+    const url = `/api/recipes/${id}/unlike`
+    const res = await axios.delete<MyKnownMessage>(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    return res.data
+  } catch (error) {
+    return rejectWithValue(error.response.data)
+  }
+})
+
 const recipeSlice = createSlice({
   name: 'recipe',
   initialState,
@@ -87,6 +121,24 @@ const recipeSlice = createSlice({
         state.loading = false
       }
     })
+
+    // お気に入りする
+    builder.addCase(likeRecipe.pending, (state) => {
+      state.status = 'loading'
+    })
+    builder.addCase(likeRecipe.fulfilled, (state, action) => {
+      state.status = 'succeeded'
+      state.loading = false
+      state.error = null
+    })
+    builder.addCase(likeRecipe.rejected, (state, action) => {
+      if (action.payload) {
+        state.status = 'failed'
+        state.loading = false
+        state.error = action.payload
+      }
+    })
+
     // レシピを更新する
     builder.addCase(updateRecipe.pending, (state) => {
       state.status = 'loading'
@@ -116,6 +168,23 @@ const recipeSlice = createSlice({
         state.status = 'failed'
         state.error = action.payload
         state.loading = false
+      }
+    })
+
+    // お気に入りを解除する
+    builder.addCase(unlikeRecipe.pending, (state) => {
+      state.status = 'loading'
+    })
+    builder.addCase(unlikeRecipe.fulfilled, (state, action) => {
+      state.status = 'succeeded'
+      state.loading = false
+      state.error = null
+    })
+    builder.addCase(unlikeRecipe.rejected, (state, action) => {
+      if (action.payload) {
+        state.status = 'failed'
+        state.loading = false
+        state.error = action.payload
       }
     })
   },

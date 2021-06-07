@@ -1,4 +1,4 @@
-import React, { VFC } from 'react'
+import React, { VFC, useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { format } from 'date-fns'
 import {
@@ -12,9 +12,14 @@ import {
   makeStyles,
 } from '@material-ui/core'
 import Link from 'next/link'
+import { unwrapResult } from '@reduxjs/toolkit'
 import { useAppDispatch, useAppSelector } from '../../re-ducks/hooks'
-import { deleteRecipe } from '../../re-ducks/recipe/recipeSlice'
-import { selectUserRole } from '../../re-ducks/auth/authSlice'
+import {
+  deleteRecipe,
+  likeRecipe,
+  unlikeRecipe,
+} from '../../re-ducks/recipe/recipeSlice'
+import { selectUserRole, selectUserId } from '../../re-ducks/auth/authSlice'
 import { IRecipe } from '../../re-ducks/recipe/type'
 
 const useStyles = makeStyles({
@@ -33,6 +38,9 @@ const Recipe: VFC<Props> = ({ recipe }) => {
   const classes = useStyles()
 
   const userRole = useAppSelector(selectUserRole)
+  const userId = useAppSelector(selectUserId)
+
+  const [isLiked, setIsLiked] = useState(false)
 
   const router = useRouter()
 
@@ -42,6 +50,67 @@ const Recipe: VFC<Props> = ({ recipe }) => {
       router.push('/')
     }
   }
+
+  const onClick = async (name: string) => {
+    router.push({
+      pathname: '/tag',
+      query: { name },
+    })
+  }
+
+  const onLikeRecipeClicked = async (id: number) => {
+    const resultAction = await dispatch(likeRecipe(id))
+    if (likeRecipe.fulfilled.match(resultAction)) {
+      unwrapResult(resultAction)
+      setIsLiked(true)
+    }
+  }
+
+  const onUnlikeRecipeClicked = async (id: number) => {
+    const resultAction = await dispatch(unlikeRecipe(id))
+    if (unlikeRecipe.fulfilled.match(resultAction)) {
+      unwrapResult(resultAction)
+      setIsLiked(false)
+    }
+  }
+
+  const likeButton = (
+    <Button
+      size="small"
+      color="primary"
+      onClick={() => onLikeRecipeClicked(recipe.id)}
+    >
+      ○
+    </Button>
+  )
+
+  const unLikeButton = (
+    <Button
+      size="small"
+      color="primary"
+      onClick={() => onUnlikeRecipeClicked(recipe.id)}
+    >
+      ✖️
+    </Button>
+  )
+
+  const ChangeLikedState = () => {
+    if (isLiked === false) {
+      return likeButton
+    } else {
+      return unLikeButton
+    }
+  }
+
+  useEffect(() => {
+    // userのuserIdがレシピのお気に入りにあるか判定
+    if (
+      userRole === 'user' &&
+      recipe.recipeLikes.some((elm) => elm.userId === userId)
+    ) {
+      setIsLiked(true)
+    }
+  }, [])
 
   return (
     <div>
@@ -85,14 +154,14 @@ const Recipe: VFC<Props> = ({ recipe }) => {
               補足：{recipe.remarks}
             </Typography>
             {recipe.tags.map((tag) => (
-              <Typography
+              <Button
                 key={tag.id}
-                variant="body2"
-                color="textSecondary"
-                component="p"
+                size="small"
+                color="primary"
+                onClick={() => onClick(tag.name)}
               >
-                タグ： {tag.name}
-              </Typography>
+                #{tag.name}
+              </Button>
             ))}
           </CardContent>
         </CardActionArea>
@@ -117,13 +186,7 @@ const Recipe: VFC<Props> = ({ recipe }) => {
           ) : (
             <></>
           )}
-          {userRole === 'user' ? (
-            <Button size="small" color="primary">
-              ♡
-            </Button>
-          ) : (
-            <></>
-          )}
+          {userRole === 'user' ? <ChangeLikedState /> : <></>}
         </CardActions>
       </Card>
       <Button onClick={() => router.push('/')}>一覧へ戻る</Button>
