@@ -52,7 +52,7 @@ const Navbar: VFC = () => {
       </div>
       <div>
         <Button color="inherit">
-          <Link href="/mypage">マイページ</Link>
+          <Link href={`user/${userId}`}>マイページ</Link>
         </Button>
         <Button color="inherit">
           <Link href={`/user/${userId}/likes`}>お気に入り</Link>
