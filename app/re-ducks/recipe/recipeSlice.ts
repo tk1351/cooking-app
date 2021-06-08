@@ -4,6 +4,7 @@ import { IRecipeState, IRecipe, IUpdateRecipeInputs } from './type'
 import { AsyncThunkConfig, RootState } from '../store'
 import { MyKnownError, MyKnownMessage } from '../defaultType'
 import { IRecipeInputs } from '../../components/form/type'
+import { setAuthToken } from '../../src/utils/setAuthToken'
 
 const initialState: IRecipeState = {
   recipe: null,
@@ -19,11 +20,11 @@ export const createRecipe = createAsyncThunk<
   AsyncThunkConfig<MyKnownError>
 >('recipe/createRecipe', async (recipeData, { rejectWithValue }) => {
   try {
-    const token = localStorage.getItem('token')
+    if (localStorage.token) {
+      setAuthToken(localStorage.token)
+    }
     const url = '/api/recipes'
-    const res = await axios.post<IRecipe>(url, recipeData, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    const res = await axios.post<IRecipe>(url, recipeData)
     return res.data
   } catch (error) {
     return rejectWithValue(error.response.data)
@@ -36,11 +37,11 @@ export const likeRecipe = createAsyncThunk<
   AsyncThunkConfig<MyKnownError>
 >('recipe/likeRecipe', async (id, { rejectWithValue }) => {
   try {
-    const token = localStorage.getItem('token')
+    if (localStorage.token) {
+      setAuthToken(localStorage.token)
+    }
     const url = `/api/recipes/${id}/like`
-    const res = await axios.post<MyKnownMessage>(url, id, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    const res = await axios.post<MyKnownMessage>(url, id)
     return res.data
   } catch (error) {
     return rejectWithValue(error.response.data)
@@ -53,11 +54,11 @@ export const updateRecipe = createAsyncThunk<
   AsyncThunkConfig<MyKnownError>
 >('recipe/updateRecipe', async ({ postData, id }, { rejectWithValue }) => {
   try {
-    const token = localStorage.getItem('token')
+    if (localStorage.token) {
+      setAuthToken(localStorage.token)
+    }
     const url = `/api/recipes/${id}`
-    const res = await axios.patch<IRecipe>(url, postData, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    const res = await axios.patch<IRecipe>(url, postData)
     return res.data
   } catch (error) {
     return rejectWithValue(error.response.data)
@@ -70,11 +71,11 @@ export const deleteRecipe = createAsyncThunk<
   AsyncThunkConfig<MyKnownError>
 >('recipe/deleteRecipe', async (id, { rejectWithValue }) => {
   try {
-    const token = localStorage.getItem('token')
+    if (localStorage.token) {
+      setAuthToken(localStorage.token)
+    }
     const url = `/api/recipes/${id}`
-    const res = await axios.delete<MyKnownMessage>(url, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    const res = await axios.delete<MyKnownMessage>(url)
     return { message: res.data, id }
   } catch (error) {
     return rejectWithValue(error.response.data)
@@ -87,11 +88,11 @@ export const unlikeRecipe = createAsyncThunk<
   AsyncThunkConfig<MyKnownError>
 >('recipe/unlikeRecipe', async (id, { rejectWithValue }) => {
   try {
-    const token = localStorage.getItem('token')
+    if (localStorage.token) {
+      setAuthToken(localStorage.token)
+    }
     const url = `/api/recipes/${id}/unlike`
-    const res = await axios.delete<MyKnownMessage>(url, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    const res = await axios.delete<MyKnownMessage>(url)
     return res.data
   } catch (error) {
     return rejectWithValue(error.response.data)

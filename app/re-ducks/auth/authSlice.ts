@@ -3,6 +3,7 @@ import axios from 'axios'
 import { AsyncThunkConfig, RootState } from '../store'
 import { IAuthState, ILoginUser, IRegisterUser } from './type'
 import { MyKnownError, MyKnownMessage } from '../defaultType'
+import { setAuthToken } from '../../src/utils/setAuthToken'
 
 const initialState: IAuthState = {
   auth: {
@@ -22,15 +23,15 @@ export const fetchCurrentUser = createAsyncThunk<
   AsyncThunkConfig<MyKnownError>
 >('auth/loadUser', async (_, { rejectWithValue }) => {
   try {
+    if (localStorage.token) {
+      setAuthToken(localStorage.token)
+    }
     const url = '/api/auth'
-    const token = localStorage.getItem('token')
     const res = await axios.get<{
       id: number
       name: string
       role: 'admin' | 'user'
-    }>(url, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    }>(url)
     return res.data
   } catch (error) {
     return rejectWithValue(error.response.data)
