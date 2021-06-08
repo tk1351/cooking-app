@@ -18,6 +18,7 @@ import {
   useFieldArray,
 } from 'react-hook-form'
 import { PhotoCamera } from '@material-ui/icons'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { unwrapResult } from '@reduxjs/toolkit'
 import TextForm from '../form/TextForm'
 import FormButton from '../form/FormButton'
@@ -25,6 +26,7 @@ import { useAppDispatch } from '../../re-ducks/hooks'
 import { updateRecipe } from '../../re-ducks/recipe/recipeSlice'
 import { IRecipe, IUpdateRecipeInputs } from '../../re-ducks/recipe/type'
 import { firebaseStorage } from '../../src/utils/firebase'
+import { recipeValidationSchema } from '../form/validations/recipeValidation'
 
 type Props = {
   recipe: IRecipe
@@ -53,6 +55,7 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
 
   const { control, handleSubmit } = useForm<IUpdateRecipeInputs>({
     defaultValues,
+    resolver: yupResolver(recipeValidationSchema),
   })
 
   const {
