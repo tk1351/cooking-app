@@ -1,7 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { AsyncThunkConfig, RootState } from '../store'
-import { IAuthState, ILoginUser, IRegisterUser } from './type'
+import {
+  IAuthState,
+  ILoginUser,
+  IRegisterUser,
+  IUpdateUserProfileInputs,
+  IUser,
+} from './type'
 import { MyKnownError, MyKnownMessage } from '../defaultType'
 import { setAuthToken } from '../../src/utils/setAuthToken'
 
@@ -66,6 +72,23 @@ export const loginUser = createAsyncThunk<
     localStorage.setItem('token', accessToken)
 
     return { accessToken }
+  } catch (error) {
+    return rejectWithValue(error.response.data)
+  }
+})
+
+export const updateUserProfile = createAsyncThunk<
+  IUser,
+  { profile: IUpdateUserProfileInputs; id: number },
+  AsyncThunkConfig<MyKnownError>
+>('auth/updateUserProfile', async ({ profile, id }, { rejectWithValue }) => {
+  try {
+    if (localStorage.token) {
+      setAuthToken(localStorage.token)
+    }
+    const url = `/api/users/user/${id}/profile`
+    const res = await axios.patch<IUser>(url, profile)
+    return res.data
   } catch (error) {
     return rejectWithValue(error.response.data)
   }
@@ -144,6 +167,17 @@ const authSlice = createSlice({
         state.auth.loading = false
         state.error = action.payload
       }
+    })
+
+    // userのプロフィール更新
+    builder.addCase(updateUserProfile.pending, (state) => {
+      state.status = 'loading'
+    })
+    builder.addCase(updateUserProfile.fulfilled, (state) => {
+      state.status = 'succeeded'
+    })
+    builder.addCase(updateUserProfile.rejected, (state) => {
+      state.status = 'failed'
     })
   },
 })

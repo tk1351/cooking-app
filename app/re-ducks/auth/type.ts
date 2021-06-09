@@ -41,3 +41,9 @@ export interface ILoginUser {
   email: string
   password: string
 }
+
+export interface IUpdateUserProfileInputs {
+  name: string
+  favoriteDish: string
+  specialDish: string
+}

@@ -1,15 +1,15 @@
 import React, { VFC } from 'react'
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next'
 import axios from 'axios'
-import Navbar from '../../components/common/Navbar'
-import { IUser } from '../../re-ducks/auth/type'
-import MyPage from '../../components/user/MyPage'
+import { IUser } from '../../../re-ducks/auth/type'
+import Navbar from '../../../components/common/Navbar'
+import EditProfileForm from '../../../components/user/EditProfileForm'
 
-const userId: VFC<Props> = (props) => {
+const edit: VFC<Props> = (props) => {
   return (
     <div>
       <Navbar />
-      <MyPage user={props} />
+      <EditProfileForm user={props} />
     </div>
   )
 }
@@ -38,4 +38,4 @@ export const getStaticProps: GetStaticProps<IUser, { userId: string }> = async (
 
 type Props = InferGetStaticPropsType<typeof getStaticProps>
 
-export default userId
+export default edit

@@ -7,8 +7,7 @@ type Props = {
   user: IUser
 }
 
-const MyPage: VFC<Props> = (props) => {
-  const { user } = props
+const MyPage: VFC<Props> = ({ user }) => {
   return (
     <div>
       <h1>マイページ</h1>
@@ -22,7 +21,7 @@ const MyPage: VFC<Props> = (props) => {
         得意料理:{user.specialDish}
       </Typography>
       <Button size="small" color="primary" type="button" variant="contained">
-        <Link href={`user/${user.id}/edit`}>プロフィール編集</Link>
+        <Link href={`${user.id}/edit`}>プロフィール編集</Link>
       </Button>
     </div>
   )
