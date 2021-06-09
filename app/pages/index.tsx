@@ -1,8 +1,8 @@
 import { VFC } from 'react'
+import { InferGetStaticPropsType } from 'next'
 import axios from 'axios'
 import Navbar from '../components/common/Navbar'
 import Home from '../components/common/Home'
-import { InferGetStaticPropsType } from 'next'
 import { IRecipe } from '../re-ducks/recipe/type'
 
 const index: VFC<Props> = (props) => {
