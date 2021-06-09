@@ -18,6 +18,7 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { GetUser } from './get-user.decorator';
 import { MyKnownMessage } from '../message.interface';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
 
 @Controller('users')
 export class UsersController {
@@ -54,14 +55,24 @@ export class UsersController {
     return this.usersService.login(authCredentialsDto);
   }
 
-  @Patch('/:id/profile')
+  @Patch('/admin/:id/profile')
   @UseGuards(AuthGuard())
-  updateUserProfile(
+  updateAdminProfile(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) updateProfileDto: UpdateProfileDto,
     @GetUser() user: User,
   ): Promise<User> {
-    return this.usersService.updateUserProfile(id, updateProfileDto, user);
+    return this.usersService.updateAdminProfile(id, updateProfileDto, user);
+  }
+
+  @Patch('/user/:id/profile')
+  @UseGuards(AuthGuard())
+  updateUserProfile(
+    @Param('id', ParseIntPipe) id: number,
+    @Body(ValidationPipe) updateUserProfileDto: UpdateUserProfileDto,
+    @GetUser() user: User,
+  ): Promise<User> {
+    return this.usersService.updateUserProfile(id, updateUserProfileDto, user);
   }
 
   @Delete('/:id')
