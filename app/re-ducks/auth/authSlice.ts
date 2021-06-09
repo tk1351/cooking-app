@@ -7,6 +7,7 @@ import {
   IRegisterUser,
   IUpdateUserProfileInputs,
   IUser,
+  IUpdateAdminProfileInputs,
 } from './type'
 import { MyKnownError, MyKnownMessage } from '../defaultType'
 import { setAuthToken } from '../../src/utils/setAuthToken'
@@ -72,6 +73,23 @@ export const loginUser = createAsyncThunk<
     localStorage.setItem('token', accessToken)
 
     return { accessToken }
+  } catch (error) {
+    return rejectWithValue(error.response.data)
+  }
+})
+
+export const updateAdminProfile = createAsyncThunk<
+  IUser,
+  { profile: IUpdateAdminProfileInputs; id: number },
+  AsyncThunkConfig<MyKnownError>
+>('auth/updateAdminProfile', async ({ profile, id }, { rejectWithValue }) => {
+  try {
+    if (localStorage.token) {
+      setAuthToken(localStorage.token)
+    }
+    const url = `/api/users/admin/${id}/profile`
+    const res = await axios.patch<IUser>(url, profile)
+    return res.data
   } catch (error) {
     return rejectWithValue(error.response.data)
   }
@@ -169,6 +187,20 @@ const authSlice = createSlice({
       }
     })
 
+    // adminのプロフィール更新
+    builder.addCase(updateAdminProfile.pending, (state) => {
+      state.status = 'loading'
+    })
+    builder.addCase(updateAdminProfile.fulfilled, (state) => {
+      state.status = 'succeeded'
+    })
+    builder.addCase(updateAdminProfile.rejected, (state, action) => {
+      if (action.payload) {
+        state.status = 'failed'
+        state.error = action.payload
+      }
+    })
+
     // userのプロフィール更新
     builder.addCase(updateUserProfile.pending, (state) => {
       state.status = 'loading'
@@ -176,8 +208,11 @@ const authSlice = createSlice({
     builder.addCase(updateUserProfile.fulfilled, (state) => {
       state.status = 'succeeded'
     })
-    builder.addCase(updateUserProfile.rejected, (state) => {
-      state.status = 'failed'
+    builder.addCase(updateUserProfile.rejected, (state, action) => {
+      if (action.payload) {
+        state.status = 'failed'
+        state.error = action.payload
+      }
     })
   },
 })

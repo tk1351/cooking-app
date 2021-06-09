@@ -71,7 +71,7 @@ const Navbar: VFC = () => {
       </div>
       <div>
         <Button color="inherit">
-          <Link href="/mypage">マイページ</Link>
+          <Link href={`/admin/${userId}`}>マイページ</Link>
         </Button>
         <Button color="inherit">
           <Link href="/admin/recipeform">レシピ投稿</Link>
