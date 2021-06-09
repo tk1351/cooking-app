@@ -112,6 +112,23 @@ export const updateUserProfile = createAsyncThunk<
   }
 })
 
+export const deleteUserWithAdminPriviledge = createAsyncThunk<
+  MyKnownMessage,
+  number,
+  AsyncThunkConfig<MyKnownError>
+>('auth/deleteUserWithAdminPriviledge', async (id, { rejectWithValue }) => {
+  try {
+    if (localStorage.token) {
+      setAuthToken(localStorage.token)
+    }
+    const url = `/api/users/${id}/admin`
+    const res = await axios.delete<MyKnownMessage>(url)
+    return res.data
+  } catch (error) {
+    return rejectWithValue(error.response.data)
+  }
+})
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -212,6 +229,22 @@ const authSlice = createSlice({
       if (action.payload) {
         state.status = 'failed'
         state.error = action.payload
+      }
+    })
+
+    // admin権限でuserを削除
+    builder.addCase(deleteUserWithAdminPriviledge.pending, (state) => {
+      state.status = 'loading'
+    })
+    builder.addCase(deleteUserWithAdminPriviledge.fulfilled, (state) => {
+      state.status = 'succeeded'
+      state.auth.loading = false
+    })
+    builder.addCase(deleteUserWithAdminPriviledge.rejected, (state, action) => {
+      if (action.payload) {
+        state.status = 'failed'
+        state.error = action.payload
+        state.auth.loading = false
       }
     })
   },

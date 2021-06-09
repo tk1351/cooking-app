@@ -37,10 +37,10 @@ const AdminPage: VFC<Props> = ({ user }) => {
         </Typography>
       ))}
       <Button size="small" color="primary" type="button" variant="contained">
-        <Link href={`${user.id}/edit`}>プロフィール編集</Link>
+        <Link href={`/admin/${user.id}/edit`}>プロフィール編集</Link>
       </Button>
       <Button size="small" color="primary" type="button" variant="contained">
-        <Link href="users/list">ユーザー一覧へ</Link>
+        <Link href="/admin/users/list">ユーザー一覧へ</Link>
       </Button>
     </div>
   )

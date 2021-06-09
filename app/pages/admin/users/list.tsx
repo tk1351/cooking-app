@@ -6,7 +6,6 @@ import Navbar from '../../../components/common/Navbar'
 import UsersList from '../../../components/admin/UsersList'
 
 const list: VFC<Props> = (props) => {
-  console.log('props', props)
   return (
     <div>
       <Navbar />
