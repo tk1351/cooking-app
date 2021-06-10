@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { v4 as uuidv4 } from 'uuid'
 import { ILoginUser } from '../../re-ducks/auth/type'
 import { useAppDispatch } from '../../re-ducks/hooks'
 import { loginUser, fetchCurrentUser } from '../../re-ducks/auth/authSlice'
@@ -12,6 +13,8 @@ import TextForm from '../form/TextForm'
 import FormButton from '../form/FormButton'
 import { loginValidationSchema } from '../form/validations/loginValidation'
 import Alert from '../common/Alert'
+import { setAlert, removeAlert } from '../../re-ducks/alert/alertSlice'
+import { MyKnownError } from '../../re-ducks/defaultType'
 
 interface ILoginInputs {
   email: string
@@ -42,6 +45,17 @@ const Login: VFC = () => {
 
       await dispatch(fetchCurrentUser())
       await router.push('/')
+    } else if (loginUser.rejected.match(resultAction)) {
+      const payload = resultAction.payload as MyKnownError
+      const alertId = uuidv4()
+      dispatch(
+        setAlert({
+          alertId,
+          msg: payload.message as string,
+          alertType: 'failed',
+        })
+      )
+      setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
     }
   }
 
