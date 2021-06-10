@@ -44,13 +44,6 @@ const Recipe: VFC<Props> = ({ recipe }) => {
 
   const router = useRouter()
 
-  const onDeleteRecipeClicked = async (id: number) => {
-    if (window.confirm('レシピを削除してもよろしいですか？')) {
-      await dispatch(deleteRecipe(id))
-      router.push('/')
-    }
-  }
-
   const onClick = async (name: string) => {
     router.push({
       pathname: '/tag',
@@ -174,13 +167,8 @@ const Recipe: VFC<Props> = ({ recipe }) => {
               <Button size="small" color="primary">
                 <Link href={`/recipe/edit/${recipe.id}`}>編集</Link>
               </Button>
-              <Button
-                onClick={() => onDeleteRecipeClicked(recipe.id)}
-                size="small"
-                color="primary"
-                type="button"
-              >
-                削除
+              <Button size="small" color="primary" type="button">
+                <Link href={`/admin/recipe/${recipe.id}`}>削除</Link>
               </Button>
             </>
           ) : (

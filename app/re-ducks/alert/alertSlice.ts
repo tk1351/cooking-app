@@ -4,9 +4,9 @@ import { IAlertState } from './type'
 
 const initialState: IAlertState[] = [
   {
-    id: '',
+    alertId: '',
     msg: '',
-    alertType: '',
+    alertType: undefined,
   },
 ]
 
@@ -17,8 +17,8 @@ export const alertSlice = createSlice({
     setAlert: (state, action: PayloadAction<IAlertState>) => {
       return [...state, action.payload]
     },
-    removeAlert: (state, action: PayloadAction<{ id: string }>) => {
-      return state.filter((alert) => alert.id !== action.payload.id)
+    removeAlert: (state, action: PayloadAction<{ alertId: string }>) => {
+      return state.filter((alert) => alert.alertId !== action.payload.alertId)
     },
   },
 })
@@ -27,14 +27,3 @@ export const { setAlert, removeAlert } = alertSlice.actions
 export const selectAlert = (state: RootState) => state.alert
 
 export default alertSlice.reducer
-
-// const alertCheck = async () => {
-//   await dispatch(
-//     setAlert({
-//       id: '1',
-//       msg: '動作確認',
-//       alertType: 'ok',
-//     })
-//   )
-//   setTimeout(async () => await dispatch(removeAlert({ id: '1' })), 3000)
-// }

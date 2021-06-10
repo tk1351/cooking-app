@@ -36,12 +36,6 @@ const RecipeItem: VFC<Props> = ({ recipe }) => {
   const dispatch = useAppDispatch()
   const userRole = useAppSelector(selectUserRole)
 
-  const onDeleteRecipeClicked = async () => {
-    if (window.confirm('レシピを削除してもよろしいですか？')) {
-      await dispatch(deleteRecipe(recipe.id))
-    }
-  }
-
   const onClick = async (name: string) => {
     router.push({
       pathname: '/tag',
@@ -84,13 +78,8 @@ const RecipeItem: VFC<Props> = ({ recipe }) => {
             <Button size="small" color="primary">
               <Link href={`/recipe/edit/${recipe.id}`}>編集</Link>
             </Button>
-            <Button
-              onClick={onDeleteRecipeClicked}
-              size="small"
-              color="primary"
-              type="button"
-            >
-              削除
+            <Button size="small" color="primary" type="button">
+              <Link href={`/admin/recipe/${recipe.id}`}>削除</Link>
             </Button>
           </>
         ) : (

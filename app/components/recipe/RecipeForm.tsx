@@ -18,6 +18,7 @@ import { PhotoCamera } from '@material-ui/icons'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { useRouter } from 'next/router'
+import { v4 as uuidv4 } from 'uuid'
 import { useIsAdmin } from '../common/useIsAdmin'
 import TextForm from '../form/TextForm'
 import FormButton from '../form/FormButton'
@@ -26,6 +27,9 @@ import { useAppDispatch } from '../../re-ducks/hooks'
 import { createRecipe } from '../../re-ducks/recipe/recipeSlice'
 import { IRecipeInputs } from '../form/type'
 import { firebaseStorage } from '../../src/utils/firebase'
+import { setAlert, removeAlert } from '../../re-ducks/alert/alertSlice'
+import { MyKnownError } from '../../re-ducks/defaultType'
+import Alert from '../common/Alert'
 
 const defaultValues: IRecipeInputs = {
   name: '',
@@ -119,7 +123,29 @@ const RecipeForm: VFC = () => {
         const resultAction = await dispatch(createRecipe(newData))
         if (createRecipe.fulfilled.match(resultAction)) {
           unwrapResult(resultAction)
-          router.push('/')
+
+          const alertId = uuidv4()
+          dispatch(
+            setAlert({
+              alertId,
+              msg: 'レシピを投稿しました',
+              alertType: 'succeeded',
+            })
+          )
+          setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
+
+          await router.push('/')
+        } else if (createRecipe.rejected.match(resultAction)) {
+          const payload = resultAction.payload as MyKnownError
+          const alertId = uuidv4()
+          dispatch(
+            setAlert({
+              alertId,
+              msg: payload.message as string,
+              alertType: 'failed',
+            })
+          )
+          setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
         }
       } catch (error) {
         console.error(error)
@@ -129,6 +155,7 @@ const RecipeForm: VFC = () => {
 
   return (
     <div>
+      <Alert />
       <h1>レシピ投稿</h1>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Controller

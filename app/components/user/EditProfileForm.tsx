@@ -2,12 +2,16 @@ import React, { VFC } from 'react'
 import { useRouter } from 'next/router'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { unwrapResult } from '@reduxjs/toolkit'
+import { v4 as uuidv4 } from 'uuid'
 import { IUser, IUpdateUserProfileInputs } from '../../re-ducks/auth/type'
 import TextForm from '../form/TextForm'
 import FormButton from '../form/FormButton'
 import { Button } from '@material-ui/core'
 import { useAppDispatch } from '../../re-ducks/hooks'
 import { updateUserProfile } from '../../re-ducks/auth/authSlice'
+import { setAlert, removeAlert } from '../../re-ducks/alert/alertSlice'
+import { MyKnownError } from '../../re-ducks/defaultType'
+import Alert from '../common/Alert'
 
 type Props = {
   user: IUser
@@ -33,12 +37,35 @@ const EditProfileForm: VFC<Props> = ({ user }) => {
     )
     if (updateUserProfile.fulfilled.match(resultAction)) {
       unwrapResult(resultAction)
-      router.push(`/user/${user.id}`)
+
+      const alertId = uuidv4()
+      dispatch(
+        setAlert({
+          alertId,
+          msg: 'プロフィールを更新しました',
+          alertType: 'succeeded',
+        })
+      )
+      setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
+
+      await router.push(`/user/${user.id}`)
+    } else if (updateUserProfile.rejected.match(resultAction)) {
+      const payload = resultAction.payload as MyKnownError
+      const alertId = uuidv4()
+      dispatch(
+        setAlert({
+          alertId,
+          msg: payload.message as string,
+          alertType: 'failed',
+        })
+      )
+      setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
     }
   }
 
   return (
     <div>
+      <Alert />
       <h1>プロフィール編集</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Controller

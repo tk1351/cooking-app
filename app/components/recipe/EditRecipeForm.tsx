@@ -20,6 +20,7 @@ import {
 import { PhotoCamera } from '@material-ui/icons'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { unwrapResult } from '@reduxjs/toolkit'
+import { v4 as uuidv4 } from 'uuid'
 import TextForm from '../form/TextForm'
 import FormButton from '../form/FormButton'
 import { useAppDispatch } from '../../re-ducks/hooks'
@@ -27,6 +28,9 @@ import { updateRecipe } from '../../re-ducks/recipe/recipeSlice'
 import { IRecipe, IUpdateRecipeInputs } from '../../re-ducks/recipe/type'
 import { firebaseStorage } from '../../src/utils/firebase'
 import { recipeValidationSchema } from '../form/validations/recipeValidation'
+import { setAlert, removeAlert } from '../../re-ducks/alert/alertSlice'
+import { MyKnownError } from '../../re-ducks/defaultType'
+import Alert from '../common/Alert'
 
 type Props = {
   recipe: IRecipe
@@ -98,6 +102,7 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
   const onSubmit: SubmitHandler<IUpdateRecipeInputs> = async (data) => {
     let imageUrl = ''
 
+    // 画像を更新する場合
     if (recipeImage !== null) {
       const str =
         'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -125,11 +130,34 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
         )
         if (updateRecipe.fulfilled.match(resultAction)) {
           unwrapResult(resultAction)
-          router.push('/')
+
+          const alertId = uuidv4()
+          dispatch(
+            setAlert({
+              alertId,
+              msg: 'レシピを更新しました',
+              alertType: 'succeeded',
+            })
+          )
+          setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
+
+          await router.push('/')
+        } else if (updateRecipe.rejected.match(resultAction)) {
+          const payload = resultAction.payload as MyKnownError
+          const alertId = uuidv4()
+          dispatch(
+            setAlert({
+              alertId,
+              msg: payload.message as string,
+              alertType: 'failed',
+            })
+          )
+          setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
         }
       } catch (error) {
         console.error(error)
       }
+      // 画像を更新しない場合
     } else {
       try {
         const resultAction = await dispatch(
@@ -140,7 +168,29 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
         )
         if (updateRecipe.fulfilled.match(resultAction)) {
           unwrapResult(resultAction)
-          router.push('/')
+
+          const alertId = uuidv4()
+          dispatch(
+            setAlert({
+              alertId,
+              msg: 'レシピを更新しました',
+              alertType: 'succeeded',
+            })
+          )
+          setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
+
+          await router.push('/')
+        } else if (updateRecipe.rejected.match(resultAction)) {
+          const payload = resultAction.payload as MyKnownError
+          const alertId = uuidv4()
+          dispatch(
+            setAlert({
+              alertId,
+              msg: payload.message as string,
+              alertType: 'failed',
+            })
+          )
+          setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
         }
       } catch (error) {
         console.error(error)
@@ -150,6 +200,7 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
 
   return (
     <div>
+      <Alert />
       <h1>レシピ編集</h1>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Controller

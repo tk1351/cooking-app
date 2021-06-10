@@ -8,6 +8,7 @@ import {
 } from '../../re-ducks/auth/authSlice'
 import Recipes from '../recipe/Recipes'
 import { IRecipe } from '../../re-ducks/recipe/type'
+import Alert from './Alert'
 
 type Props = {
   recipes: IRecipe[]
@@ -58,6 +59,7 @@ const Home: VFC<Props> = (props) => {
 
       <main>
         <h1>Welcome to Cooking-app!</h1>
+        <Alert />
         {!loading && (
           <>
             <Views />
