@@ -2,7 +2,8 @@ import React, { VFC } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { unwrapResult } from '@reduxjs/toolkit'
-import { IRegisterUser } from '../../re-ducks/auth/type'
+import { v4 as uuidv4 } from 'uuid'
+import { IRegisterUser, IRegisterInputs } from '../../re-ducks/auth/type'
 import { useAppDispatch } from '../../re-ducks/hooks'
 import { registerUser } from '../../re-ducks/auth/authSlice'
 import { useIsAuthenticated } from '../common/useIsAuthenticated'
@@ -11,13 +12,9 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import TextForm from '../form/TextForm'
 import { registerValidationSchema } from '../form/validations/registerValidation'
 import FormButton from '../form/FormButton'
-
-interface IRegisterInputs {
-  name: string
-  email: string
-  password: string
-  confirmPassword: string
-}
+import { setAlert, removeAlert } from '../../re-ducks/alert/alertSlice'
+import Alert from '../common/Alert'
+import { MyKnownError } from '../../re-ducks/defaultType'
 
 const defaultValues: IRegisterInputs = {
   name: '',
@@ -47,12 +44,30 @@ const Register: VFC = () => {
     if (registerUser.fulfilled.match(resultAction)) {
       unwrapResult(resultAction)
 
+      const id = uuidv4()
+      dispatch(
+        setAlert({
+          id,
+          msg: resultAction.payload.message,
+          alertType: 'succeeded',
+        })
+      )
+      setTimeout(() => dispatch(removeAlert({ id })), 5000)
+
       await router.push('/login')
+    } else if (registerUser.rejected.match(resultAction)) {
+      const payload = resultAction.payload as MyKnownError
+      const id = uuidv4()
+      dispatch(
+        setAlert({ id, msg: payload.message as string, alertType: 'failed' })
+      )
+      setTimeout(() => dispatch(removeAlert({ id })), 5000)
     }
   }
 
   return (
     <>
+      <Alert />
       <h1>ユーザー登録</h1>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Controller

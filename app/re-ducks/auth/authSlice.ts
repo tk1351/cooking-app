@@ -53,8 +53,7 @@ export const registerUser = createAsyncThunk<
   try {
     const url = '/api/users/register'
     const res = await axios.post<MyKnownMessage>(url, userData)
-    const message: MyKnownMessage = { message: res.data.message }
-    return message
+    return res.data
   } catch (error) {
     localStorage.removeItem('token')
     return rejectWithValue(error.response.data)

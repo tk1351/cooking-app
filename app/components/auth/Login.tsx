@@ -11,6 +11,7 @@ import { useIsAuthenticated } from '../common/useIsAuthenticated'
 import TextForm from '../form/TextForm'
 import FormButton from '../form/FormButton'
 import { loginValidationSchema } from '../form/validations/loginValidation'
+import Alert from '../common/Alert'
 
 interface ILoginInputs {
   email: string
@@ -46,6 +47,7 @@ const Login: VFC = () => {
 
   return (
     <>
+      <Alert />
       <h1>ログイン</h1>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Controller

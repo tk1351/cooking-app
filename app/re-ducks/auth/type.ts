@@ -55,3 +55,10 @@ export interface IUpdateUserProfileInputs {
   favoriteDish: string
   specialDish: string
 }
+
+export interface IRegisterInputs {
+  name: string
+  email: string
+  password: string
+  confirmPassword: string
+}
