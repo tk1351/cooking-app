@@ -13,14 +13,13 @@ import {
 } from '@material-ui/core'
 import Link from 'next/link'
 import { unwrapResult } from '@reduxjs/toolkit'
+import { v4 as uuidv4 } from 'uuid'
 import { useAppDispatch, useAppSelector } from '../../re-ducks/hooks'
-import {
-  deleteRecipe,
-  likeRecipe,
-  unlikeRecipe,
-} from '../../re-ducks/recipe/recipeSlice'
+import { likeRecipe, unlikeRecipe } from '../../re-ducks/recipe/recipeSlice'
 import { selectUserRole, selectUserId } from '../../re-ducks/auth/authSlice'
 import { IRecipe } from '../../re-ducks/recipe/type'
+import { setAlert, removeAlert } from '../../re-ducks/alert/alertSlice'
+import Alert from '../common/Alert'
 
 const useStyles = makeStyles({
   media: {
@@ -41,6 +40,9 @@ const Recipe: VFC<Props> = ({ recipe }) => {
   const userId = useAppSelector(selectUserId)
 
   const [isLiked, setIsLiked] = useState(false)
+  const [likedNumber, setLikedNumber] = useState(recipe.recipeLikes.length)
+
+  console.log('fav', likedNumber)
 
   const router = useRouter()
 
@@ -56,6 +58,17 @@ const Recipe: VFC<Props> = ({ recipe }) => {
     if (likeRecipe.fulfilled.match(resultAction)) {
       unwrapResult(resultAction)
       setIsLiked(true)
+
+      const alertId = uuidv4()
+      dispatch(
+        setAlert({
+          alertId,
+          msg: resultAction.payload.message,
+          alertType: 'succeeded',
+        })
+      )
+      setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
+      setLikedNumber((prev) => prev + 1)
     }
   }
 
@@ -63,7 +76,19 @@ const Recipe: VFC<Props> = ({ recipe }) => {
     const resultAction = await dispatch(unlikeRecipe(id))
     if (unlikeRecipe.fulfilled.match(resultAction)) {
       unwrapResult(resultAction)
+
+      const alertId = uuidv4()
+      dispatch(
+        setAlert({
+          alertId,
+          msg: resultAction.payload.message,
+          alertType: 'succeeded',
+        })
+      )
+      setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
+
       setIsLiked(false)
+      setLikedNumber((prev) => prev - 1)
     }
   }
 
@@ -174,7 +199,15 @@ const Recipe: VFC<Props> = ({ recipe }) => {
           ) : (
             <></>
           )}
-          {userRole === 'user' ? <ChangeLikedState /> : <></>}
+          {userRole === 'user' ? (
+            <>
+              <ChangeLikedState />
+              {likedNumber >= 1 && likedNumber}
+              <Alert />
+            </>
+          ) : (
+            <></>
+          )}
         </CardActions>
       </Card>
       <Button onClick={() => router.push('/')}>一覧へ戻る</Button>

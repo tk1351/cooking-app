@@ -14,7 +14,6 @@ import Link from 'next/link'
 import { IRecipe } from '../../re-ducks/recipe/type'
 import { useAppSelector, useAppDispatch } from '../../re-ducks/hooks'
 import { selectUserRole } from '../../re-ducks/auth/authSlice'
-import { deleteRecipe } from '../../re-ducks/recipe/recipeSlice'
 import { useRouter } from 'next/router'
 
 const useStyles = makeStyles({
