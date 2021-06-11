@@ -1,4 +1,4 @@
-import React, { VFC } from 'react'
+import React, { VFC, useState, useCallback } from 'react'
 import { format } from 'date-fns'
 import {
   Card,
@@ -9,10 +9,18 @@ import {
   CardActions,
   Button,
   makeStyles,
+  Menu,
+  MenuItem,
 } from '@material-ui/core'
 import Link from 'next/link'
+import {
+  TwitterShareButton,
+  TwitterIcon,
+  LineShareButton,
+  LineIcon,
+} from 'react-share'
 import { IRecipe } from '../../re-ducks/recipe/type'
-import { useAppSelector, useAppDispatch } from '../../re-ducks/hooks'
+import { useAppSelector } from '../../re-ducks/hooks'
 import { selectUserRole } from '../../re-ducks/auth/authSlice'
 import { useRouter } from 'next/router'
 
@@ -32,7 +40,6 @@ const RecipeItem: VFC<Props> = ({ recipe }) => {
 
   const router = useRouter()
 
-  const dispatch = useAppDispatch()
   const userRole = useAppSelector(selectUserRole)
 
   const onClick = async (name: string) => {
@@ -40,6 +47,42 @@ const RecipeItem: VFC<Props> = ({ recipe }) => {
       pathname: '/tag',
       query: { name },
     })
+  }
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const handleClick = (e: {
+    currentTarget: React.SetStateAction<HTMLElement | null>
+  }) => {
+    setAnchorEl(e.currentTarget)
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
+  const ShareField = () => {
+    const title = recipe.name
+    const url = `http://localhost:3000/recipe/${recipe.id}`
+    return (
+      <>
+        <Menu
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+          anchorEl={anchorEl}
+        >
+          <MenuItem>
+            <TwitterShareButton title={title} url={url}>
+              <TwitterIcon size={32} round={true} />
+            </TwitterShareButton>
+          </MenuItem>
+          <MenuItem>
+            <LineShareButton title={title} url={url}>
+              <LineIcon size={32} round={true} />
+            </LineShareButton>
+          </MenuItem>
+        </Menu>
+      </>
+    )
   }
 
   return (
@@ -66,9 +109,10 @@ const RecipeItem: VFC<Props> = ({ recipe }) => {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <Button size="small" color="primary">
+        <Button size="small" color="primary" onClick={handleClick}>
           Share
         </Button>
+        <ShareField />
         <Button size="small" color="primary">
           <Link href={`/recipe/${recipe.id}`}>詳細</Link>
         </Button>

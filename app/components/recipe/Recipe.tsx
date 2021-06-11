@@ -10,6 +10,8 @@ import {
   CardActions,
   Button,
   makeStyles,
+  Menu,
+  MenuItem,
 } from '@material-ui/core'
 import Link from 'next/link'
 import { unwrapResult } from '@reduxjs/toolkit'
@@ -20,6 +22,12 @@ import { selectUserRole, selectUserId } from '../../re-ducks/auth/authSlice'
 import { IRecipe } from '../../re-ducks/recipe/type'
 import { setAlert, removeAlert } from '../../re-ducks/alert/alertSlice'
 import Alert from '../common/Alert'
+import {
+  TwitterShareButton,
+  TwitterIcon,
+  LineShareButton,
+  LineIcon,
+} from 'react-share'
 
 const useStyles = makeStyles({
   media: {
@@ -42,8 +50,6 @@ const Recipe: VFC<Props> = ({ recipe }) => {
   const [isLiked, setIsLiked] = useState(false)
   const [likedNumber, setLikedNumber] = useState(recipe.recipeLikes.length)
 
-  console.log('fav', likedNumber)
-
   const router = useRouter()
 
   const onClick = async (name: string) => {
@@ -57,7 +63,7 @@ const Recipe: VFC<Props> = ({ recipe }) => {
     const resultAction = await dispatch(likeRecipe(id))
     if (likeRecipe.fulfilled.match(resultAction)) {
       unwrapResult(resultAction)
-      setIsLiked(true)
+      setIsLiked((prev) => !prev)
 
       const alertId = uuidv4()
       dispatch(
@@ -87,7 +93,7 @@ const Recipe: VFC<Props> = ({ recipe }) => {
       )
       setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
 
-      setIsLiked(false)
+      setIsLiked((prev) => !prev)
       setLikedNumber((prev) => prev - 1)
     }
   }
@@ -129,6 +135,43 @@ const Recipe: VFC<Props> = ({ recipe }) => {
       setIsLiked(true)
     }
   }, [])
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const handleClick = (e: {
+    currentTarget: React.SetStateAction<HTMLElement | null>
+  }) => {
+    setAnchorEl(e.currentTarget)
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
+  const ShareField = () => {
+    const title = recipe.name
+    const url = `http://localhost:3000/recipe/${recipe.id}`
+    return (
+      <>
+        <Menu
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+          anchorEl={anchorEl}
+        >
+          <MenuItem>
+            <TwitterShareButton title={title} url={url}>
+              <TwitterIcon size={32} round={true} />
+            </TwitterShareButton>
+          </MenuItem>
+          <MenuItem>
+            <LineShareButton title={title} url={url}>
+              <LineIcon size={32} round={true} />
+            </LineShareButton>
+          </MenuItem>
+        </Menu>
+      </>
+    )
+  }
 
   return (
     <div>
@@ -184,9 +227,10 @@ const Recipe: VFC<Props> = ({ recipe }) => {
           </CardContent>
         </CardActionArea>
         <CardActions>
-          <Button size="small" color="primary">
+          <Button size="small" color="primary" onClick={handleClick}>
             Share
           </Button>
+          <ShareField />
           {userRole === 'admin' ? (
             <>
               <Button size="small" color="primary">
