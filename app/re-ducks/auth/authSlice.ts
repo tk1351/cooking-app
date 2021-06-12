@@ -148,9 +148,9 @@ const authSlice = createSlice({
     })
     builder.addCase(fetchCurrentUser.fulfilled, (state, action) => {
       state.status = 'succeeded'
+      state.auth.user = action.payload
       state.auth.token = localStorage.getItem('token')
       state.auth.isAuthenticated = true
-      state.auth.user = action.payload
       state.auth.loading = false
     })
     builder.addCase(fetchCurrentUser.rejected, (state, action) => {
