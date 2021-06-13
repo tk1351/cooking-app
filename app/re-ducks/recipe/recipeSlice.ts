@@ -127,7 +127,7 @@ const recipeSlice = createSlice({
     builder.addCase(likeRecipe.pending, (state) => {
       state.status = 'loading'
     })
-    builder.addCase(likeRecipe.fulfilled, (state, action) => {
+    builder.addCase(likeRecipe.fulfilled, (state) => {
       state.status = 'succeeded'
       state.loading = false
       state.error = null
@@ -146,9 +146,15 @@ const recipeSlice = createSlice({
     })
     builder.addCase(updateRecipe.fulfilled, (state) => {
       state.status = 'succeeded'
+      state.loading = false
+      state.error = null
     })
-    builder.addCase(updateRecipe.rejected, (state) => {
-      state.status = 'failed'
+    builder.addCase(updateRecipe.rejected, (state, action) => {
+      if (action.payload) {
+        state.status = 'failed'
+        state.loading = false
+        state.error = action.payload
+      }
     })
 
     // レシピを削除する
