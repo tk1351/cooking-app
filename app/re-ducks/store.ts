@@ -3,12 +3,14 @@ import authReducer from './auth/authSlice'
 import recipeReducer from './recipe/recipeSlice'
 import alertReducer from './alert/alertSlice'
 
+export const reducer = {
+  auth: authReducer,
+  recipe: recipeReducer,
+  alert: alertReducer,
+}
+
 export const store = configureStore({
-  reducer: {
-    auth: authReducer,
-    recipe: recipeReducer,
-    alert: alertReducer,
-  },
+  reducer,
 })
 
 export type RootState = ReturnType<typeof store.getState>
