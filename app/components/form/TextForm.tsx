@@ -3,6 +3,8 @@ import { TextField } from '@material-ui/core'
 import { RefCallBack } from 'react-hook-form'
 
 interface ITextFormProps {
+  head: string
+  id: string
   label: string
   placeholder: string
   type: string
@@ -20,9 +22,11 @@ const TextForm: VFC<ITextFormProps> = (props) => {
   return (
     <div>
       <div>
-        <span>{props.label}</span>
+        <span>{props.head}</span>
       </div>
       <TextField
+        id={props.id}
+        label={props.label}
         placeholder={props.placeholder}
         type={props.type}
         name={props.name}
