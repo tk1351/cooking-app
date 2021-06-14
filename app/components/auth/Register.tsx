@@ -44,24 +44,28 @@ const Register: VFC = () => {
     if (registerUser.fulfilled.match(resultAction)) {
       unwrapResult(resultAction)
 
-      const id = uuidv4()
+      const alertId = uuidv4()
       dispatch(
         setAlert({
-          id,
+          alertId,
           msg: resultAction.payload.message,
           alertType: 'succeeded',
         })
       )
-      setTimeout(() => dispatch(removeAlert({ id })), 5000)
+      setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
 
       await router.push('/login')
     } else if (registerUser.rejected.match(resultAction)) {
       const payload = resultAction.payload as MyKnownError
-      const id = uuidv4()
+      const alertId = uuidv4()
       dispatch(
-        setAlert({ id, msg: payload.message as string, alertType: 'failed' })
+        setAlert({
+          alertId,
+          msg: payload.message as string,
+          alertType: 'failed',
+        })
       )
-      setTimeout(() => dispatch(removeAlert({ id })), 5000)
+      setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
     }
   }
 
