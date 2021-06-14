@@ -1,7 +1,7 @@
 import React, { VFC } from 'react'
 import { Button } from '@material-ui/core'
 
-interface IFormButtonProps {
+export interface IFormButtonProps {
   variant: 'contained' | 'outlined' | 'text'
   color: 'default' | 'inherit' | 'primary' | 'secondary'
   label: string
