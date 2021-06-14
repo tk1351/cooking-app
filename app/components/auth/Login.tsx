@@ -69,7 +69,9 @@ const Login: VFC = () => {
           control={control}
           render={({ field: { onChange, ref }, formState: { errors } }) => (
             <TextForm
+              head={'メールアドレス'}
               label={'メールアドレス'}
+              id="email"
               placeholder={'メールアドレスを入力してください'}
               type="email"
               name="email"
@@ -86,7 +88,9 @@ const Login: VFC = () => {
           control={control}
           render={({ field: { onChange, ref }, formState: { errors } }) => (
             <TextForm
+              head={'パスワード'}
               label={'パスワード'}
+              id="password"
               placeholder={'パスワードを入力してください'}
               type="text"
               name="password"
