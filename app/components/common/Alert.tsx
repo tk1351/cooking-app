@@ -4,8 +4,8 @@ import { selectAlert } from '../../re-ducks/alert/alertSlice'
 
 const Alert: VFC = () => {
   const alerts = useAppSelector(selectAlert)
-  const isAlert = alerts.map((alert) =>
-    alert.alertType ? <div key={alert.id}>{alert.msg}</div> : <></>
+  const isAlert = alerts.map(
+    (alert) => alert.alertType && <div key={alert.alertId}>{alert.msg}</div>
   )
   return <div>{isAlert}</div>
 }
