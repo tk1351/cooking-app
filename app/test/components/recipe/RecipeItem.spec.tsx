@@ -6,9 +6,9 @@ import React from 'react'
 import { screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { render } from '../../test-utils'
-import Recipe from '../../../components/recipe/Recipe'
-import { IRecipe } from '../../../re-ducks/recipe/type'
+import RecipeItem from '../../../components/recipe/RecipeItem'
 import { IUser, IAuthState } from '../../../re-ducks/auth/type'
+import { IRecipe } from '../../../re-ducks/recipe/type'
 
 const dummyUser: IUser = {
   id: 1,
@@ -49,31 +49,19 @@ const admin: OmitUser = {
     isAuthenticated: true,
   },
 }
-const user: OmitUser = {
-  auth: {
-    token: 'dummy token',
-    loading: false,
-    user: { id: 1, name: 'dummy name', role: 'user' },
-    isAuthenticated: true,
-  },
-}
 
 describe('レンダリング', () => {
   it('propsとして渡されるrecipeが正しく表示される', () => {
-    render(<Recipe recipe={mockRecipe} />)
-
+    render(<RecipeItem recipe={mockRecipe} />)
     expect(screen.getByText('dummy name')).toBeInTheDocument()
-    expect(screen.getByText(/dummy remarks/)).toBeInTheDocument()
+    expect(screen.getByText('詳細')).toBeInTheDocument()
   })
 
   it('roleがadminの場合は編集と削除のボタンが表示される', () => {
-    render(<Recipe recipe={mockRecipe} />, { initialState: { auth: admin } })
+    render(<RecipeItem recipe={mockRecipe} />, {
+      initialState: { auth: admin },
+    })
     expect(screen.getByText('編集')).toBeInTheDocument()
     expect(screen.getByText('削除')).toBeInTheDocument()
-  })
-
-  it('roleがuserの場合はお気に入りボタンが表示される', () => {
-    render(<Recipe recipe={mockRecipe} />, { initialState: { auth: user } })
-    expect(screen.getByText('○')).toBeInTheDocument()
   })
 })
