@@ -163,7 +163,9 @@ const RecipeForm: VFC = () => {
           control={control}
           render={({ field: { onChange, ref }, formState: { errors } }) => (
             <TextForm
+              head={'レシピ名'}
               label={'レシピ名'}
+              id="name"
               placeholder={'レシピ名を入力してください'}
               type="text"
               name="name"
@@ -182,6 +184,7 @@ const RecipeForm: VFC = () => {
             <FormControl variant="outlined">
               <InputLabel>調理時間</InputLabel>
               <Select
+                aria-label={'調理時間'}
                 label={'調理時間'}
                 name="time"
                 defaultValue={5}
@@ -216,7 +219,9 @@ const RecipeForm: VFC = () => {
                   formState: { errors },
                 }) => (
                   <TextForm
+                    head={'材料名'}
                     label={'材料名'}
+                    id={`ingredients[${index}].name`}
                     placeholder={'材料名を入力してください'}
                     type="text"
                     name={`ingredients[${index}].name`}
@@ -238,7 +243,9 @@ const RecipeForm: VFC = () => {
                 control={control}
                 render={({ field: { onChange }, formState: { errors } }) => (
                   <TextForm
+                    head={'分量'}
                     label={'分量'}
+                    id={`ingredients[${index}].amount`}
                     placeholder={'分量を入力してください'}
                     type="text"
                     name={`ingredients[${index}].amount`}
@@ -275,7 +282,9 @@ const RecipeForm: VFC = () => {
                   formState: { errors },
                 }) => (
                   <TextForm
+                    head={'順番'}
                     label={'順番'}
+                    id={`recipeDescriptions[${index}].order`}
                     placeholder={'調理工程の順番を入力してください'}
                     type="number"
                     name={`recipeDescriptions[${index}].order`}
@@ -302,7 +311,9 @@ const RecipeForm: VFC = () => {
                   formState: { errors },
                 }) => (
                   <TextForm
+                    head={'詳細'}
                     label={'詳細'}
+                    id={`recipeDescriptions[${index}].text`}
                     placeholder={'調理工程の詳細を入力してください'}
                     type="text"
                     name={`recipeDescriptions[${index}].text`}
@@ -328,7 +339,9 @@ const RecipeForm: VFC = () => {
                   formState: { errors },
                 }) => (
                   <TextForm
+                    head={'URL'}
                     label={'URL'}
+                    id={`recipeDescriptions[${index}].url`}
                     placeholder={'必要な場合は動画のURLを入力してください'}
                     type="text"
                     name={`recipeDescriptions[${index}].url`}
@@ -370,7 +383,9 @@ const RecipeForm: VFC = () => {
                   formState: { errors },
                 }) => (
                   <TextForm
+                    head={'タグ名'}
                     label={'タグ名'}
+                    id={`tags[${index}].name`}
                     placeholder={'タグ名を入力してください'}
                     type="text"
                     name={`tags[${index}].name`}
@@ -398,7 +413,9 @@ const RecipeForm: VFC = () => {
           control={control}
           render={({ field: { onChange, ref }, formState: { errors } }) => (
             <TextForm
+              head={'補足'}
               label={'補足'}
+              id="remarks"
               placeholder={'補足を入力してください'}
               type="text"
               name="remarks"
