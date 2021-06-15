@@ -36,6 +36,7 @@ const SearchForm: VFC = () => {
           control={control}
           render={({ field: { onChange, ref } }) => (
             <InputBase
+              inputProps={{ 'data-testid': 'query' }}
               placeholder="レシピを検索する"
               onChange={onChange}
               inputRef={ref}
