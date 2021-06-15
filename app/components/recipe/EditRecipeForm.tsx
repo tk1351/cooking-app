@@ -208,7 +208,9 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
           control={control}
           render={({ field: { onChange, ref }, formState: { errors } }) => (
             <TextForm
+              head={'レシピ名'}
               label={'レシピ名'}
+              id="name"
               placeholder={'レシピ名を入力してください'}
               type="text"
               name="name"
@@ -228,6 +230,7 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
             <FormControl variant="outlined">
               <InputLabel>調理時間</InputLabel>
               <Select
+                aria-label={'調理時間'}
                 label={'調理時間'}
                 name="time"
                 defaultValue={recipe.time}
@@ -262,8 +265,10 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
                   formState: { errors },
                 }) => (
                   <TextForm
+                    head={'材料名'}
                     label={'材料名'}
                     placeholder={'材料名を入力してください'}
+                    id={`ingredients[${index}].name`}
                     type="text"
                     name={`ingredients[${index}].name`}
                     defaultValue={item.name}
@@ -285,8 +290,10 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
                 control={control}
                 render={({ field: { onChange }, formState: { errors } }) => (
                   <TextForm
+                    head={'分量'}
                     label={'分量'}
                     placeholder={'分量を入力してください'}
+                    id={`ingredients[${index}].amount`}
                     type="text"
                     name={`ingredients[${index}].amount`}
                     defaultValue={item.amount}
@@ -331,8 +338,10 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
                   formState: { errors },
                 }) => (
                   <TextForm
+                    head={'順番'}
                     label={'順番'}
                     placeholder={'調理工程の順番を入力してください'}
+                    id={`recipeDescriptions[${index}].order`}
                     type="number"
                     name={`recipeDescriptions[${index}].order`}
                     defaultValue={item.order}
@@ -358,8 +367,10 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
                   formState: { errors },
                 }) => (
                   <TextForm
+                    head={'詳細'}
                     label={'詳細'}
                     placeholder={'調理工程の詳細を入力してください'}
+                    id={`recipeDescriptions[${index}].text`}
                     type="text"
                     name={`recipeDescriptions[${index}].text`}
                     defaultValue={item.text}
@@ -385,8 +396,10 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
                   formState: { errors },
                 }) => (
                   <TextForm
+                    head={'URL'}
                     label={'URL'}
                     placeholder={'必要な場合は動画のURLを入力してください'}
+                    id={`recipeDescriptions[${index}].url`}
                     type="text"
                     name={`recipeDescriptions[${index}].url`}
                     defaultValue={item.url}
@@ -437,8 +450,10 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
                   formState: { errors },
                 }) => (
                   <TextForm
+                    head={'タグ名'}
                     label={'タグ名'}
                     placeholder={'タグ名を入力してください'}
+                    id={`tags[${index}].name`}
                     type="text"
                     name={`tags[${index}].name`}
                     defaultValue={item.name}
@@ -473,8 +488,10 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
           control={control}
           render={({ field: { onChange, ref }, formState: { errors } }) => (
             <TextForm
+              head={'補足'}
               label={'補足'}
               placeholder={'補足を入力してください'}
+              id="remarks"
               type="text"
               name="remarks"
               defaultValue={recipe.remarks}
