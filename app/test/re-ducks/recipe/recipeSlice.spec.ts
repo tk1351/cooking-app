@@ -5,7 +5,7 @@ import reducer, {
   deleteRecipe,
   unlikeRecipe,
 } from '../../../re-ducks/recipe/recipeSlice'
-import { IRecipeState, IRecipe } from '../../../re-ducks/recipe/type'
+import { IRecipeState } from '../../../re-ducks/recipe/type'
 import { MyKnownError } from '../../../re-ducks/defaultType'
 
 let initialState: IRecipeState = {
@@ -22,20 +22,6 @@ const recipe = {
   time: 5,
   remarks: 'dummy remarks',
   image: 'dummy image',
-}
-
-let deleteRecipeState = {
-  recipe: {
-    id: 1,
-    name: 'dummy name',
-    time: 5,
-    remarks: 'dummy remarks',
-    image: 'dummy image',
-  },
-  recipes: [],
-  loading: false,
-  status: 'idle',
-  error: null,
 }
 
 describe('recipeReducerのテスト', () => {
