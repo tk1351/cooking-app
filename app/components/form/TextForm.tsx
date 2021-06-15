@@ -2,7 +2,7 @@ import React, { VFC } from 'react'
 import { TextField } from '@material-ui/core'
 import { RefCallBack } from 'react-hook-form'
 
-interface ITextFormProps {
+export interface ITextFormProps {
   head: string
   id: string
   label: string
