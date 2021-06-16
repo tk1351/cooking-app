@@ -28,20 +28,18 @@ const UsersList: VFC<Props> = ({ users }) => {
           <Typography variant="h6">ユーザーリスト</Typography>
           <div>
             <List>
-              <ListItem>
-                {users.map((user) => (
-                  <>
-                    <ListItemText key={user.id} primary={user.name} />
-                    <div>
-                      <Button key={user.id} color="primary" variant="contained">
-                        <Link key={user.id} href={`/admin/users/${user.id}`}>
-                          ユーザーの詳細
-                        </Link>
-                      </Button>
-                    </div>
-                  </>
-                ))}
-              </ListItem>
+              {users.map((user) => (
+                <ListItem key={user.id}>
+                  <ListItemText key={user.id} primary={user.name} />
+                  <div>
+                    <Button key={user.id} color="primary" variant="contained">
+                      <Link key={user.id} href={`/admin/users/${user.id}`}>
+                        ユーザーの詳細
+                      </Link>
+                    </Button>
+                  </div>
+                </ListItem>
+              ))}
             </List>
           </div>
         </Grid>
