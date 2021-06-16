@@ -3,7 +3,7 @@
  */
 
 import React from 'react'
-import { screen, act, fireEvent } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { render } from '../../test-utils'
 import { IUser } from '../../../re-ducks/auth/type'

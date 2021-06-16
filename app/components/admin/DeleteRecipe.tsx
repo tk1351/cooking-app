@@ -12,8 +12,7 @@ import { useRouter } from 'next/router'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { v4 as uuidv4 } from 'uuid'
 import { IRecipe } from '../../re-ducks/recipe/type'
-import { useAppSelector, useAppDispatch } from '../../re-ducks/hooks'
-import { selectUserRole } from '../../re-ducks/auth/authSlice'
+import { useAppDispatch } from '../../re-ducks/hooks'
 import { deleteRecipe } from '../../re-ducks/recipe/recipeSlice'
 import { setAlert, removeAlert } from '../../re-ducks/alert/alertSlice'
 import Alert from '../common/Alert'
@@ -26,7 +25,6 @@ type Props = {
 const DeleteRecipe: VFC<Props> = ({ recipe }) => {
   const dispatch = useAppDispatch()
   const router = useRouter()
-  const userRole = useAppSelector(selectUserRole)
 
   const onDeleteRecipeClicked = async (id: number) => {
     const resultAction = await dispatch(deleteRecipe(id))
@@ -56,13 +54,6 @@ const DeleteRecipe: VFC<Props> = ({ recipe }) => {
       )
       setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
     }
-  }
-
-  const onClick = async (name: string) => {
-    router.push({
-      pathname: '/tag',
-      query: { name },
-    })
   }
 
   return (
@@ -108,33 +99,27 @@ const DeleteRecipe: VFC<Props> = ({ recipe }) => {
               補足：{recipe.remarks}
             </Typography>
             {recipe.tags.map((tag) => (
-              <Button
+              <Typography
                 key={tag.id}
-                size="small"
-                color="primary"
-                onClick={() => onClick(tag.name)}
+                variant="body2"
+                color="textPrimary"
+                component="p"
               >
                 #{tag.name}
-              </Button>
+              </Typography>
             ))}
           </CardContent>
         </CardActionArea>
         <CardActions>
-          {userRole === 'admin' ? (
-            <>
-              <Button
-                onClick={() => onDeleteRecipeClicked(recipe.id)}
-                size="small"
-                color="secondary"
-                type="button"
-                variant="contained"
-              >
-                削除
-              </Button>
-            </>
-          ) : (
-            <></>
-          )}
+          <Button
+            onClick={() => onDeleteRecipeClicked(recipe.id)}
+            size="small"
+            color="secondary"
+            type="button"
+            variant="contained"
+          >
+            削除
+          </Button>
         </CardActions>
       </Card>
       <Button onClick={() => router.push('/')}>一覧へ戻る</Button>
