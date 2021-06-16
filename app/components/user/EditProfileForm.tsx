@@ -73,8 +73,10 @@ const EditProfileForm: VFC<Props> = ({ user }) => {
           control={control}
           render={({ field: { onChange, ref }, formState: { errors } }) => (
             <TextForm
+              head={'ユーザー名'}
               label={'ユーザー名'}
               placeholder={'ユーザー名を入力してください'}
+              id="name"
               type="text"
               name="name"
               variant="outlined"
@@ -91,8 +93,10 @@ const EditProfileForm: VFC<Props> = ({ user }) => {
           control={control}
           render={({ field: { onChange, ref }, formState: { errors } }) => (
             <TextForm
+              head={'好きな料理'}
               label={'好きな料理'}
               placeholder={'好きな料理を入力してください'}
+              id="favoriteDish"
               type="text"
               name="favoriteDish"
               variant="outlined"
@@ -109,8 +113,10 @@ const EditProfileForm: VFC<Props> = ({ user }) => {
           control={control}
           render={({ field: { onChange, ref }, formState: { errors } }) => (
             <TextForm
+              head={'得意料理'}
               label={'得意料理'}
               placeholder={'得意料理を入力してください'}
+              id="specialDish"
               type="text"
               name="specialDish"
               variant="outlined"
