@@ -97,14 +97,15 @@ const RecipeItem: VFC<Props> = ({ recipe }) => {
             {format(new Date(recipe.createdAt), 'yyyy-MM-dd')}
           </Typography>
           {recipe.tags.map((tag) => (
-            <Button
+            <Typography
               key={tag.id}
-              size="small"
-              color="primary"
+              variant="body2"
+              color="textPrimary"
+              component="p"
               onClick={() => onClick(tag.name)}
             >
               #{tag.name}
-            </Button>
+            </Typography>
           ))}
         </CardContent>
       </CardActionArea>
