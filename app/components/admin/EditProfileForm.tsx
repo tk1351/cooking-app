@@ -67,7 +67,9 @@ const EditProfileForm: VFC<Props> = ({ user }) => {
           control={control}
           render={({ field: { onChange, ref }, formState: { errors } }) => (
             <TextForm
+              head={'ユーザー名'}
               label={'ユーザー名'}
+              id="name"
               placeholder={'ユーザー名を入力してください'}
               type="text"
               name="name"
@@ -85,7 +87,9 @@ const EditProfileForm: VFC<Props> = ({ user }) => {
           control={control}
           render={({ field: { onChange, ref }, formState: { errors } }) => (
             <TextForm
+              head={'好きな料理'}
               label={'好きな料理'}
+              id="favoriteDish"
               placeholder={'好きな料理を入力してください'}
               type="text"
               name="favoriteDish"
@@ -103,7 +107,9 @@ const EditProfileForm: VFC<Props> = ({ user }) => {
           control={control}
           render={({ field: { onChange, ref }, formState: { errors } }) => (
             <TextForm
+              head={'得意料理'}
               label={'得意料理'}
+              id="specialDish"
               placeholder={'得意料理を入力してください'}
               type="text"
               name="specialDish"
@@ -121,7 +127,9 @@ const EditProfileForm: VFC<Props> = ({ user }) => {
           control={control}
           render={({ field: { onChange, ref }, formState: { errors } }) => (
             <TextForm
+              head={'自己紹介'}
               label={'自己紹介'}
+              id="bio"
               placeholder={'自己紹介を入力してください'}
               type="text"
               name="bio"
@@ -148,6 +156,7 @@ const EditProfileForm: VFC<Props> = ({ user }) => {
                   <FormControl variant="outlined">
                     <InputLabel>SNS</InputLabel>
                     <Select
+                      aria-label={'SNS'}
                       label={'SNS'}
                       name={`socials[${index}].category`}
                       defaultValue={item.category}
@@ -170,7 +179,9 @@ const EditProfileForm: VFC<Props> = ({ user }) => {
                   formState: { errors },
                 }) => (
                   <TextForm
+                    head={'URL'}
                     label={'URL'}
+                    id={`socials[${index}].url`}
                     placeholder={'URLを入力してください'}
                     type="text"
                     name={`socials[${index}].url`}
