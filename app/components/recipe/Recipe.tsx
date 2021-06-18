@@ -173,6 +173,11 @@ const Recipe: VFC<Props> = ({ recipe }) => {
     )
   }
 
+  // 調理工程のorderで昇順
+  const sortDescriptions = recipe.recipeDescriptions.sort((a, b) => {
+    return a.order - b.order
+  })
+
   return (
     <div>
       <Card>
@@ -201,7 +206,7 @@ const Recipe: VFC<Props> = ({ recipe }) => {
             <Typography gutterBottom variant="h6" component="h2">
               調理工程
             </Typography>
-            {recipe.recipeDescriptions.map((recipeDescription) => (
+            {sortDescriptions.map((recipeDescription) => (
               <Typography
                 key={recipeDescription.id}
                 variant="body2"
@@ -211,9 +216,11 @@ const Recipe: VFC<Props> = ({ recipe }) => {
                 {recipeDescription.order}： {recipeDescription.text}
               </Typography>
             ))}
-            <Typography variant="body2" color="textPrimary" component="p">
-              補足：{recipe.remarks}
-            </Typography>
+            {recipe.remarks && (
+              <Typography variant="body2" color="textPrimary" component="p">
+                補足：{recipe.remarks}
+              </Typography>
+            )}
             {recipe.tags.map((tag) => (
               <Typography
                 key={tag.id}
