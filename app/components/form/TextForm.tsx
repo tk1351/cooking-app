@@ -21,9 +21,6 @@ export interface ITextFormProps {
 const TextForm: VFC<ITextFormProps> = (props) => {
   return (
     <div>
-      <div>
-        <span>{props.head}</span>
-      </div>
       <TextField
         id={props.id}
         label={props.label}

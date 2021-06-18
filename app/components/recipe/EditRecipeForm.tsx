@@ -1,5 +1,4 @@
 import React, { VFC, useEffect, useState } from 'react'
-import { useIsAdmin } from '../common/useIsAdmin'
 import { useRouter } from 'next/router'
 import {
   Button,
@@ -37,7 +36,6 @@ type Props = {
 }
 
 const EditRecipeForm: VFC<Props> = ({ recipe }) => {
-  useIsAdmin()
   const dispatch = useAppDispatch()
 
   const [recipeImage, setRecipeImage] = useState<File | null>(null)
@@ -255,11 +253,12 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
         />
         {/* 材料 */}
         <ul>
-          {ingredientFields.map((item, index) => (
-            <li key={item.id}>
+          {ingredientFields.map((field, index) => (
+            <li key={field.id}>
               <Controller
                 name={`ingredients[${index}].name`}
                 control={control}
+                defaultValue={field.name ? field.name : ''}
                 render={({
                   field: { onChange, ref },
                   formState: { errors },
@@ -271,7 +270,7 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
                     id={`ingredients[${index}].name`}
                     type="text"
                     name={`ingredients[${index}].name`}
-                    defaultValue={item.name}
+                    defaultValue={field.name}
                     variant="outlined"
                     onChange={onChange}
                     inputRef={ref}
@@ -288,6 +287,7 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
               <Controller
                 name={`ingredients[${index}].amount`}
                 control={control}
+                defaultValue={field.amount ? field.amount : ''}
                 render={({ field: { onChange }, formState: { errors } }) => (
                   <TextForm
                     head={'分量'}
@@ -296,7 +296,7 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
                     id={`ingredients[${index}].amount`}
                     type="text"
                     name={`ingredients[${index}].amount`}
-                    defaultValue={item.amount}
+                    defaultValue={field.amount}
                     variant="outlined"
                     onChange={onChange}
                     error={Boolean(
@@ -328,11 +328,12 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
         </button>
         {/* 調理工程 */}
         <ul>
-          {recipeDescriptionFields.map((item, index) => (
-            <li key={item.id}>
+          {recipeDescriptionFields.map((field, index) => (
+            <li key={field.id}>
               <Controller
                 name={`recipeDescriptions[${index}].order`}
                 control={control}
+                defaultValue={field.order ? field.order : ''}
                 render={({
                   field: { onChange, ref },
                   formState: { errors },
@@ -342,9 +343,9 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
                     label={'順番'}
                     placeholder={'調理工程の順番を入力してください'}
                     id={`recipeDescriptions[${index}].order`}
-                    type="number"
+                    type="text"
                     name={`recipeDescriptions[${index}].order`}
-                    defaultValue={item.order}
+                    defaultValue={field.order}
                     variant="outlined"
                     onChange={onChange}
                     inputRef={ref}
@@ -362,6 +363,7 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
               <Controller
                 name={`recipeDescriptions[${index}].text`}
                 control={control}
+                defaultValue={field.text ? field.text : ''}
                 render={({
                   field: { onChange, ref },
                   formState: { errors },
@@ -373,7 +375,7 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
                     id={`recipeDescriptions[${index}].text`}
                     type="text"
                     name={`recipeDescriptions[${index}].text`}
-                    defaultValue={item.text}
+                    defaultValue={field.text}
                     variant="outlined"
                     onChange={onChange}
                     inputRef={ref}
@@ -391,6 +393,7 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
               <Controller
                 name={`recipeDescriptions[${index}].url`}
                 control={control}
+                defaultValue={field.url ? field.url : ''}
                 render={({
                   field: { onChange, ref },
                   formState: { errors },
@@ -402,7 +405,7 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
                     id={`recipeDescriptions[${index}].url`}
                     type="text"
                     name={`recipeDescriptions[${index}].url`}
-                    defaultValue={item.url}
+                    defaultValue={field.url}
                     variant="outlined"
                     onChange={onChange}
                     inputRef={ref}
@@ -430,7 +433,7 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
           type="button"
           onClick={() =>
             recipeDescriptionAppend({
-              order: recipe.recipeDescriptions.length + 1,
+              order: recipeDescriptionFields.length + 1,
               text: '',
               url: '',
             })
@@ -440,11 +443,12 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
         </button>
         {/* タグ */}
         <ul>
-          {tagFields.map((item, index) => (
-            <li key={item.id}>
+          {tagFields.map((field, index) => (
+            <li key={field.id}>
               <Controller
                 name={`tags[${index}].name`}
                 control={control}
+                defaultValue={field.name ? field.name : ''}
                 render={({
                   field: { onChange, ref },
                   formState: { errors },
@@ -456,7 +460,7 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
                     id={`tags[${index}].name`}
                     type="text"
                     name={`tags[${index}].name`}
-                    defaultValue={item.name}
+                    defaultValue={field.name}
                     variant="outlined"
                     onChange={onChange}
                     inputRef={ref}

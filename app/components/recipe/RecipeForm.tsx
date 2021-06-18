@@ -19,7 +19,6 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { useRouter } from 'next/router'
 import { v4 as uuidv4 } from 'uuid'
-import { useIsAdmin } from '../common/useIsAdmin'
 import TextForm from '../form/TextForm'
 import FormButton from '../form/FormButton'
 import { recipeValidationSchema } from '../form/validations/recipeValidation'
@@ -53,8 +52,6 @@ const defaultValues: IRecipeInputs = {
 }
 
 const RecipeForm: VFC = () => {
-  useIsAdmin()
-
   const dispatch = useAppDispatch()
 
   const [recipeImage, setRecipeImage] = useState<File | null>(null)
@@ -214,6 +211,7 @@ const RecipeForm: VFC = () => {
               <Controller
                 name={`ingredients[${index}].name`}
                 control={control}
+                defaultValue=""
                 render={({
                   field: { onChange, ref },
                   formState: { errors },
@@ -241,6 +239,7 @@ const RecipeForm: VFC = () => {
               <Controller
                 name={`ingredients[${index}].amount`}
                 control={control}
+                defaultValue=""
                 render={({ field: { onChange }, formState: { errors } }) => (
                   <TextForm
                     head={'分量'}
@@ -267,7 +266,15 @@ const RecipeForm: VFC = () => {
             </li>
           ))}
         </ul>
-        <button type="button" onClick={() => ingredientAppend({})}>
+        <button
+          type="button"
+          onClick={() =>
+            ingredientAppend({
+              name: '',
+              amount: '',
+            })
+          }
+        >
           +
         </button>
         {/* 調理工程 */}
@@ -277,6 +284,11 @@ const RecipeForm: VFC = () => {
               <Controller
                 name={`recipeDescriptions[${index}].order`}
                 control={control}
+                defaultValue={
+                  recipeDescriptionFields.length
+                    ? recipeDescriptionFields.length
+                    : ''
+                }
                 render={({
                   field: { onChange, ref },
                   formState: { errors },
@@ -286,12 +298,12 @@ const RecipeForm: VFC = () => {
                     label={'順番'}
                     id={`recipeDescriptions[${index}].order`}
                     placeholder={'調理工程の順番を入力してください'}
-                    type="number"
+                    type="text"
                     name={`recipeDescriptions[${index}].order`}
-                    value={index + 1}
                     variant="outlined"
                     onChange={onChange}
                     inputRef={ref}
+                    defaultValue={recipeDescriptionFields.length}
                     error={Boolean(
                       errors.recipeDescriptions &&
                         errors.recipeDescriptions[index]
@@ -306,6 +318,7 @@ const RecipeForm: VFC = () => {
               <Controller
                 name={`recipeDescriptions[${index}].text`}
                 control={control}
+                defaultValue=""
                 render={({
                   field: { onChange, ref },
                   formState: { errors },
@@ -334,6 +347,7 @@ const RecipeForm: VFC = () => {
               <Controller
                 name={`recipeDescriptions[${index}].url`}
                 control={control}
+                defaultValue=""
                 render={({
                   field: { onChange, ref },
                   formState: { errors },
@@ -368,7 +382,16 @@ const RecipeForm: VFC = () => {
             </li>
           ))}
         </ul>
-        <button type="button" onClick={() => recipeDescriptionAppend({})}>
+        <button
+          type="button"
+          onClick={() =>
+            recipeDescriptionAppend({
+              order: recipeDescriptionFields.length + 1,
+              text: '',
+              url: '',
+            })
+          }
+        >
           +
         </button>
         {/* タグ */}
@@ -378,6 +401,7 @@ const RecipeForm: VFC = () => {
               <Controller
                 name={`tags[${index}].name`}
                 control={control}
+                defaultValue=""
                 render={({
                   field: { onChange, ref },
                   formState: { errors },
@@ -405,7 +429,14 @@ const RecipeForm: VFC = () => {
             </li>
           ))}
         </ul>
-        <button type="button" onClick={() => tagAppend({})}>
+        <button
+          type="button"
+          onClick={() =>
+            tagAppend({
+              name: '',
+            })
+          }
+        >
           +
         </button>
         <Controller
