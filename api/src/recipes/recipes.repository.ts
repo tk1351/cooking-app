@@ -6,7 +6,11 @@ import {
 } from '@nestjs/common';
 import { Recipe } from './recipes.entity';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
-import { GetRecipesFilterDto, GetRecipesByTagDto } from './dto/get-recipes.dto';
+import {
+  GetRecipesFilterDto,
+  GetRecipesByTagDto,
+  GetRecipesByLimitNumberDto,
+} from './dto/get-recipes.dto';
 import { User } from '../users/users.entity';
 import { IngredientRepository } from '../ingredients/ingredients.repository';
 import { RecipeDescriptionRepository } from '../recipe-descriptions/recipe-descriptions.repository';
@@ -41,6 +45,27 @@ export class RecipeRepository extends Repository<Recipe> {
     }
 
     // TODO: queryが一致しない場合、不一致のメッセージを返す
+
+    try {
+      const recipes = await result.getMany();
+      return recipes;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getRecipesByLimitNumber(
+    getRecipesByLimitNumberDto: GetRecipesByLimitNumberDto,
+  ): Promise<Recipe[]> {
+    const { limit } = getRecipesByLimitNumberDto;
+
+    const result = this.createQueryBuilder('recipes')
+      .leftJoinAndSelect('recipes.ingredients', 'ingredients')
+      .leftJoinAndSelect('recipes.recipeDescriptions', 'recipeDescriptions')
+      .leftJoinAndSelect('recipes.recipeLikes', 'recipeLikes')
+      .leftJoinAndSelect('recipes.tags', 'tags')
+      .orderBy('recipes.createdAt', 'DESC')
+      .take(limit);
 
     try {
       const recipes = await result.getMany();

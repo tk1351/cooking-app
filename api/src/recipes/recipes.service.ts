@@ -7,7 +7,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { RecipeRepository } from './recipes.repository';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { Recipe } from './recipes.entity';
-import { GetRecipesFilterDto, GetRecipesByTagDto } from './dto/get-recipes.dto';
+import {
+  GetRecipesFilterDto,
+  GetRecipesByTagDto,
+  GetRecipesByLimitNumberDto,
+} from './dto/get-recipes.dto';
 import { MyKnownMessage } from '../message.interface';
 import { User } from '../users/users.entity';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
@@ -32,6 +36,14 @@ export class RecipesService {
     getRecipesFilterDto: GetRecipesFilterDto,
   ): Promise<Recipe[]> {
     return this.recipeRepository.getRecipes(getRecipesFilterDto);
+  }
+
+  async getRecipesByLimitNumber(
+    getRecipesByLimitNumberDto: GetRecipesByLimitNumberDto,
+  ): Promise<Recipe[]> {
+    return this.recipeRepository.getRecipesByLimitNumber(
+      getRecipesByLimitNumberDto,
+    );
   }
 
   async getRecipeById(id: number): Promise<Recipe | undefined> {
