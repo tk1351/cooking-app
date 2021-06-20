@@ -10,6 +10,7 @@ import {
   GetRecipesFilterDto,
   GetRecipesByTagDto,
   GetRecipesByLimitNumberDto,
+  GetRecipesByOffsetDto,
 } from './dto/get-recipes.dto';
 import { User } from '../users/users.entity';
 import { IngredientRepository } from '../ingredients/ingredients.repository';
@@ -65,6 +66,28 @@ export class RecipeRepository extends Repository<Recipe> {
       .leftJoinAndSelect('recipes.recipeLikes', 'recipeLikes')
       .leftJoinAndSelect('recipes.tags', 'tags')
       .orderBy('recipes.createdAt', 'DESC')
+      .take(limit);
+
+    try {
+      const recipes = await result.getMany();
+      return recipes;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getRecipesByOffset(
+    getRecipesByOffsetDto: GetRecipesByOffsetDto,
+  ): Promise<Recipe[]> {
+    const { start, limit } = getRecipesByOffsetDto;
+
+    const result = this.createQueryBuilder('recipes')
+      .leftJoinAndSelect('recipes.ingredients', 'ingredients')
+      .leftJoinAndSelect('recipes.recipeDescriptions', 'recipeDescriptions')
+      .leftJoinAndSelect('recipes.recipeLikes', 'recipeLikes')
+      .leftJoinAndSelect('recipes.tags', 'tags')
+      .orderBy('recipes.createdAt', 'DESC')
+      .skip(start)
       .take(limit);
 
     try {

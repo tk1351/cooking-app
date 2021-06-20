@@ -18,6 +18,7 @@ import {
   GetRecipesFilterDto,
   GetRecipesByTagDto,
   GetRecipesByLimitNumberDto,
+  GetRecipesByOffsetDto,
 } from './dto/get-recipes.dto';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { MyKnownMessage } from '../message.interface';
@@ -45,6 +46,13 @@ export class RecipesController {
     return this.recipesService.getRecipesByLimitNumber(
       getRecipesByLimitNumberDto,
     );
+  }
+
+  @Get('/offset')
+  getRecipesByOffset(
+    @Query(ValidationPipe) getRecipesByOffsetDto: GetRecipesByOffsetDto,
+  ): Promise<Recipe[]> {
+    return this.recipesService.getRecipesByOffset(getRecipesByOffsetDto);
   }
 
   @Get('/tag')

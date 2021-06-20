@@ -11,6 +11,7 @@ import {
   GetRecipesFilterDto,
   GetRecipesByTagDto,
   GetRecipesByLimitNumberDto,
+  GetRecipesByOffsetDto,
 } from './dto/get-recipes.dto';
 import { MyKnownMessage } from '../message.interface';
 import { User } from '../users/users.entity';
@@ -44,6 +45,12 @@ export class RecipesService {
     return this.recipeRepository.getRecipesByLimitNumber(
       getRecipesByLimitNumberDto,
     );
+  }
+
+  async getRecipesByOffset(
+    getRecipesByOffsetDto: GetRecipesByOffsetDto,
+  ): Promise<Recipe[]> {
+    return this.recipeRepository.getRecipesByOffset(getRecipesByOffsetDto);
   }
 
   async getRecipeById(id: number): Promise<Recipe | undefined> {
