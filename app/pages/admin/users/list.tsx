@@ -15,7 +15,8 @@ const list: VFC<Props> = (props) => {
 }
 
 export const getStaticProps = async () => {
-  const url = 'http://api:8080/users'
+  const limitNumber = 10
+  const url = `http://api:8080/users/number?limit=${limitNumber}`
   const res = await axios.get<IUser[]>(url)
   return {
     props: { users: res.data },

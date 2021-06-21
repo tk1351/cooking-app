@@ -1,17 +1,12 @@
-import React, { VFC } from 'react'
-import Link from 'next/link'
+import React, { VFC, useState } from 'react'
 import { useRouter } from 'next/router'
-import {
-  Grid,
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  Button,
-} from '@material-ui/core'
+import { Grid, Typography, Button } from '@material-ui/core'
+import axios from 'axios'
+import InfiniteScroll from 'react-infinite-scroller'
 import { IUser } from '../../re-ducks/auth/type'
 import { useAppSelector } from '../../re-ducks/hooks'
 import { selectUserId } from '../../re-ducks/auth/authSlice'
+import UserListItem from './UserListItem'
 
 type Props = {
   users: IUser[]
@@ -21,26 +16,39 @@ const UsersList: VFC<Props> = ({ users }) => {
   const router = useRouter()
 
   const adminUserId = useAppSelector(selectUserId)
+
+  const [items, setItems] = useState<IUser[]>(users)
+  const [hasMore, setHasMore] = useState(true)
+
+  const loadMore = async () => {
+    const limitNumber = 10
+
+    const url = `/api/users/offset?start=${limitNumber}&limit=${limitNumber}`
+    const res = await axios.get<IUser[]>(url)
+
+    try {
+      setItems([...items, ...res.data])
+    } finally {
+      setHasMore(false)
+    }
+  }
+
+  const loader = <div key={0}>Loading ...</div>
   return (
     <>
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
           <Typography variant="h6">ユーザーリスト</Typography>
           <div>
-            <List>
-              {users.map((user) => (
-                <ListItem key={user.id}>
-                  <ListItemText key={user.id} primary={user.name} />
-                  <div>
-                    <Button key={user.id} color="primary" variant="contained">
-                      <Link key={user.id} href={`/admin/users/${user.id}`}>
-                        ユーザーの詳細
-                      </Link>
-                    </Button>
-                  </div>
-                </ListItem>
+            <InfiniteScroll
+              loadMore={loadMore}
+              hasMore={hasMore}
+              loader={loader}
+            >
+              {items.map((item) => (
+                <UserListItem key={item.id} user={item} />
               ))}
-            </List>
+            </InfiniteScroll>
           </div>
         </Grid>
       </Grid>
