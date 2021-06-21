@@ -151,14 +151,19 @@ export class RecipeRepository extends Repository<Recipe> {
   async getRecipesByTag(
     getRecipesByTag: GetRecipesByTagDto,
   ): Promise<Recipe[]> {
-    const { name } = getRecipesByTag;
+    const { name, start, limit } = getRecipesByTag;
 
-    try {
-      const result = await this.createQueryBuilder('recipes')
-        .leftJoinAndSelect('recipes.ingredients', 'ingredients')
-        .leftJoinAndSelect('recipes.recipeDescriptions', 'recipeDescriptions')
-        .leftJoinAndSelect('recipes.recipeLikes', 'recipeLikes')
-        .leftJoinAndSelect('recipes.tags', 'tags')
+    const result = await this.createQueryBuilder('recipes')
+      .leftJoinAndSelect('recipes.ingredients', 'ingredients')
+      .leftJoinAndSelect('recipes.recipeDescriptions', 'recipeDescriptions')
+      .leftJoinAndSelect('recipes.recipeLikes', 'recipeLikes')
+      .leftJoinAndSelect('recipes.tags', 'tags')
+      .orderBy('recipes.createdAt', 'DESC');
+
+    if (name && start && limit) {
+      result
+        .skip(start)
+        .take(limit)
         .where(
           (qb) =>
             'recipes.id IN' +
@@ -168,11 +173,26 @@ export class RecipeRepository extends Repository<Recipe> {
               .from('tags', 'tags')
               .where('tags.name = :name', { name })
               .getQuery(),
-        )
-        .orderBy('recipes.createdAt', 'DESC')
-        .getMany();
+        );
+    } else if (!start) {
+      result
+        .take(limit)
+        .where(
+          (qb) =>
+            'recipes.id IN' +
+            qb
+              .subQuery()
+              .select('tags.recipeId')
+              .from('tags', 'tags')
+              .where('tags.name = :name', { name })
+              .getQuery(),
+        );
+    }
 
-      return result;
+    try {
+      const found = await result.getMany();
+
+      return found;
     } catch (error) {
       throw new InternalServerErrorException();
     }

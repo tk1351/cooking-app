@@ -1,10 +1,10 @@
 import React, { VFC, useState } from 'react'
 import { useRouter } from 'next/router'
 import { Button } from '@material-ui/core'
+import InfiniteScroll from 'react-infinite-scroller'
 import axios from 'axios'
 import { IRecipe } from '../../re-ducks/recipe/type'
 import RecipeItem from './RecipeItem'
-import InfiniteScroll from 'react-infinite-scroller'
 
 type Props = {
   recipes: IRecipe[]

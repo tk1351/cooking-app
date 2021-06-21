@@ -15,8 +15,12 @@ const tag: VFC<{ recipes: IRecipe[] }> = (props) => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  const limitNumber = 5
+
   const tagName = context.query.name as string
-  const url = `http://api:8080/recipes/tag?name=${encodeURI(tagName)}`
+  const url = `http://api:8080/recipes/tag?name=${encodeURI(
+    tagName
+  )}&limit=${limitNumber}`
   const res = await axios.get<IRecipe[]>(url)
   return {
     props: {
