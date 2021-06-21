@@ -10,6 +10,10 @@ import { MyKnownMessage } from '../message.interface';
 import { SocialsService } from '../socials/socials.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
+import {
+  GetUsersByLimitNumberDto,
+  GetUsersByOffsetDto,
+} from './dto/get-users.dto';
 
 @Injectable()
 export class UsersService {
@@ -22,6 +26,20 @@ export class UsersService {
 
   async getAllUsers(): Promise<User[]> {
     return await this.userRepository.getAllUsers();
+  }
+
+  async getUsersByLimitNumber(
+    getUsersByLimitNumberDto: GetUsersByLimitNumberDto,
+  ): Promise<User[]> {
+    return await this.userRepository.getUsersByLimitNumber(
+      getUsersByLimitNumberDto,
+    );
+  }
+
+  async getUsersByOffset(
+    getUsersByOffsetDto: GetUsersByOffsetDto,
+  ): Promise<User[]> {
+    return await this.userRepository.getUsersByOffset(getUsersByOffsetDto);
   }
 
   async getUserById(id: number): Promise<User> {

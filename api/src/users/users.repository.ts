@@ -15,6 +15,10 @@ import { RecipeLike } from '../recipe-likes/recipe-likes.entity';
 import { SocialsRepository } from '../socials/socials.repository';
 import { Social } from '../socials/socials.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import {
+  GetUsersByLimitNumberDto,
+  GetUsersByOffsetDto,
+} from './dto/get-users.dto';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -23,6 +27,41 @@ export class UserRepository extends Repository<User> {
       'users.socials',
       'socials',
     );
+
+    try {
+      const users = await result.getMany();
+      return users;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getUsersByLimitNumber(
+    getUsersByLimitNumberDto: GetUsersByLimitNumberDto,
+  ): Promise<User[]> {
+    const { limit } = getUsersByLimitNumberDto;
+
+    const result = this.createQueryBuilder('users')
+      .leftJoinAndSelect('users.socials', 'socials')
+      .take(limit);
+
+    try {
+      const users = await result.getMany();
+      return users;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getUsersByOffset(
+    getUsersByOffsetDto: GetUsersByOffsetDto,
+  ): Promise<User[]> {
+    const { limit, start } = getUsersByOffsetDto;
+
+    const result = this.createQueryBuilder('users')
+      .leftJoinAndSelect('users.socials', 'socials')
+      .skip(start)
+      .take(limit);
 
     try {
       const users = await result.getMany();

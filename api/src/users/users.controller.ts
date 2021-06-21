@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from './users.service';
@@ -19,6 +20,10 @@ import { GetUser } from './get-user.decorator';
 import { MyKnownMessage } from '../message.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
+import {
+  GetUsersByLimitNumberDto,
+  GetUsersByOffsetDto,
+} from './dto/get-users.dto';
 
 @Controller('users')
 export class UsersController {
@@ -27,6 +32,20 @@ export class UsersController {
   @Get()
   getAllUsers(): Promise<User[]> {
     return this.usersService.getAllUsers();
+  }
+
+  @Get('/number')
+  async getUsersByLimitNumber(
+    @Query(ValidationPipe) getUsersByLimitNumberDto: GetUsersByLimitNumberDto,
+  ): Promise<User[]> {
+    return this.usersService.getUsersByLimitNumber(getUsersByLimitNumberDto);
+  }
+
+  @Get('/offset')
+  async getUsersByOffset(
+    @Query(ValidationPipe) getUsersByOffsetDto: GetUsersByOffsetDto,
+  ): Promise<User[]> {
+    return this.usersService.getUsersByOffset(getUsersByOffsetDto);
   }
 
   @Get('/:id')
