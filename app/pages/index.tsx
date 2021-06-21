@@ -15,7 +15,8 @@ const index: VFC<Props> = (props) => {
 }
 
 export const getStaticProps = async () => {
-  const url = 'http://api:8080/recipes'
+  const limitNumber = 5
+  const url = `http://api:8080/recipes/number?limit=${limitNumber}`
   const res = await axios.get<IRecipe[]>(url)
   return {
     props: { recipes: res.data },
