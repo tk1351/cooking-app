@@ -39,6 +39,12 @@ export class RecipesService {
     return this.recipeRepository.getRecipes(getRecipesFilterDto);
   }
 
+  async getRecipseFilter(
+    getRecipesFilterDto: GetRecipesFilterDto,
+  ): Promise<Recipe[]> {
+    return this.recipeRepository.getRecipseFilter(getRecipesFilterDto);
+  }
+
   async getRecipesByLimitNumber(
     getRecipesByLimitNumberDto: GetRecipesByLimitNumberDto,
   ): Promise<Recipe[]> {

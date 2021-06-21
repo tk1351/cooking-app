@@ -15,8 +15,12 @@ const search: VFC<{ recipes: IRecipe[] }> = (props) => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+  const limitNumber = 5
+
   const query = context.query.query as string
-  const url = `http://api:8080/recipes?query=${encodeURI(query)}`
+  const url = `http://api:8080/recipes/filter?query=${encodeURI(
+    query
+  )}&limit=${limitNumber}`
   const res = await axios.get<IRecipe[]>(url)
   return {
     props: {

@@ -38,6 +38,13 @@ export class RecipesController {
     return this.recipesService.getRecipes(getRecipesFilterDto);
   }
 
+  @Get('/filter')
+  async getRecipseFilter(
+    @Query(ValidationPipe) getRecipesFilterDto: GetRecipesFilterDto,
+  ): Promise<Recipe[]> {
+    return this.recipesService.getRecipseFilter(getRecipesFilterDto);
+  }
+
   @Get('/number')
   getRecipesByLimitNumber(
     @Query(ValidationPipe)

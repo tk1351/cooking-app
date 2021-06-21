@@ -57,6 +57,41 @@ export class RecipeRepository extends Repository<Recipe> {
     }
   }
 
+  async getRecipseFilter(
+    getRecipesFilterDto: GetRecipesFilterDto,
+  ): Promise<Recipe[]> {
+    const { query, limit, start } = getRecipesFilterDto;
+
+    const result = this.createQueryBuilder('recipes')
+      .leftJoinAndSelect('recipes.ingredients', 'ingredients')
+      .leftJoinAndSelect('recipes.recipeDescriptions', 'recipeDescriptions')
+      .leftJoinAndSelect('recipes.recipeLikes', 'recipeLikes')
+      .leftJoinAndSelect('recipes.tags', 'tags')
+      .orderBy('recipes.createdAt', 'DESC');
+
+    if (query && limit && start) {
+      result
+        .skip(start)
+        .take(limit)
+        .andWhere('recipes.name LIKE :query OR ingredients.name Like :query', {
+          query: `%${query}%`,
+        });
+    } else if (!start) {
+      result
+        .take(limit)
+        .andWhere('recipes.name LIKE :query OR ingredients.name Like :query', {
+          query: `%${query}%`,
+        });
+    }
+
+    try {
+      const recipes = await result.getMany();
+      return recipes;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
   async getRecipesByLimitNumber(
     getRecipesByLimitNumberDto: GetRecipesByLimitNumberDto,
   ): Promise<Recipe[]> {
