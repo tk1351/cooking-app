@@ -28,7 +28,7 @@ export class RecipeRepository extends Repository<Recipe> {
   async getRecipes(
     getRecipesFilterDto: GetRecipesFilterDto,
   ): Promise<Recipe[]> {
-    const { query } = getRecipesFilterDto;
+    const { query, start, limit } = getRecipesFilterDto;
 
     const result = this.createQueryBuilder('recipes')
       .leftJoinAndSelect('recipes.ingredients', 'ingredients')
@@ -37,12 +37,20 @@ export class RecipeRepository extends Repository<Recipe> {
       .leftJoinAndSelect('recipes.tags', 'tags')
       .orderBy('recipes.createdAt', 'DESC');
 
-    if (query) {
+    if (query && limit && start) {
       // recipes.nameとingredients.nameに一致するqueryを取得する
-      result.andWhere(
-        'recipes.name LIKE :query OR ingredients.name Like :query',
-        { query: `%${query}%` },
-      );
+      result
+        .skip(start)
+        .take(limit)
+        .andWhere('recipes.name LIKE :query OR ingredients.name Like :query', {
+          query: `%${query}%`,
+        });
+    } else if (query && limit) {
+      result
+        .take(limit)
+        .andWhere('recipes.name LIKE :query OR ingredients.name Like :query', {
+          query: `%${query}%`,
+        });
     }
 
     // TODO: queryが一致しない場合、不一致のメッセージを返す
