@@ -15,11 +15,10 @@ const Recipes: VFC<Props> = ({ recipes }) => {
   const loadMore = async () => {
     const limitNumber = 5
 
-    const url = `/api/recipes/offset?start=${recipes.length}&limit=${limitNumber}`
-    const res = await axios.get(url)
+    const url = `/api/recipes/offset?start=${posts.length}&limit=${limitNumber}`
+    const res = await axios.get<IRecipe[]>(url)
 
     try {
-      setHasMore(false)
       setPosts([...posts, ...res.data])
     } finally {
       setHasMore(false)
