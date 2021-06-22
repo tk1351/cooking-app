@@ -51,3 +51,11 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
     depends_on:
       - db
+
+  https-portal3000:
+    image: steveltn/https-portal:1
+    ports:
+      - 3443:443
+    environment:
+      STAGE: local
+      DOMAINS: 'localhost -> http://host.docker.internal:3000'
