@@ -24,6 +24,8 @@ const initialState: IAuthState = {
   error: null,
 }
 
+import API from '../../src/utils/api'
+
 export const fetchCurrentUser = createAsyncThunk<
   { id: number; name: string; role: 'admin' | 'user' },
   void,
@@ -33,8 +35,8 @@ export const fetchCurrentUser = createAsyncThunk<
     if (localStorage.token) {
       setAuthToken(localStorage.token)
     }
-    const url = '/api/auth'
-    const res = await axios.get<{
+    const url = '/auth'
+    const res = await API.get<{
       id: number
       name: string
       role: 'admin' | 'user'
@@ -51,8 +53,8 @@ export const registerUser = createAsyncThunk<
   AsyncThunkConfig<MyKnownError>
 >('auth/registerUser', async (userData, { rejectWithValue }) => {
   try {
-    const url = '/api/users/register'
-    const res = await axios.post<MyKnownMessage>(url, userData)
+    const url = '/users/register'
+    const res = await API.post<MyKnownMessage>(url, userData)
     return res.data
   } catch (error) {
     localStorage.removeItem('token')
@@ -66,8 +68,8 @@ export const loginUser = createAsyncThunk<
   AsyncThunkConfig<MyKnownError>
 >('auth/loginUser', async (userData, { rejectWithValue }) => {
   try {
-    const url = '/api/users/login'
-    const res = await axios.post<{ accessToken: string }>(url, userData)
+    const url = '/users/login'
+    const res = await API.post<{ accessToken: string }>(url, userData)
     const accessToken = res.data.accessToken
     localStorage.setItem('token', accessToken)
 
@@ -86,8 +88,8 @@ export const updateAdminProfile = createAsyncThunk<
     if (localStorage.token) {
       setAuthToken(localStorage.token)
     }
-    const url = `/api/users/admin/${id}/profile`
-    const res = await axios.patch<IUser>(url, profile)
+    const url = `/users/admin/${id}/profile`
+    const res = await API.patch<IUser>(url, profile)
     return res.data
   } catch (error) {
     return rejectWithValue(error.response.data)
@@ -103,8 +105,8 @@ export const updateUserProfile = createAsyncThunk<
     if (localStorage.token) {
       setAuthToken(localStorage.token)
     }
-    const url = `/api/users/user/${id}/profile`
-    const res = await axios.patch<IUser>(url, profile)
+    const url = `/users/user/${id}/profile`
+    const res = await API.patch<IUser>(url, profile)
     return res.data
   } catch (error) {
     return rejectWithValue(error.response.data)
@@ -120,8 +122,8 @@ export const deleteUserWithAdminPriviledge = createAsyncThunk<
     if (localStorage.token) {
       setAuthToken(localStorage.token)
     }
-    const url = `/api/users/${id}/admin`
-    const res = await axios.delete<MyKnownMessage>(url)
+    const url = `/users/${id}/admin`
+    const res = await API.delete<MyKnownMessage>(url)
     return res.data
   } catch (error) {
     return rejectWithValue(error.response.data)

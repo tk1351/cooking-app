@@ -1,12 +1,13 @@
 import React, { VFC, useState } from 'react'
 import { useRouter } from 'next/router'
 import { Grid, Typography, Button } from '@material-ui/core'
-import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroller'
 import { IUser } from '../../re-ducks/auth/type'
 import { useAppSelector } from '../../re-ducks/hooks'
 import { selectUserId } from '../../re-ducks/auth/authSlice'
 import UserListItem from './UserListItem'
+
+import API from '../../src/utils/api'
 
 type Props = {
   users: IUser[]
@@ -23,8 +24,8 @@ const UsersList: VFC<Props> = ({ users }) => {
   const loadMore = async () => {
     const limitNumber = 10
 
-    const url = `/api/users/offset?start=${limitNumber}&limit=${limitNumber}`
-    const res = await axios.get<IUser[]>(url)
+    const url = `/users/offset?start=${limitNumber}&limit=${limitNumber}`
+    const res = await API.get<IUser[]>(url)
 
     try {
       setItems([...items, ...res.data])

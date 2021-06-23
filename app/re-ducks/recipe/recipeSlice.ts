@@ -6,6 +6,8 @@ import { MyKnownError, MyKnownMessage } from '../defaultType'
 import { IRecipeInputs } from '../../components/form/type'
 import { setAuthToken } from '../../src/utils/setAuthToken'
 
+import API from '../../src/utils/api'
+
 const initialState: IRecipeState = {
   recipe: null,
   recipes: [],
@@ -23,8 +25,8 @@ export const createRecipe = createAsyncThunk<
     if (localStorage.token) {
       setAuthToken(localStorage.token)
     }
-    const url = '/api/recipes'
-    const res = await axios.post<IRecipe>(url, recipeData)
+    const url = '/recipes'
+    const res = await API.post<IRecipe>(url, recipeData)
     return res.data
   } catch (error) {
     return rejectWithValue(error.response.data)
@@ -40,8 +42,8 @@ export const likeRecipe = createAsyncThunk<
     if (localStorage.token) {
       setAuthToken(localStorage.token)
     }
-    const url = `/api/recipes/${id}/like`
-    const res = await axios.post<MyKnownMessage>(url, id)
+    const url = `/recipes/${id}/like`
+    const res = await API.post<MyKnownMessage>(url, id)
     return res.data
   } catch (error) {
     return rejectWithValue(error.response.data)
@@ -57,8 +59,8 @@ export const updateRecipe = createAsyncThunk<
     if (localStorage.token) {
       setAuthToken(localStorage.token)
     }
-    const url = `/api/recipes/${id}`
-    const res = await axios.patch<IRecipe>(url, postData)
+    const url = `/recipes/${id}`
+    const res = await API.patch<IRecipe>(url, postData)
     return res.data
   } catch (error) {
     return rejectWithValue(error.response.data)
@@ -74,8 +76,8 @@ export const deleteRecipe = createAsyncThunk<
     if (localStorage.token) {
       setAuthToken(localStorage.token)
     }
-    const url = `/api/recipes/${id}`
-    const res = await axios.delete<MyKnownMessage>(url)
+    const url = `/recipes/${id}`
+    const res = await API.delete<MyKnownMessage>(url)
     return { message: res.data, id }
   } catch (error) {
     return rejectWithValue(error.response.data)
@@ -91,8 +93,8 @@ export const unlikeRecipe = createAsyncThunk<
     if (localStorage.token) {
       setAuthToken(localStorage.token)
     }
-    const url = `/api/recipes/${id}/unlike`
-    const res = await axios.delete<MyKnownMessage>(url)
+    const url = `/recipes/${id}/unlike`
+    const res = await API.delete<MyKnownMessage>(url)
     return res.data
   } catch (error) {
     return rejectWithValue(error.response.data)

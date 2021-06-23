@@ -2,9 +2,10 @@ import React, { VFC, useState } from 'react'
 import { useRouter } from 'next/router'
 import { Button } from '@material-ui/core'
 import InfiniteScroll from 'react-infinite-scroller'
-import axios from 'axios'
 import { IRecipe } from '../../re-ducks/recipe/type'
 import RecipeItem from './RecipeItem'
+
+import API from '../../src/utils/api'
 
 type Props = {
   recipes: IRecipe[]
@@ -20,8 +21,8 @@ const Search: VFC<Props> = ({ recipes }) => {
   const loadMore = async () => {
     const limitNumber = 5
 
-    const url = `/api/recipes/filter?query=${query}&start=${posts.length}&limit=${limitNumber}`
-    const res = await axios.get<IRecipe[]>(url)
+    const url = `/recipes/filter?query=${query}&start=${posts.length}&limit=${limitNumber}`
+    const res = await API.get<IRecipe[]>(url)
 
     try {
       setPosts([...posts, ...res.data])

@@ -1,9 +1,9 @@
-import axios from 'axios'
+import API from './api'
 
 export const setAuthToken = (token: string) => {
   if (token) {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    API.defaults.headers.common['Authorization'] = `Bearer ${token}`
   } else {
-    delete axios.defaults.headers.common['Authorization']
+    delete API.defaults.headers.common['Authorization']
   }
 }

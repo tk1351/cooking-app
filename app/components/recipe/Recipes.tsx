@@ -1,8 +1,9 @@
 import React, { VFC, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroller'
-import axios from 'axios'
 import RecipeItem from './RecipeItem'
 import { IRecipe } from '../../re-ducks/recipe/type'
+
+import API from '../../src/utils/api'
 
 type Props = {
   recipes: IRecipe[]
@@ -15,8 +16,8 @@ const Recipes: VFC<Props> = ({ recipes }) => {
   const loadMore = async () => {
     const limitNumber = 5
 
-    const url = `/api/recipes/offset?start=${posts.length}&limit=${limitNumber}`
-    const res = await axios.get<IRecipe[]>(url)
+    const url = `/recipes/offset?start=${posts.length}&limit=${limitNumber}`
+    const res = await API.get<IRecipe[]>(url)
 
     try {
       setPosts([...posts, ...res.data])
