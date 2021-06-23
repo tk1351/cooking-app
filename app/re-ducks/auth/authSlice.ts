@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import axios from 'axios'
 import { AsyncThunkConfig, RootState } from '../store'
 import {
   IAuthState,
@@ -182,6 +181,7 @@ const authSlice = createSlice({
         state.error = action.payload
       }
     })
+
     // ログイン
     builder.addCase(loginUser.pending, (state) => {
       state.status = 'loading'

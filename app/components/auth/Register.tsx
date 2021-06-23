@@ -6,7 +6,6 @@ import { v4 as uuidv4 } from 'uuid'
 import { IRegisterUser, IRegisterInputs } from '../../re-ducks/auth/type'
 import { useAppDispatch } from '../../re-ducks/hooks'
 import { registerUser } from '../../re-ducks/auth/authSlice'
-import { useIsAuthenticated } from '../common/useIsAuthenticated'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import TextForm from '../form/TextForm'
@@ -24,8 +23,6 @@ const defaultValues: IRegisterInputs = {
 }
 
 const Register: VFC = () => {
-  useIsAuthenticated()
-
   const dispatch = useAppDispatch()
   const { control, handleSubmit } = useForm<IRegisterInputs>({
     defaultValues,

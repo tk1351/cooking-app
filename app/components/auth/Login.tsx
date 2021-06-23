@@ -8,7 +8,6 @@ import { v4 as uuidv4 } from 'uuid'
 import { ILoginUser } from '../../re-ducks/auth/type'
 import { useAppDispatch } from '../../re-ducks/hooks'
 import { loginUser, fetchCurrentUser } from '../../re-ducks/auth/authSlice'
-import { useIsAuthenticated } from '../common/useIsAuthenticated'
 import TextForm from '../form/TextForm'
 import FormButton from '../form/FormButton'
 import { loginValidationSchema } from '../form/validations/loginValidation'
@@ -27,8 +26,6 @@ const defaultValues: ILoginInputs = {
 }
 
 const Login: VFC = () => {
-  useIsAuthenticated()
-
   const dispatch = useAppDispatch()
   const { control, handleSubmit } = useForm<ILoginInputs>({
     defaultValues,
