@@ -5,6 +5,10 @@ import { RecipeLike } from './recipe-likes.entity';
 import { RecipeLikeDto } from './dto/recipe-like-dto';
 import { RecipeUnlikeDto } from './dto/recipe-unlike-dto';
 import { MyKnownMessage } from '../message.interface';
+import {
+  GetRecipeLikeByLimitNumberDto,
+  GetRecipeLikeByOffsetDto,
+} from './dto/get-recipe-like-dto';
 
 @Injectable()
 export class RecipeLikesService {
@@ -19,6 +23,26 @@ export class RecipeLikesService {
 
   async getRecipeLikesByUserId(userId: number): Promise<RecipeLike[]> {
     return await this.recipeLikeRepository.getRecipeLikesByUserId(userId);
+  }
+
+  async getRecipeLikesByLimitNumber(
+    getRecipeLikeByLimitNumberDto: GetRecipeLikeByLimitNumberDto,
+    userId: number,
+  ): Promise<RecipeLike[]> {
+    return await this.recipeLikeRepository.getRecipeLikesByLimitNumber(
+      getRecipeLikeByLimitNumberDto,
+      userId,
+    );
+  }
+
+  async getRecipeLikesByOffset(
+    etRecipeLikeByOffsetDto: GetRecipeLikeByOffsetDto,
+    userId: number,
+  ): Promise<RecipeLike[]> {
+    return await this.recipeLikeRepository.getRecipeLikesByOffset(
+      etRecipeLikeByOffsetDto,
+      userId,
+    );
   }
 
   async getRecipeLikesByRecipeId(recipeId: number): Promise<RecipeLike[]> {

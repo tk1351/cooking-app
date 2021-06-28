@@ -7,6 +7,10 @@ import { RecipeLike } from './recipe-likes.entity';
 import { RecipeLikeDto } from './dto/recipe-like-dto';
 import { MyKnownMessage } from '../message.interface';
 import { RecipeUnlikeDto } from './dto/recipe-unlike-dto';
+import {
+  GetRecipeLikeByLimitNumberDto,
+  GetRecipeLikeByOffsetDto,
+} from './dto/get-recipe-like-dto';
 
 @EntityRepository(RecipeLike)
 export class RecipeLikeRepository extends Repository<RecipeLike> {
@@ -15,15 +19,52 @@ export class RecipeLikeRepository extends Repository<RecipeLike> {
   }
 
   async getRecipeLikesByUserId(userId: number): Promise<RecipeLike[]> {
-    const found: RecipeLike[] = await this.createQueryBuilder('recipe-likes')
+    const found = await this.createQueryBuilder('recipe-likes')
       .where('recipe-likes.userId = :userId', { userId })
       .getMany();
 
     return found;
   }
 
+  async getRecipeLikesByLimitNumber(
+    getRecipeLikeByLimitNumberDto: GetRecipeLikeByLimitNumberDto,
+    userId: number,
+  ): Promise<RecipeLike[]> {
+    const { limit } = getRecipeLikeByLimitNumberDto;
+
+    const result = await this.createQueryBuilder('recipe-likes')
+      .where('recipe-likes.userId = :userId', { userId })
+      .take(limit);
+
+    try {
+      const recipeLikes = await result.getMany();
+      return recipeLikes;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getRecipeLikesByOffset(
+    etRecipeLikeByOffsetDto: GetRecipeLikeByOffsetDto,
+    userId: number,
+  ): Promise<RecipeLike[]> {
+    const { start, limit } = etRecipeLikeByOffsetDto;
+
+    const result = await this.createQueryBuilder('recipe-likes')
+      .where('recipe-likes.userId = :userId', { userId })
+      .skip(start)
+      .take(limit);
+
+    try {
+      const recipeLikes = await result.getMany();
+      return recipeLikes;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
   async getRecipeLikesByRecipeId(recipeId: number): Promise<RecipeLike[]> {
-    const found: RecipeLike[] = await this.createQueryBuilder('recipe-likes')
+    const found = await this.createQueryBuilder('recipe-likes')
       .where('recipe-likes.recipeId = :recipeId', { recipeId })
       .getMany();
 
