@@ -12,6 +12,7 @@ import {
   selectUserId,
 } from '../../re-ducks/auth/authSlice'
 import SearchForm from '../form/SearchForm'
+import styles from '../../styles/components/common/navbar.module.css'
 
 const Navbar: VFC = () => {
   const dispatch = useAppDispatch()
@@ -30,57 +31,49 @@ const Navbar: VFC = () => {
   }
 
   const guestLinks = (
-    <>
-      <div>
-        <SearchForm />
+    <div className={styles.links}>
+      <SearchForm />
+      <div className={styles.link}>
+        <Link href="/register">
+          <p>ユーザー登録</p>
+        </Link>
       </div>
-      <div>
-        <Button color="inherit">
-          <Link href="/register">ユーザー登録</Link>
-        </Button>
-        <Button color="inherit">
-          <Link href="/login">ログイン</Link>
-        </Button>
+      <div className={styles.link}>
+        <Link href="/login">
+          <p>ログイン</p>
+        </Link>
       </div>
-    </>
+    </div>
   )
 
   const userLinks = (
-    <>
-      <div>
-        <SearchForm />
-      </div>
-      <div>
-        <Button color="inherit">
-          <Link href={`user/${userId}`}>マイページ</Link>
-        </Button>
-        <Button color="inherit">
-          <Link href={`/user/${userId}/likes`}>お気に入り</Link>
-        </Button>
-        <Button color="inherit" onClick={() => clearAuthState()}>
-          ログアウト
-        </Button>
-      </div>
-    </>
+    <div className={styles.links}>
+      <SearchForm />
+      <Button color="inherit">
+        <Link href={`user/${userId}`}>マイページ</Link>
+      </Button>
+      <Button color="inherit">
+        <Link href={`/user/${userId}/likes`}>お気に入り</Link>
+      </Button>
+      <Button color="inherit" onClick={() => clearAuthState()}>
+        ログアウト
+      </Button>
+    </div>
   )
 
   const adminLinks = (
-    <>
-      <div>
-        <SearchForm />
-      </div>
-      <div>
-        <Button color="inherit">
-          <Link href={`/admin/${userId}`}>管理者ページ</Link>
-        </Button>
-        <Button color="inherit">
-          <Link href="/admin/recipeform">レシピ投稿</Link>
-        </Button>
-        <Button color="inherit" onClick={() => clearAuthState()}>
-          ログアウト
-        </Button>
-      </div>
-    </>
+    <div className={styles.links}>
+      <SearchForm />
+      <Button color="inherit">
+        <Link href={`/admin/${userId}`}>管理者ページ</Link>
+      </Button>
+      <Button color="inherit">
+        <Link href="/admin/recipeform">レシピ投稿</Link>
+      </Button>
+      <Button color="inherit" onClick={() => clearAuthState()}>
+        ログアウト
+      </Button>
+    </div>
   )
 
   const Links = () => {
@@ -95,15 +88,17 @@ const Navbar: VFC = () => {
 
   return (
     <div>
-      <AppBar position="static">
-        <Toolbar>
+      <AppBar position="static" className={styles.appBar}>
+        <Toolbar className={styles.toolbar}>
           <IconButton edge="start" color="inherit" aria-label="open drawer">
-            <Link href="/">Cooking-app</Link>
+            <Link href="/">
+              <p>Cooking-app</p>
+            </Link>
           </IconButton>
           {!loading && (
-            <>
+            <div>
               <Links />
-            </>
+            </div>
           )}
         </Toolbar>
       </AppBar>
