@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import '../styles/globals.css'
+import '../styles/reset.css'
 import type { AppProps } from 'next/app'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components'
 import { ThemeProvider as MaterialUIThemeProvider } from '@material-ui/core/styles'

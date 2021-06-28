@@ -1,0 +1,17 @@
+.tag {
+  display: flex;
+}
+
+.linkText {
+  padding-right: 8px;
+}
+
+.linkText:hover {
+  text-decoration: underline;
+  opacity: 0.5;
+}
+
+.media {
+  width: 345;
+  height: 140;
+}

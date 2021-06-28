@@ -1,4 +1,4 @@
-import React, { VFC, useState, useCallback } from 'react'
+import React, { VFC, useState } from 'react'
 import { format } from 'date-fns'
 import {
   Card,
@@ -11,6 +11,7 @@ import {
   makeStyles,
   Menu,
   MenuItem,
+  Grid,
 } from '@material-ui/core'
 import Link from 'next/link'
 import {
@@ -22,7 +23,7 @@ import {
 import { IRecipe } from '../../re-ducks/recipe/type'
 import { useAppSelector } from '../../re-ducks/hooks'
 import { selectUserRole } from '../../re-ducks/auth/authSlice'
-import { useRouter } from 'next/router'
+import styles from '../../styles/components/recipe/recipeItem.module.css'
 
 const useStyles = makeStyles({
   media: {
@@ -38,16 +39,8 @@ type Props = {
 const RecipeItem: VFC<Props> = ({ recipe }) => {
   const classes = useStyles()
 
-  const router = useRouter()
-
   const userRole = useAppSelector(selectUserRole)
 
-  const onClick = async (name: string) => {
-    router.push({
-      pathname: '/tag',
-      query: { name },
-    })
-  }
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const handleClick = (e: {
     currentTarget: React.SetStateAction<HTMLElement | null>
@@ -86,51 +79,68 @@ const RecipeItem: VFC<Props> = ({ recipe }) => {
   }
 
   return (
-    <Card>
-      <CardActionArea>
-        <CardMedia className={classes.media} image={recipe.image} />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
-            {recipe.name}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            {format(new Date(recipe.createdAt), 'yyyy-MM-dd')}
-          </Typography>
-          {recipe.tags.map((tag) => (
+    <Grid item xs={4}>
+      <Card>
+        <CardActionArea>
+          <CardMedia className={classes.media} image={recipe.image} />
+          <CardContent>
             <Typography
-              key={tag.id}
-              variant="body2"
-              color="textPrimary"
-              component="p"
-              onClick={() => onClick(tag.name)}
+              gutterBottom
+              variant="h5"
+              component="h2"
+              className="font-bold"
             >
-              #{tag.name}
+              {recipe.name}
             </Typography>
-          ))}
-        </CardContent>
-      </CardActionArea>
-      <CardActions>
-        <Button size="small" color="primary" onClick={handleClick}>
-          Share
-        </Button>
-        <ShareField />
-        <Button size="small" color="primary">
-          <Link href={`/recipe/${recipe.id}`}>詳細</Link>
-        </Button>
-        {userRole === 'admin' ? (
-          <>
-            <Button size="small" color="primary">
-              <Link href={`/recipe/edit/${recipe.id}`}>編集</Link>
-            </Button>
-            <Button size="small" color="primary" type="button">
-              <Link href={`/admin/recipe/${recipe.id}`}>削除</Link>
-            </Button>
-          </>
-        ) : (
-          <></>
-        )}
-      </CardActions>
-    </Card>
+            <Typography variant="body2" color="textSecondary" component="p">
+              {format(new Date(recipe.createdAt), 'yyyy-MM-dd')}
+            </Typography>
+            <ul className={styles.tag}>
+              {recipe.tags.map((tag) => (
+                <div key={tag.id}>
+                  <Link href={{ pathname: '/tag', query: { name: tag.name } }}>
+                    <Typography
+                      variant="body2"
+                      color="primary"
+                      component="p"
+                      className={styles.linkText}
+                    >
+                      #{tag.name}
+                    </Typography>
+                  </Link>
+                </div>
+              ))}
+            </ul>
+          </CardContent>
+        </CardActionArea>
+        <CardActions>
+          <Button
+            size="small"
+            color="primary"
+            variant="contained"
+            onClick={handleClick}
+          >
+            Share
+          </Button>
+          <ShareField />
+          <Button size="small" color="primary" variant="contained">
+            <Link href={`/recipe/${recipe.id}`}>詳細</Link>
+          </Button>
+          {userRole === 'admin' ? (
+            <>
+              <Button size="small" color="primary">
+                <Link href={`/recipe/edit/${recipe.id}`}>編集</Link>
+              </Button>
+              <Button size="small" color="primary" type="button">
+                <Link href={`/admin/recipe/${recipe.id}`}>削除</Link>
+              </Button>
+            </>
+          ) : (
+            <></>
+          )}
+        </CardActions>
+      </Card>
+    </Grid>
   )
 }
 
