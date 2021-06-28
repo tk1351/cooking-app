@@ -1,5 +1,6 @@
 import React, { VFC, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroller'
+import { Grid } from '@material-ui/core'
 import RecipeItem from './RecipeItem'
 import { IRecipe } from '../../re-ducks/recipe/type'
 
@@ -30,11 +31,19 @@ const Recipes: VFC<Props> = ({ recipes }) => {
 
   return (
     <div>
-      <h1>レシピ一覧</h1>
+      <h1 className="text-4xl font-bold text-center">レシピ一覧</h1>
       <InfiniteScroll loadMore={loadMore} hasMore={hasMore} loader={loader}>
-        {posts.map((post) => (
-          <RecipeItem key={post.id} recipe={post} />
-        ))}
+        <Grid container spacing={2}>
+          <Grid xs={2} />
+          <Grid item xs={8}>
+            <Grid container justify="center" spacing={5}>
+              {posts.map((post) => (
+                <RecipeItem key={post.id} recipe={post} />
+              ))}
+            </Grid>
+          </Grid>
+          <Grid xs={2} />
+        </Grid>
       </InfiniteScroll>
     </div>
   )
