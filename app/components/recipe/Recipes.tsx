@@ -36,7 +36,7 @@ const Recipes: VFC<Props> = ({ recipes }) => {
         <Grid container spacing={2}>
           <Grid xs={2} />
           <Grid item xs={8}>
-            <Grid container justify="center" spacing={5}>
+            <Grid container spacing={5}>
               {posts.map((post) => (
                 <RecipeItem key={post.id} recipe={post} />
               ))}

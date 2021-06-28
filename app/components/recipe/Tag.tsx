@@ -1,6 +1,6 @@
 import React, { VFC, useState } from 'react'
 import { useRouter } from 'next/router'
-import { Button } from '@material-ui/core'
+import { Button, Grid } from '@material-ui/core'
 import InfiniteScroll from 'react-infinite-scroller'
 import { IRecipe } from '../../re-ducks/recipe/type'
 import RecipeItem from './RecipeItem'
@@ -36,9 +36,17 @@ const Tag: VFC<Props> = ({ recipes }) => {
     <div>
       <h1>#{name} の検索結果</h1>
       <InfiniteScroll loadMore={loadMore} hasMore={hasMore} loader={loader}>
-        {posts.map((post) => (
-          <RecipeItem key={post.id} recipe={post} />
-        ))}
+        <Grid container spacing={2}>
+          <Grid xs={2} />
+          <Grid item xs={8}>
+            <Grid container spacing={5}>
+              {posts.map((post) => (
+                <RecipeItem key={post.id} recipe={post} />
+              ))}
+            </Grid>
+          </Grid>
+          <Grid xs={2} />
+        </Grid>
       </InfiniteScroll>
       <Button onClick={() => router.push('/')}>一覧へ戻る</Button>
     </div>
