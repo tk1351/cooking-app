@@ -22,6 +22,9 @@ export class RecipeLikeRepository extends Repository<RecipeLike> {
     const found = await this.createQueryBuilder('recipe-likes')
       .where('recipe-likes.userId = :userId', { userId })
       .leftJoinAndSelect('recipe-likes.recipe', 'recipe')
+      .leftJoinAndSelect('recipe.ingredients', 'ingredients')
+      .leftJoinAndSelect('recipe.recipeDescriptions', 'recipeDescriptions')
+      .leftJoinAndSelect('recipe.tags', 'tags')
       .getMany();
 
     return found;
@@ -36,6 +39,10 @@ export class RecipeLikeRepository extends Repository<RecipeLike> {
     const result = await this.createQueryBuilder('recipe-likes')
       .where('recipe-likes.userId = :userId', { userId })
       .leftJoinAndSelect('recipe-likes.recipe', 'recipe')
+      .leftJoinAndSelect('recipe.ingredients', 'ingredients')
+      .leftJoinAndSelect('recipe.recipeDescriptions', 'recipeDescriptions')
+      .leftJoinAndSelect('recipe.tags', 'tags')
+      .orderBy('recipe.createdAt', 'DESC')
       .take(limit);
 
     try {
@@ -55,6 +62,10 @@ export class RecipeLikeRepository extends Repository<RecipeLike> {
     const result = await this.createQueryBuilder('recipe-likes')
       .where('recipe-likes.userId = :userId', { userId })
       .leftJoinAndSelect('recipe-likes.recipe', 'recipe')
+      .leftJoinAndSelect('recipe.ingredients', 'ingredients')
+      .leftJoinAndSelect('recipe.recipeDescriptions', 'recipeDescriptions')
+      .leftJoinAndSelect('recipe.tags', 'tags')
+      .orderBy('recipe.createdAt', 'DESC')
       .skip(start)
       .take(limit);
 
