@@ -21,6 +21,7 @@ export class RecipeLikeRepository extends Repository<RecipeLike> {
   async getRecipeLikesByUserId(userId: number): Promise<RecipeLike[]> {
     const found = await this.createQueryBuilder('recipe-likes')
       .where('recipe-likes.userId = :userId', { userId })
+      .leftJoinAndSelect('recipe-likes.recipe', 'recipe')
       .getMany();
 
     return found;
@@ -34,6 +35,7 @@ export class RecipeLikeRepository extends Repository<RecipeLike> {
 
     const result = await this.createQueryBuilder('recipe-likes')
       .where('recipe-likes.userId = :userId', { userId })
+      .leftJoinAndSelect('recipe-likes.recipe', 'recipe')
       .take(limit);
 
     try {
@@ -52,6 +54,7 @@ export class RecipeLikeRepository extends Repository<RecipeLike> {
 
     const result = await this.createQueryBuilder('recipe-likes')
       .where('recipe-likes.userId = :userId', { userId })
+      .leftJoinAndSelect('recipe-likes.recipe', 'recipe')
       .skip(start)
       .take(limit);
 
