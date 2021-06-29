@@ -38,7 +38,7 @@ const Search: VFC<Props> = ({ recipes }) => {
       <h1>{query}の検索結果</h1>
       <InfiniteScroll loadMore={loadMore} hasMore={hasMore} loader={loader}>
         <Grid container spacing={2}>
-          <Grid xs={2} />
+          <Grid item xs={2} />
           <Grid item xs={8}>
             <Grid container spacing={5}>
               {posts.map((post) => (
@@ -46,7 +46,7 @@ const Search: VFC<Props> = ({ recipes }) => {
               ))}
             </Grid>
           </Grid>
-          <Grid xs={2} />
+          <Grid item xs={2} />
         </Grid>
       </InfiniteScroll>
       <Button onClick={() => router.push('/')}>一覧へ戻る</Button>

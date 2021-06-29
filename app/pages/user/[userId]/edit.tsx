@@ -17,7 +17,7 @@ const edit: VFC<Props> = (props) => {
 export const getStaticPaths: GetStaticPaths = async () => {
   const url = 'http://api:8080/users'
   const res = await axios.get<IUser[]>(url)
-  const users = await res.data
+  const users = res.data
 
   const paths = users.map((user) => ({
     params: { userId: user.id.toString() },
