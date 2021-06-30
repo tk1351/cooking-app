@@ -4,12 +4,14 @@ import axios from 'axios'
 import Navbar from '../../../components/common/Navbar'
 import Likes from '../../../components/user/Likes'
 import { IRecipeLike } from '../../../re-ducks/defaultType'
+import Footer from '../../../components/common/Footer'
 
 const likes: VFC<Props> = (props) => {
   return (
     <div>
       <Navbar />
       <Likes {...props} />
+      <Footer />
     </div>
   )
 }

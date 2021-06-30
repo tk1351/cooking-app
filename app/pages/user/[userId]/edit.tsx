@@ -4,12 +4,14 @@ import axios from 'axios'
 import { IUser } from '../../../re-ducks/auth/type'
 import Navbar from '../../../components/common/Navbar'
 import EditProfileForm from '../../../components/user/EditProfileForm'
+import Footer from '../../../components/common/Footer'
 
 const edit: VFC<Props> = (props) => {
   return (
     <div>
       <Navbar />
       <EditProfileForm user={props} />
+      <Footer />
     </div>
   )
 }

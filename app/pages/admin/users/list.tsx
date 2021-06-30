@@ -4,12 +4,14 @@ import axios from 'axios'
 import { IUser } from '../../../re-ducks/auth/type'
 import Navbar from '../../../components/common/Navbar'
 import UsersList from '../../../components/admin/UsersList'
+import Footer from '../../../components/common/Footer'
 
 const list: VFC<Props> = (props) => {
   return (
     <div>
       <Navbar />
       <UsersList {...props} />
+      <Footer />
     </div>
   )
 }

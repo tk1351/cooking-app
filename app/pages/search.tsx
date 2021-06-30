@@ -4,12 +4,14 @@ import axios from 'axios'
 import Navbar from '../components/common/Navbar'
 import Search from '../components/recipe/Search'
 import { IRecipe } from '../re-ducks/recipe/type'
+import Footer from '../components/common/Footer'
 
 const search: VFC<{ recipes: IRecipe[] }> = (props) => {
   return (
     <div>
       <Navbar />
       <Search {...props} />
+      <Footer />
     </div>
   )
 }

@@ -4,12 +4,14 @@ import axios from 'axios'
 import { IUser } from '../../../re-ducks/auth/type'
 import Navbar from '../../../components/common/Navbar'
 import UserInfo from '../../../components/admin/UserInfo'
+import Footer from '../../../components/common/Footer'
 
 const userId: VFC<Props> = (props) => {
   return (
     <div>
       <Navbar />
       <UserInfo user={props} />
+      <Footer />
     </div>
   )
 }
