@@ -4,6 +4,7 @@ import { Button, Grid } from '@material-ui/core'
 import InfiniteScroll from 'react-infinite-scroller'
 import { IRecipe } from '../../re-ducks/recipe/type'
 import RecipeItem from './RecipeItem'
+import Spinner from '../common/Spinner'
 
 import API from '../../src/utils/api'
 
@@ -31,7 +32,8 @@ const Tag: VFC<Props> = ({ recipes }) => {
     }
   }
 
-  const loader = <div key={0}>Loading ...</div>
+  const loader = <Spinner key={0} />
+
   return (
     <div>
       <h1>#{name} の検索結果</h1>

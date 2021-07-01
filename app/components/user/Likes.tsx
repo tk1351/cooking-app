@@ -4,6 +4,7 @@ import { Button, Grid } from '@material-ui/core'
 import InfiniteScroll from 'react-infinite-scroller'
 import RecipeItem from '../recipe/RecipeItem'
 import { IRecipeLike } from '../../re-ducks/defaultType'
+import Spinner from '../common/Spinner'
 
 import API from '../../src/utils/api'
 
@@ -33,7 +34,7 @@ const Likes: VFC<Props> = ({ recipeLikes }) => {
     }
   }
 
-  const loader = <div key={0}>Loading ...</div>
+  const loader = <Spinner key={0} />
 
   return (
     <div>

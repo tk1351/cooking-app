@@ -6,6 +6,7 @@ import { IUser } from '../../re-ducks/auth/type'
 import { useAppSelector } from '../../re-ducks/hooks'
 import { selectUserId } from '../../re-ducks/auth/authSlice'
 import UserListItem from './UserListItem'
+import Spinner from '../common/Spinner'
 
 import API from '../../src/utils/api'
 
@@ -34,7 +35,7 @@ const UsersList: VFC<Props> = ({ users }) => {
     }
   }
 
-  const loader = <div key={0}>Loading ...</div>
+  const loader = <Spinner key={0} />
   return (
     <>
       <Grid container spacing={2}>

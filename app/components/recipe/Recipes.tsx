@@ -3,6 +3,7 @@ import InfiniteScroll from 'react-infinite-scroller'
 import { Grid } from '@material-ui/core'
 import RecipeItem from './RecipeItem'
 import { IRecipe } from '../../re-ducks/recipe/type'
+import Spinner from '../common/Spinner'
 
 import API from '../../src/utils/api'
 
@@ -27,7 +28,7 @@ const Recipes: VFC<Props> = ({ recipes }) => {
     }
   }
 
-  const loader = <div key={0}>Loading ...</div>
+  const loader = <Spinner key={0} />
 
   return (
     <div>
