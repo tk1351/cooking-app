@@ -6,11 +6,18 @@ export interface IFormButtonProps {
   color: 'default' | 'inherit' | 'primary' | 'secondary'
   label: string
   type: 'button' | 'submit' | 'reset' | undefined
+  className?: string
 }
 
 const FormButton: VFC<IFormButtonProps> = (props) => {
   return (
-    <Button variant={props.variant} color={props.color} type={props.type}>
+    <Button
+      variant={props.variant}
+      color={props.color}
+      type={props.type}
+      fullWidth
+      className={props.className}
+    >
       {props.label}
     </Button>
   )

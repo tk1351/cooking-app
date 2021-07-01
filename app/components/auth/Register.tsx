@@ -14,6 +14,8 @@ import FormButton from '../form/FormButton'
 import { setAlert, removeAlert } from '../../re-ducks/alert/alertSlice'
 import Alert from '../common/Alert'
 import { MyKnownError } from '../../re-ducks/defaultType'
+import { Grid, Container, Typography } from '@material-ui/core'
+import styles from '../../styles/components/auth/register.module.css'
 
 const defaultValues: IRegisterInputs = {
   name: '',
@@ -69,97 +71,119 @@ const Register: VFC = () => {
   return (
     <>
       <Alert />
-      <h1>ユーザー登録</h1>
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <Controller
-          name="name"
-          control={control}
-          render={({ field: { onChange, ref }, formState: { errors } }) => (
-            <TextForm
-              head={'ユーザー名'}
-              label={'ユーザー名'}
-              id="name"
-              placeholder={'ユーザー名を入力してください'}
-              type="text"
-              name="name"
-              variant="outlined"
-              onChange={onChange}
-              inputRef={ref}
-              error={Boolean(errors.name)}
-              helperText={errors.name && errors.name.message}
-            />
-          )}
-        />
-        <Controller
-          name="email"
-          control={control}
-          render={({ field: { onChange, ref }, formState: { errors } }) => (
-            <TextForm
-              head={'メールアドレス'}
-              label={'メールアドレス'}
-              id="email"
-              placeholder={'メールアドレスを入力してください'}
-              type="email"
-              name="email"
-              variant="outlined"
-              onChange={onChange}
-              inputRef={ref}
-              error={Boolean(errors.email)}
-              helperText={errors.email && errors.email.message}
-            />
-          )}
-        />
-        <Controller
-          name="password"
-          control={control}
-          render={({ field: { onChange, ref }, formState: { errors } }) => (
-            <TextForm
-              head={'パスワード'}
-              label={'パスワード'}
-              id="password"
-              placeholder={'パスワードを入力してください'}
-              type="text"
-              name="password"
-              variant="outlined"
-              onChange={onChange}
-              inputRef={ref}
-              error={Boolean(errors.password)}
-              helperText={errors.password && errors.password.message}
-            />
-          )}
-        />
-        <Controller
-          name="confirmPassword"
-          control={control}
-          render={({ field: { onChange, ref }, formState: { errors } }) => (
-            <TextForm
-              head={'パスワード（確認用）'}
-              label={'パスワード（確認用）'}
-              id="confirmPassword"
-              placeholder={'上記と同じパスワードを入力してください'}
-              type="text"
-              name="confirmPassword"
-              variant="outlined"
-              onChange={onChange}
-              inputRef={ref}
-              error={Boolean(errors.confirmPassword)}
-              helperText={
-                errors.confirmPassword && errors.confirmPassword.message
-              }
-            />
-          )}
-        />
-        <FormButton
-          type="submit"
-          variant="contained"
-          color="primary"
-          label={'ユーザー登録'}
-        />
-      </form>
-      <p>
-        既にアカウントをお持ちの方はこちら
-        <Link href="/login">ログイン</Link>
-      </p>
+      <Container component="main" maxWidth="xs">
+        <Grid container justify="center" className={styles.h1}>
+          <h1>ユーザー登録</h1>
+        </Grid>
+        <form onSubmit={handleSubmit(onSubmit)} noValidate>
+          <Controller
+            name="name"
+            control={control}
+            render={({ field: { onChange, ref }, formState: { errors } }) => (
+              <TextForm
+                head={'ユーザー名'}
+                label={'ユーザー名'}
+                id="name"
+                placeholder={'ユーザー名を入力してください'}
+                type="text"
+                name="name"
+                variant="outlined"
+                onChange={onChange}
+                inputRef={ref}
+                error={Boolean(errors.name)}
+                helperText={errors.name && errors.name.message}
+                className={styles.textField}
+              />
+            )}
+          />
+          <Controller
+            name="email"
+            control={control}
+            render={({ field: { onChange, ref }, formState: { errors } }) => (
+              <TextForm
+                head={'メールアドレス'}
+                label={'メールアドレス'}
+                id="email"
+                placeholder={'メールアドレスを入力してください'}
+                type="email"
+                name="email"
+                variant="outlined"
+                onChange={onChange}
+                inputRef={ref}
+                error={Boolean(errors.email)}
+                helperText={errors.email && errors.email.message}
+                className={styles.textField}
+              />
+            )}
+          />
+          <Controller
+            name="password"
+            control={control}
+            render={({ field: { onChange, ref }, formState: { errors } }) => (
+              <TextForm
+                head={'パスワード'}
+                label={'パスワード'}
+                id="password"
+                placeholder={'パスワードを入力してください'}
+                type="text"
+                name="password"
+                variant="outlined"
+                onChange={onChange}
+                inputRef={ref}
+                error={Boolean(errors.password)}
+                helperText={errors.password && errors.password.message}
+                className={styles.textField}
+              />
+            )}
+          />
+          <Controller
+            name="confirmPassword"
+            control={control}
+            render={({ field: { onChange, ref }, formState: { errors } }) => (
+              <TextForm
+                head={'パスワード（確認用）'}
+                label={'パスワード（確認用）'}
+                id="confirmPassword"
+                placeholder={'上記と同じパスワードを入力してください'}
+                type="text"
+                name="confirmPassword"
+                variant="outlined"
+                onChange={onChange}
+                inputRef={ref}
+                error={Boolean(errors.confirmPassword)}
+                helperText={
+                  errors.confirmPassword && errors.confirmPassword.message
+                }
+                className={styles.textField}
+              />
+            )}
+          />
+          <FormButton
+            type="submit"
+            variant="contained"
+            color="primary"
+            label={'ユーザー登録'}
+            className={styles.button}
+          />
+        </form>
+        <Grid container justify="center">
+          <Typography variant="body2" color="textPrimary" component="p">
+            既にアカウントをお持ちの方はこちら
+          </Typography>
+        </Grid>
+        <Grid container justify="center">
+          <Link href="/login">
+            <Typography
+              variant="body2"
+              color="textPrimary"
+              component="p"
+              className={styles.link}
+            >
+              ログイン
+            </Typography>
+          </Link>
+        </Grid>
+      </Container>
     </>
   )
 }

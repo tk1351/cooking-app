@@ -16,6 +16,7 @@ export interface ITextFormProps {
   error: boolean
   helperText: string | undefined
   defaultValue?: any
+  className?: string
 }
 
 const TextForm: VFC<ITextFormProps> = (props) => {
@@ -34,6 +35,8 @@ const TextForm: VFC<ITextFormProps> = (props) => {
         error={props.error}
         helperText={props.helperText}
         defaultValue={props.defaultValue}
+        fullWidth
+        className={props.className}
       />
     </div>
   )
