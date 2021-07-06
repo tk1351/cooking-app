@@ -4,6 +4,7 @@ import { Grid } from '@material-ui/core'
 import RecipeItem from './RecipeItem'
 import { IRecipe } from '../../re-ducks/recipe/type'
 import Spinner from '../common/Spinner'
+import styles from '../../styles/components/recipe/recipes.module.css'
 
 import API from '../../src/utils/api'
 
@@ -32,7 +33,9 @@ const Recipes: VFC<Props> = ({ recipes }) => {
 
   return (
     <div>
-      <h1 className="text-4xl font-bold text-center">レシピ一覧</h1>
+      <Grid container justify="center" className={styles.h1}>
+        <h1>レシピ一覧</h1>
+      </Grid>
       <InfiniteScroll loadMore={loadMore} hasMore={hasMore} loader={loader}>
         <Grid container spacing={2}>
           <Grid item xs={2} />
