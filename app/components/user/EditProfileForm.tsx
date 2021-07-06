@@ -6,12 +6,13 @@ import { v4 as uuidv4 } from 'uuid'
 import { IUser, IUpdateUserProfileInputs } from '../../re-ducks/auth/type'
 import TextForm from '../form/TextForm'
 import FormButton from '../form/FormButton'
-import { Button } from '@material-ui/core'
+import { Button, Container, Grid, Typography } from '@material-ui/core'
 import { useAppDispatch } from '../../re-ducks/hooks'
 import { updateUserProfile } from '../../re-ducks/auth/authSlice'
 import { setAlert, removeAlert } from '../../re-ducks/alert/alertSlice'
 import { MyKnownError } from '../../re-ducks/defaultType'
 import Alert from '../common/Alert'
+import styles from '../../styles/components/user/editProfileForm.module.css'
 
 type Props = {
   user: IUser
@@ -66,76 +67,106 @@ const EditProfileForm: VFC<Props> = ({ user }) => {
   return (
     <div>
       <Alert />
-      <h1>プロフィール編集</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Controller
-          name="name"
-          control={control}
-          render={({ field: { onChange, ref }, formState: { errors } }) => (
-            <TextForm
-              head={'ユーザー名'}
-              label={'ユーザー名'}
-              placeholder={'ユーザー名を入力してください'}
-              id="name"
-              type="text"
-              name="name"
-              variant="outlined"
-              defaultValue={user.name}
-              onChange={onChange}
-              inputRef={ref}
-              error={Boolean(errors.name)}
-              helperText={errors.name && errors.name.message}
-            />
-          )}
-        />
-        <Controller
-          name="favoriteDish"
-          control={control}
-          render={({ field: { onChange, ref }, formState: { errors } }) => (
-            <TextForm
-              head={'好きな料理'}
-              label={'好きな料理'}
-              placeholder={'好きな料理を入力してください'}
-              id="favoriteDish"
-              type="text"
-              name="favoriteDish"
-              variant="outlined"
-              defaultValue={user.favoriteDish}
-              onChange={onChange}
-              inputRef={ref}
-              error={Boolean(errors.favoriteDish)}
-              helperText={errors.favoriteDish && errors.favoriteDish.message}
-            />
-          )}
-        />
-        <Controller
-          name="specialDish"
-          control={control}
-          render={({ field: { onChange, ref }, formState: { errors } }) => (
-            <TextForm
-              head={'得意料理'}
-              label={'得意料理'}
-              placeholder={'得意料理を入力してください'}
-              id="specialDish"
-              type="text"
-              name="specialDish"
-              variant="outlined"
-              defaultValue={user.specialDish}
-              onChange={onChange}
-              inputRef={ref}
-              error={Boolean(errors.specialDish)}
-              helperText={errors.specialDish && errors.specialDish.message}
-            />
-          )}
-        />
-        <FormButton
-          type="submit"
-          variant="contained"
-          color="primary"
-          label="更新"
-        />
-      </form>
-      <Button onClick={() => router.back()}>戻る</Button>
+      <Container component="main" maxWidth={false} className={styles.container}>
+        <Grid container justify="center" className={styles.h1}>
+          <h1>プロフィール編集</h1>
+        </Grid>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Controller
+            name="name"
+            control={control}
+            render={({ field: { onChange, ref }, formState: { errors } }) => (
+              <>
+                <div className={styles.typography}>
+                  <Typography>ユーザー名</Typography>
+                </div>
+                <TextForm
+                  label={'ユーザー名'}
+                  id="name"
+                  type="text"
+                  name="name"
+                  variant="outlined"
+                  defaultValue={user.name}
+                  onChange={onChange}
+                  inputRef={ref}
+                  error={Boolean(errors.name)}
+                  helperText={errors.name && errors.name.message}
+                  className={styles.textField}
+                  fullWidth
+                />
+              </>
+            )}
+          />
+          <Controller
+            name="favoriteDish"
+            control={control}
+            render={({ field: { onChange, ref }, formState: { errors } }) => (
+              <>
+                <div className={styles.typography}>
+                  <Typography>好きな料理</Typography>
+                </div>
+                <TextForm
+                  label={'好きな料理'}
+                  id="favoriteDish"
+                  type="text"
+                  name="favoriteDish"
+                  variant="outlined"
+                  defaultValue={user.favoriteDish}
+                  onChange={onChange}
+                  inputRef={ref}
+                  error={Boolean(errors.favoriteDish)}
+                  helperText={
+                    errors.favoriteDish && errors.favoriteDish.message
+                  }
+                  className={styles.textField}
+                  fullWidth
+                />
+              </>
+            )}
+          />
+          <Controller
+            name="specialDish"
+            control={control}
+            render={({ field: { onChange, ref }, formState: { errors } }) => (
+              <>
+                <div className={styles.typography}>
+                  <Typography>得意料理</Typography>
+                </div>
+                <TextForm
+                  label={'得意料理'}
+                  id="specialDish"
+                  type="text"
+                  name="specialDish"
+                  variant="outlined"
+                  defaultValue={user.specialDish}
+                  onChange={onChange}
+                  inputRef={ref}
+                  error={Boolean(errors.specialDish)}
+                  helperText={errors.specialDish && errors.specialDish.message}
+                  className={styles.textField}
+                  fullWidth
+                />
+              </>
+            )}
+          />
+          <FormButton
+            type="submit"
+            variant="contained"
+            color="primary"
+            label="更新"
+          />
+        </form>
+        <Grid container>
+          <Button
+            variant="contained"
+            color="inherit"
+            onClick={() => router.back()}
+            className={styles.back}
+          >
+            戻る
+          </Button>
+        </Grid>
+      </Container>
     </div>
   )
 }
