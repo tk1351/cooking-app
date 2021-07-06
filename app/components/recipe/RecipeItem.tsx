@@ -9,26 +9,22 @@ import {
   CardActions,
   Button,
   makeStyles,
-  Menu,
-  MenuItem,
   Grid,
 } from '@material-ui/core'
 import Link from 'next/link'
-import {
-  TwitterShareButton,
-  TwitterIcon,
-  LineShareButton,
-  LineIcon,
-} from 'react-share'
 import { IRecipe } from '../../re-ducks/recipe/type'
 import { useAppSelector } from '../../re-ducks/hooks'
 import { selectUserRole } from '../../re-ducks/auth/authSlice'
 import styles from '../../styles/components/recipe/recipeItem.module.css'
+import ShareField from '../common/ShareField'
 
 const useStyles = makeStyles({
   media: {
     maxWidth: 345,
     height: 140,
+    '&:hover': {
+      opacity: 0.7,
+    },
   },
 })
 
@@ -52,46 +48,24 @@ const RecipeItem: VFC<Props> = ({ recipe }) => {
     setAnchorEl(null)
   }
 
-  const ShareField = () => {
-    const title = recipe.name
-    const url = `http://localhost:3000/recipe/${recipe.id}`
-    return (
-      <>
-        <Menu
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-          anchorEl={anchorEl}
-        >
-          <MenuItem>
-            <TwitterShareButton title={title} url={url}>
-              <TwitterIcon size={32} round={true} />
-            </TwitterShareButton>
-          </MenuItem>
-          <MenuItem>
-            <LineShareButton title={title} url={url}>
-              <LineIcon size={32} round={true} />
-            </LineShareButton>
-          </MenuItem>
-        </Menu>
-      </>
-    )
-  }
-
   return (
     <Grid item xs={4}>
       <Card>
         <CardActionArea>
-          <CardMedia className={classes.media} image={recipe.image} />
+          <Link href={`/recipe/${recipe.id}`}>
+            <CardMedia className={classes.media} image={recipe.image} />
+          </Link>
           <CardContent>
-            <Typography
-              gutterBottom
-              variant="h5"
-              component="h2"
-              className="font-bold"
-            >
-              {recipe.name}
-            </Typography>
+            <Link href={`/recipe/${recipe.id}`}>
+              <Typography
+                gutterBottom
+                variant="h6"
+                component="h2"
+                className={styles.linkText}
+              >
+                {recipe.name}
+              </Typography>
+            </Link>
             <Typography variant="body2" color="textSecondary" component="p">
               {format(new Date(recipe.createdAt), 'yyyy-MM-dd')}
             </Typography>
@@ -122,16 +96,30 @@ const RecipeItem: VFC<Props> = ({ recipe }) => {
           >
             Share
           </Button>
-          <ShareField />
+          <ShareField
+            recipe={recipe}
+            anchorEl={anchorEl}
+            handleClose={handleClose}
+          />
           <Button size="small" color="primary" variant="contained">
             <Link href={`/recipe/${recipe.id}`}>詳細</Link>
           </Button>
           {userRole === 'admin' ? (
             <>
-              <Button size="small" color="primary">
+              <Button
+                size="small"
+                color="primary"
+                variant="contained"
+                type="button"
+              >
                 <Link href={`/recipe/edit/${recipe.id}`}>編集</Link>
               </Button>
-              <Button size="small" color="primary" type="button">
+              <Button
+                size="small"
+                color="secondary"
+                variant="contained"
+                type="button"
+              >
                 <Link href={`/admin/recipe/${recipe.id}`}>削除</Link>
               </Button>
             </>
