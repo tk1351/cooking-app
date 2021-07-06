@@ -1,7 +1,15 @@
 import React, { VFC } from 'react'
 import Link from 'next/link'
-import { ListItem, ListItemText, Button, List } from '@material-ui/core'
+import {
+  ListItem,
+  ListItemText,
+  Button,
+  List,
+  Divider,
+  Grid,
+} from '@material-ui/core'
 import { IUser } from '../../re-ducks/auth/type'
+import styles from '../../styles/components/admin/usersListItem.module.css'
 
 type Props = {
   user: IUser
@@ -20,6 +28,11 @@ const UserListItem: VFC<Props> = ({ user }) => {
           </Button>
         </div>
       </ListItem>
+      <Grid container>
+        <Grid item className={styles.divider}>
+          <Divider />
+        </Grid>
+      </Grid>
     </List>
   )
 }
