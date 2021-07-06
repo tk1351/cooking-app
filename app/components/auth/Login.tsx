@@ -71,10 +71,8 @@ const Login: VFC = () => {
             control={control}
             render={({ field: { onChange, ref }, formState: { errors } }) => (
               <TextForm
-                head={'メールアドレス'}
                 label={'メールアドレス'}
                 id="email"
-                placeholder={'メールアドレスを入力してください'}
                 type="email"
                 name="email"
                 variant="outlined"
@@ -83,6 +81,7 @@ const Login: VFC = () => {
                 error={Boolean(errors.email)}
                 helperText={errors.email && errors.email.message}
                 className={styles.textField}
+                fullWidth
               />
             )}
           />
@@ -91,10 +90,8 @@ const Login: VFC = () => {
             control={control}
             render={({ field: { onChange, ref }, formState: { errors } }) => (
               <TextForm
-                head={'パスワード'}
                 label={'パスワード'}
                 id="password"
-                placeholder={'パスワードを入力してください'}
                 type="text"
                 name="password"
                 variant="outlined"
@@ -103,6 +100,7 @@ const Login: VFC = () => {
                 error={Boolean(errors.password)}
                 helperText={errors.password && errors.password.message}
                 className={styles.textField}
+                fullWidth
               />
             )}
           />

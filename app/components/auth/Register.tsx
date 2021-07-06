@@ -81,10 +81,8 @@ const Register: VFC = () => {
             control={control}
             render={({ field: { onChange, ref }, formState: { errors } }) => (
               <TextForm
-                head={'ユーザー名'}
                 label={'ユーザー名'}
                 id="name"
-                placeholder={'ユーザー名を入力してください'}
                 type="text"
                 name="name"
                 variant="outlined"
@@ -93,6 +91,7 @@ const Register: VFC = () => {
                 error={Boolean(errors.name)}
                 helperText={errors.name && errors.name.message}
                 className={styles.textField}
+                fullWidth
               />
             )}
           />
@@ -101,10 +100,8 @@ const Register: VFC = () => {
             control={control}
             render={({ field: { onChange, ref }, formState: { errors } }) => (
               <TextForm
-                head={'メールアドレス'}
                 label={'メールアドレス'}
                 id="email"
-                placeholder={'メールアドレスを入力してください'}
                 type="email"
                 name="email"
                 variant="outlined"
@@ -113,6 +110,7 @@ const Register: VFC = () => {
                 error={Boolean(errors.email)}
                 helperText={errors.email && errors.email.message}
                 className={styles.textField}
+                fullWidth
               />
             )}
           />
@@ -121,10 +119,8 @@ const Register: VFC = () => {
             control={control}
             render={({ field: { onChange, ref }, formState: { errors } }) => (
               <TextForm
-                head={'パスワード'}
                 label={'パスワード'}
                 id="password"
-                placeholder={'パスワードを入力してください'}
                 type="text"
                 name="password"
                 variant="outlined"
@@ -133,6 +129,7 @@ const Register: VFC = () => {
                 error={Boolean(errors.password)}
                 helperText={errors.password && errors.password.message}
                 className={styles.textField}
+                fullWidth
               />
             )}
           />
@@ -141,10 +138,8 @@ const Register: VFC = () => {
             control={control}
             render={({ field: { onChange, ref }, formState: { errors } }) => (
               <TextForm
-                head={'パスワード（確認用）'}
                 label={'パスワード（確認用）'}
                 id="confirmPassword"
-                placeholder={'上記と同じパスワードを入力してください'}
                 type="text"
                 name="confirmPassword"
                 variant="outlined"
@@ -155,6 +150,7 @@ const Register: VFC = () => {
                   errors.confirmPassword && errors.confirmPassword.message
                 }
                 className={styles.textField}
+                fullWidth
               />
             )}
           />
