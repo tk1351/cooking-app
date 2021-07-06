@@ -5,6 +5,7 @@ import InfiniteScroll from 'react-infinite-scroller'
 import RecipeItem from '../recipe/RecipeItem'
 import { IRecipeLike } from '../../re-ducks/defaultType'
 import Spinner from '../common/Spinner'
+import styles from '../../styles/components/user/likes.module.css'
 
 import API from '../../src/utils/api'
 
@@ -38,7 +39,9 @@ const Likes: VFC<Props> = ({ recipeLikes }) => {
 
   return (
     <div>
-      <h1>お気に入りレシピ一覧</h1>
+      <Grid container justify="center" className={styles.h1}>
+        <h1>お気に入りレシピ一覧</h1>
+      </Grid>
       <InfiniteScroll loadMore={loadMore} hasMore={hasMore} loader={loader}>
         <Grid container spacing={2}>
           <Grid item xs={2} />
@@ -52,7 +55,16 @@ const Likes: VFC<Props> = ({ recipeLikes }) => {
           <Grid item xs={2} />
         </Grid>
       </InfiniteScroll>
-      <Button onClick={() => router.push('/')}>一覧へ戻る</Button>
+      <Grid container justify="flex-start">
+        <Button
+          variant="contained"
+          color="inherit"
+          onClick={() => router.push('/')}
+          className={styles.back}
+        >
+          一覧へ戻る
+        </Button>
+      </Grid>
     </div>
   )
 }

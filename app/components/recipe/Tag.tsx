@@ -5,6 +5,7 @@ import InfiniteScroll from 'react-infinite-scroller'
 import { IRecipe } from '../../re-ducks/recipe/type'
 import RecipeItem from './RecipeItem'
 import Spinner from '../common/Spinner'
+import styles from '../../styles/components/recipe/tag.module.css'
 
 import API from '../../src/utils/api'
 
@@ -36,7 +37,9 @@ const Tag: VFC<Props> = ({ recipes }) => {
 
   return (
     <div>
-      <h1>#{name} の検索結果</h1>
+      <Grid container justify="center" className={styles.h1}>
+        <h1>#{name} の検索結果</h1>
+      </Grid>
       <InfiniteScroll loadMore={loadMore} hasMore={hasMore} loader={loader}>
         <Grid container spacing={2}>
           <Grid item xs={2} />
@@ -50,7 +53,16 @@ const Tag: VFC<Props> = ({ recipes }) => {
           <Grid item xs={2} />
         </Grid>
       </InfiniteScroll>
-      <Button onClick={() => router.push('/')}>一覧へ戻る</Button>
+      <Grid container>
+        <Button
+          variant="contained"
+          color="inherit"
+          onClick={() => router.push('/')}
+          className={styles.back}
+        >
+          一覧へ戻る
+        </Button>
+      </Grid>
     </div>
   )
 }
