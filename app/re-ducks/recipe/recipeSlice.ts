@@ -1,9 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import axios from 'axios'
 import { IRecipeState, IRecipe, IUpdateRecipeInputs } from './type'
 import { AsyncThunkConfig, RootState } from '../store'
 import { MyKnownError, MyKnownMessage } from '../defaultType'
-import { IRecipeInputs } from '../../components/form/type'
+import { IRecipeData } from '../../components/form/type'
 import { setAuthToken } from '../../src/utils/setAuthToken'
 
 import API from '../../src/utils/api'
@@ -18,7 +17,7 @@ const initialState: IRecipeState = {
 
 export const createRecipe = createAsyncThunk<
   IRecipe,
-  IRecipeInputs,
+  IRecipeData,
   AsyncThunkConfig<MyKnownError>
 >('recipe/createRecipe', async (recipeData, { rejectWithValue }) => {
   try {
