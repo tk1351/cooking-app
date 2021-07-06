@@ -1,12 +1,10 @@
 import React, { VFC } from 'react'
-import { TextField } from '@material-ui/core'
+import { TextField, Typography } from '@material-ui/core'
 import { RefCallBack } from 'react-hook-form'
 
 export interface ITextFormProps {
-  head: string
   id: string
   label: string
-  placeholder: string
   type: string
   name: string
   value?: number
@@ -17,6 +15,9 @@ export interface ITextFormProps {
   helperText: string | undefined
   defaultValue?: any
   className?: string
+  fullWidth?: boolean
+  multiline?: boolean
+  rows?: number
 }
 
 const TextForm: VFC<ITextFormProps> = (props) => {
@@ -25,7 +26,6 @@ const TextForm: VFC<ITextFormProps> = (props) => {
       <TextField
         id={props.id}
         label={props.label}
-        placeholder={props.placeholder}
         type={props.type}
         name={props.name}
         value={props.value}
@@ -35,8 +35,10 @@ const TextForm: VFC<ITextFormProps> = (props) => {
         error={props.error}
         helperText={props.helperText}
         defaultValue={props.defaultValue}
-        fullWidth
+        fullWidth={props.fullWidth}
         className={props.className}
+        multiline={props.multiline}
+        rows={props.rows}
       />
     </div>
   )
