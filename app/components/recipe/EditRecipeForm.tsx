@@ -9,6 +9,9 @@ import {
   FormHelperText,
   Box,
   IconButton,
+  Container,
+  Grid,
+  Typography,
 } from '@material-ui/core'
 import {
   useForm,
@@ -16,7 +19,7 @@ import {
   Controller,
   useFieldArray,
 } from 'react-hook-form'
-import { PhotoCamera } from '@material-ui/icons'
+import { PhotoCamera, Remove, Add } from '@material-ui/icons'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { v4 as uuidv4 } from 'uuid'
@@ -30,6 +33,7 @@ import { recipeValidationSchema } from '../form/validations/recipeValidation'
 import { setAlert, removeAlert } from '../../re-ducks/alert/alertSlice'
 import { MyKnownError } from '../../re-ducks/defaultType'
 import Alert from '../common/Alert'
+import styles from '../../styles/components/recipe/editRecipeForm.module.css'
 
 type Props = {
   recipe: IRecipe
@@ -60,11 +64,13 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
     resolver: yupResolver(recipeValidationSchema),
   })
 
+  //FIXME: fields: Record<"id", string>[]のバグの疑いがあるのでanyにする
+  // https://github.com/react-hook-form/react-hook-form/discussions/5780
   const {
     fields: ingredientFields,
     append: ingredientAppend,
     remove: ingredientRemove,
-  } = useFieldArray({
+  } = useFieldArray<IUpdateRecipeInputs, any, any>({
     name: 'ingredients',
     control,
   })
@@ -72,7 +78,7 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
     fields: recipeDescriptionFields,
     append: recipeDescriptionAppend,
     remove: recipeDescriptionRemove,
-  } = useFieldArray({
+  } = useFieldArray<IUpdateRecipeInputs, any, any>({
     name: 'recipeDescriptions',
     control,
   })
@@ -80,7 +86,7 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
     fields: tagFields,
     append: tagAppend,
     remove: tagRemove,
-  } = useFieldArray({
+  } = useFieldArray<IUpdateRecipeInputs, any, any>({
     name: 'tags',
     control,
   })
@@ -199,330 +205,388 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
   return (
     <div>
       <Alert />
-      <h1>レシピ編集</h1>
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <Controller
-          name="name"
-          control={control}
-          render={({ field: { onChange, ref }, formState: { errors } }) => (
-            <TextForm
-              head={'レシピ名'}
-              label={'レシピ名'}
-              id="name"
-              placeholder={'レシピ名を入力してください'}
-              type="text"
-              name="name"
-              variant="outlined"
-              defaultValue={recipe.name}
-              onChange={onChange}
-              inputRef={ref}
-              error={Boolean(errors.name)}
-              helperText={errors.name && errors.name.message}
-            />
-          )}
-        />
-        <Controller
-          name="time"
-          control={control}
-          render={({ field: { onChange, value }, formState: { errors } }) => (
-            <FormControl variant="outlined">
-              <InputLabel>調理時間</InputLabel>
-              <Select
-                aria-label={'調理時間'}
-                label={'調理時間'}
-                name="time"
-                defaultValue={recipe.time}
-                value={value ? value : recipe.time}
-                onChange={onChange}
-                error={Boolean(errors.time)}
-              >
-                <MenuItem value={5}>5分</MenuItem>
-                <MenuItem value={10}>10分</MenuItem>
-                <MenuItem value={15}>15分</MenuItem>
-                <MenuItem value={20}>20分</MenuItem>
-                <MenuItem value={30}>30分</MenuItem>
-                <MenuItem value={40}>40分</MenuItem>
-                <MenuItem value={50}>50分</MenuItem>
-                <MenuItem value={60}>60分以上</MenuItem>
-              </Select>
-              <FormHelperText>
-                {errors.time && errors.time.message}
-              </FormHelperText>
-            </FormControl>
-          )}
-        />
-        {/* 材料 */}
-        <ul>
-          {ingredientFields.map((field, index) => (
-            <li key={field.id}>
-              <Controller
-                name={`ingredients[${index}].name`}
-                control={control}
-                defaultValue={field.name ? field.name : ''}
-                render={({
-                  field: { onChange, ref },
-                  formState: { errors },
-                }) => (
-                  <TextForm
-                    head={'材料名'}
-                    label={'材料名'}
-                    placeholder={'材料名を入力してください'}
-                    id={`ingredients[${index}].name`}
-                    type="text"
-                    name={`ingredients[${index}].name`}
-                    defaultValue={field.name}
-                    variant="outlined"
-                    onChange={onChange}
-                    inputRef={ref}
-                    error={Boolean(
-                      errors.ingredients && errors.ingredients[index]
-                    )}
-                    helperText={
-                      errors.ingredients &&
-                      errors.ingredients[index]?.name?.message
-                    }
+      <Container component="main" maxWidth={false} className={styles.container}>
+        <Grid container justify="center" className={styles.h1}>
+          <h1>レシピ編集</h1>
+        </Grid>
+
+        <form onSubmit={handleSubmit(onSubmit)} noValidate>
+          <Controller
+            name="name"
+            control={control}
+            render={({ field: { onChange, ref }, formState: { errors } }) => (
+              <>
+                <div className={styles.typography}>
+                  <Typography>レシピ名</Typography>
+                </div>
+                <TextForm
+                  label={'レシピ名'}
+                  id="name"
+                  type="text"
+                  name="name"
+                  variant="outlined"
+                  defaultValue={recipe.name}
+                  onChange={onChange}
+                  inputRef={ref}
+                  error={Boolean(errors.name)}
+                  helperText={errors.name && errors.name.message}
+                  className={styles.textField}
+                  fullWidth
+                />
+              </>
+            )}
+          />
+          <Controller
+            name="time"
+            control={control}
+            render={({ field: { onChange, value }, formState: { errors } }) => (
+              <FormControl variant="outlined">
+                <InputLabel>調理時間</InputLabel>
+                <Select
+                  aria-label={'調理時間'}
+                  label={'調理時間'}
+                  name="time"
+                  defaultValue={recipe.time}
+                  value={value ? value : recipe.time}
+                  onChange={onChange}
+                  error={Boolean(errors.time)}
+                >
+                  <MenuItem value={5}>5分</MenuItem>
+                  <MenuItem value={10}>10分</MenuItem>
+                  <MenuItem value={15}>15分</MenuItem>
+                  <MenuItem value={20}>20分</MenuItem>
+                  <MenuItem value={30}>30分</MenuItem>
+                  <MenuItem value={40}>40分</MenuItem>
+                  <MenuItem value={50}>50分</MenuItem>
+                  <MenuItem value={60}>60分以上</MenuItem>
+                </Select>
+                <FormHelperText>
+                  {errors.time && errors.time.message}
+                </FormHelperText>
+              </FormControl>
+            )}
+          />
+          {/* 材料 */}
+          <ul>
+            <div className={styles.typography}>
+              <Typography>材料</Typography>
+            </div>
+            {ingredientFields.map((field, index) => (
+              <li key={field.id} className={styles.li}>
+                <Controller
+                  name={`ingredients[${index}].name`}
+                  control={control}
+                  defaultValue={field.name ? field.name : ''}
+                  render={({
+                    field: { onChange, ref },
+                    formState: { errors },
+                  }) => (
+                    <TextForm
+                      label={'材料名'}
+                      id={`ingredients[${index}].name`}
+                      type="text"
+                      name={`ingredients[${index}].name`}
+                      defaultValue={field.name}
+                      variant="outlined"
+                      onChange={onChange}
+                      inputRef={ref}
+                      error={Boolean(
+                        errors.ingredients && errors.ingredients[index]
+                      )}
+                      helperText={
+                        errors.ingredients &&
+                        errors.ingredients[index]?.name?.message
+                      }
+                      className={styles.textField}
+                      fullWidth
+                    />
+                  )}
+                />
+                <Controller
+                  name={`ingredients[${index}].amount`}
+                  control={control}
+                  defaultValue={field.amount ? field.amount : ''}
+                  render={({ field: { onChange }, formState: { errors } }) => (
+                    <TextForm
+                      label={'分量'}
+                      id={`ingredients[${index}].amount`}
+                      type="text"
+                      name={`ingredients[${index}].amount`}
+                      defaultValue={field.amount}
+                      variant="outlined"
+                      onChange={onChange}
+                      error={Boolean(
+                        errors.ingredients && errors.ingredients[index]
+                      )}
+                      helperText={
+                        errors.ingredients &&
+                        errors.ingredients[index]?.amount?.message
+                      }
+                      className={styles.textField}
+                      fullWidth
+                    />
+                  )}
+                />
+                <Button
+                  type="button"
+                  variant="contained"
+                  color="secondary"
+                  onClick={() => ingredientRemove(index)}
+                  className={styles.button}
+                >
+                  <Remove />
+                </Button>
+              </li>
+            ))}
+          </ul>
+          <Button
+            fullWidth
+            type="button"
+            variant="contained"
+            color="primary"
+            onClick={() =>
+              ingredientAppend({
+                name: '',
+                amount: '',
+              })
+            }
+            className={styles.button}
+          >
+            <Add />
+          </Button>
+          {/* 調理工程 */}
+          <ul>
+            <div className={styles.typography}>
+              <Typography>調理工程</Typography>
+            </div>
+            {recipeDescriptionFields.map((field, index) => (
+              <li key={field.id} className={styles.li}>
+                <Controller
+                  name={`recipeDescriptions[${index}].order`}
+                  control={control}
+                  defaultValue={field.order ? field.order : ''}
+                  render={({
+                    field: { onChange, ref },
+                    formState: { errors },
+                  }) => (
+                    <TextForm
+                      label={'順番'}
+                      id={`recipeDescriptions[${index}].order`}
+                      type="text"
+                      name={`recipeDescriptions[${index}].order`}
+                      defaultValue={field.order}
+                      variant="outlined"
+                      onChange={onChange}
+                      inputRef={ref}
+                      error={Boolean(
+                        errors.recipeDescriptions &&
+                          errors.recipeDescriptions[index]
+                      )}
+                      helperText={
+                        errors.recipeDescriptions &&
+                        errors.recipeDescriptions[index]?.order?.message
+                      }
+                      className={`${styles.textField} ${styles.order}`}
+                    />
+                  )}
+                />
+                <Controller
+                  name={`recipeDescriptions[${index}].text`}
+                  control={control}
+                  defaultValue={field.text ? field.text : ''}
+                  render={({
+                    field: { onChange, ref },
+                    formState: { errors },
+                  }) => (
+                    <TextForm
+                      label={'詳細'}
+                      id={`recipeDescriptions[${index}].text`}
+                      type="text"
+                      name={`recipeDescriptions[${index}].text`}
+                      defaultValue={field.text}
+                      variant="outlined"
+                      onChange={onChange}
+                      inputRef={ref}
+                      error={Boolean(
+                        errors.recipeDescriptions &&
+                          errors.recipeDescriptions[index]
+                      )}
+                      helperText={
+                        errors.recipeDescriptions &&
+                        errors.recipeDescriptions[index]?.text?.message
+                      }
+                      className={styles.textField}
+                    />
+                  )}
+                />
+                <Controller
+                  name={`recipeDescriptions[${index}].url`}
+                  control={control}
+                  defaultValue={field.url ? field.url : ''}
+                  render={({
+                    field: { onChange, ref },
+                    formState: { errors },
+                  }) => (
+                    <TextForm
+                      label={'URL'}
+                      id={`recipeDescriptions[${index}].url`}
+                      type="text"
+                      name={`recipeDescriptions[${index}].url`}
+                      defaultValue={field.url}
+                      variant="outlined"
+                      onChange={onChange}
+                      inputRef={ref}
+                      error={Boolean(
+                        errors.recipeDescriptions &&
+                          errors.recipeDescriptions[index]
+                      )}
+                      helperText={
+                        errors.recipeDescriptions &&
+                        errors.recipeDescriptions[index]?.url?.message
+                      }
+                      className={styles.textField}
+                    />
+                  )}
+                />
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  type="button"
+                  onClick={() => recipeDescriptionRemove(index)}
+                  className={styles.button}
+                >
+                  <Remove />
+                </Button>
+              </li>
+            ))}
+          </ul>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            type="button"
+            onClick={() =>
+              recipeDescriptionAppend({
+                order: recipeDescriptionFields.length + 1,
+                text: '',
+                url: '',
+              })
+            }
+            className={styles.button}
+          >
+            <Add />
+          </Button>
+          {/* タグ */}
+          <ul>
+            <div className={styles.typography}>
+              <Typography>タグ</Typography>
+            </div>
+            {tagFields.map((field, index) => (
+              <li key={field.id} className={styles.li}>
+                <Controller
+                  name={`tags[${index}].name`}
+                  control={control}
+                  defaultValue={field.name ? field.name : ''}
+                  render={({
+                    field: { onChange, ref },
+                    formState: { errors },
+                  }) => (
+                    <TextForm
+                      label={'タグ名'}
+                      id={`tags[${index}].name`}
+                      type="text"
+                      name={`tags[${index}].name`}
+                      defaultValue={field.name}
+                      variant="outlined"
+                      onChange={onChange}
+                      inputRef={ref}
+                      error={Boolean(errors.tags && errors.tags[index])}
+                      helperText={
+                        errors.tags && errors.tags[index]?.name?.message
+                      }
+                      className={styles.textField}
+                    />
+                  )}
+                />
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  type="button"
+                  onClick={() => tagRemove(index)}
+                  className={styles.button}
+                >
+                  <Remove />
+                </Button>
+              </li>
+            ))}
+          </ul>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            type="button"
+            onClick={() =>
+              tagAppend({
+                name: '',
+              })
+            }
+            className={styles.button}
+          >
+            <Add />
+          </Button>
+          <Controller
+            name="remarks"
+            control={control}
+            render={({ field: { onChange, ref }, formState: { errors } }) => (
+              <>
+                <div className={styles.typography}>
+                  <Typography>補足</Typography>
+                </div>
+                <TextForm
+                  label={'補足'}
+                  id="remarks"
+                  type="text"
+                  name="remarks"
+                  defaultValue={recipe.remarks}
+                  variant="outlined"
+                  onChange={onChange}
+                  inputRef={ref}
+                  error={Boolean(errors.remarks)}
+                  helperText={errors.remarks && errors.remarks.message}
+                  className={styles.textField}
+                  fullWidth
+                  multiline
+                  rows={3}
+                />
+              </>
+            )}
+          />
+          <Grid container justify="center">
+            <Box>
+              <IconButton color="primary" component="span">
+                <label>
+                  <PhotoCamera fontSize="large" />
+                  <input
+                    name="image"
+                    type="file"
+                    onChange={onChangeImageHandler}
+                    className={styles.image}
                   />
-                )}
-              />
-              <Controller
-                name={`ingredients[${index}].amount`}
-                control={control}
-                defaultValue={field.amount ? field.amount : ''}
-                render={({ field: { onChange }, formState: { errors } }) => (
-                  <TextForm
-                    head={'分量'}
-                    label={'分量'}
-                    placeholder={'分量を入力してください'}
-                    id={`ingredients[${index}].amount`}
-                    type="text"
-                    name={`ingredients[${index}].amount`}
-                    defaultValue={field.amount}
-                    variant="outlined"
-                    onChange={onChange}
-                    error={Boolean(
-                      errors.ingredients && errors.ingredients[index]
-                    )}
-                    helperText={
-                      errors.ingredients &&
-                      errors.ingredients[index]?.amount?.message
-                    }
-                  />
-                )}
-              />
-              <button type="button" onClick={() => ingredientRemove(index)}>
-                ×
-              </button>
-            </li>
-          ))}
-        </ul>
-        <button
-          type="button"
-          onClick={() =>
-            ingredientAppend({
-              name: '',
-              amount: '',
-            })
-          }
-        >
-          +
-        </button>
-        {/* 調理工程 */}
-        <ul>
-          {recipeDescriptionFields.map((field, index) => (
-            <li key={field.id}>
-              <Controller
-                name={`recipeDescriptions[${index}].order`}
-                control={control}
-                defaultValue={field.order ? field.order : ''}
-                render={({
-                  field: { onChange, ref },
-                  formState: { errors },
-                }) => (
-                  <TextForm
-                    head={'順番'}
-                    label={'順番'}
-                    placeholder={'調理工程の順番を入力してください'}
-                    id={`recipeDescriptions[${index}].order`}
-                    type="text"
-                    name={`recipeDescriptions[${index}].order`}
-                    defaultValue={field.order}
-                    variant="outlined"
-                    onChange={onChange}
-                    inputRef={ref}
-                    error={Boolean(
-                      errors.recipeDescriptions &&
-                        errors.recipeDescriptions[index]
-                    )}
-                    helperText={
-                      errors.recipeDescriptions &&
-                      errors.recipeDescriptions[index]?.order?.message
-                    }
-                  />
-                )}
-              />
-              <Controller
-                name={`recipeDescriptions[${index}].text`}
-                control={control}
-                defaultValue={field.text ? field.text : ''}
-                render={({
-                  field: { onChange, ref },
-                  formState: { errors },
-                }) => (
-                  <TextForm
-                    head={'詳細'}
-                    label={'詳細'}
-                    placeholder={'調理工程の詳細を入力してください'}
-                    id={`recipeDescriptions[${index}].text`}
-                    type="text"
-                    name={`recipeDescriptions[${index}].text`}
-                    defaultValue={field.text}
-                    variant="outlined"
-                    onChange={onChange}
-                    inputRef={ref}
-                    error={Boolean(
-                      errors.recipeDescriptions &&
-                        errors.recipeDescriptions[index]
-                    )}
-                    helperText={
-                      errors.recipeDescriptions &&
-                      errors.recipeDescriptions[index]?.text?.message
-                    }
-                  />
-                )}
-              />
-              <Controller
-                name={`recipeDescriptions[${index}].url`}
-                control={control}
-                defaultValue={field.url ? field.url : ''}
-                render={({
-                  field: { onChange, ref },
-                  formState: { errors },
-                }) => (
-                  <TextForm
-                    head={'URL'}
-                    label={'URL'}
-                    placeholder={'必要な場合は動画のURLを入力してください'}
-                    id={`recipeDescriptions[${index}].url`}
-                    type="text"
-                    name={`recipeDescriptions[${index}].url`}
-                    defaultValue={field.url}
-                    variant="outlined"
-                    onChange={onChange}
-                    inputRef={ref}
-                    error={Boolean(
-                      errors.recipeDescriptions &&
-                        errors.recipeDescriptions[index]
-                    )}
-                    helperText={
-                      errors.recipeDescriptions &&
-                      errors.recipeDescriptions[index]?.url?.message
-                    }
-                  />
-                )}
-              />
-              <button
-                type="button"
-                onClick={() => recipeDescriptionRemove(index)}
-              >
-                ×
-              </button>
-            </li>
-          ))}
-        </ul>
-        <button
-          type="button"
-          onClick={() =>
-            recipeDescriptionAppend({
-              order: recipeDescriptionFields.length + 1,
-              text: '',
-              url: '',
-            })
-          }
-        >
-          +
-        </button>
-        {/* タグ */}
-        <ul>
-          {tagFields.map((field, index) => (
-            <li key={field.id}>
-              <Controller
-                name={`tags[${index}].name`}
-                control={control}
-                defaultValue={field.name ? field.name : ''}
-                render={({
-                  field: { onChange, ref },
-                  formState: { errors },
-                }) => (
-                  <TextForm
-                    head={'タグ名'}
-                    label={'タグ名'}
-                    placeholder={'タグ名を入力してください'}
-                    id={`tags[${index}].name`}
-                    type="text"
-                    name={`tags[${index}].name`}
-                    defaultValue={field.name}
-                    variant="outlined"
-                    onChange={onChange}
-                    inputRef={ref}
-                    error={Boolean(errors.tags && errors.tags[index])}
-                    helperText={
-                      errors.tags && errors.tags[index]?.name?.message
-                    }
-                  />
-                )}
-              />
-              <button type="button" onClick={() => tagRemove(index)}>
-                ×
-              </button>
-            </li>
-          ))}
-        </ul>
-        <button
-          type="button"
-          onClick={() =>
-            tagAppend({
-              name: '',
-            })
-          }
-        >
-          +
-        </button>
-        <Controller
-          name="remarks"
-          control={control}
-          render={({ field: { onChange, ref }, formState: { errors } }) => (
-            <TextForm
-              head={'補足'}
-              label={'補足'}
-              placeholder={'補足を入力してください'}
-              id="remarks"
-              type="text"
-              name="remarks"
-              defaultValue={recipe.remarks}
-              variant="outlined"
-              onChange={onChange}
-              inputRef={ref}
-              error={Boolean(errors.remarks)}
-              helperText={errors.remarks && errors.remarks.message}
-            />
-          )}
-        />
-        <Box>
-          <IconButton color="primary" component="span">
-            <label>
-              <PhotoCamera fontSize="large" />
-              <input name="image" type="file" onChange={onChangeImageHandler} />
-            </label>
-          </IconButton>
-        </Box>
-        {preview && <img src={preview} />}
-        <FormButton
-          type="submit"
-          variant="contained"
-          color="primary"
-          label="投稿"
-        />
-      </form>
+                </label>
+              </IconButton>
+            </Box>
+          </Grid>
+          <Grid container justify="center">
+            {preview && <img src={preview} className={styles.preview} />}
+          </Grid>
+          <FormButton
+            type="submit"
+            variant="contained"
+            color="primary"
+            label="編集"
+          />
+        </form>
+      </Container>
       <Button onClick={() => router.back()}>戻る</Button>
     </div>
   )
