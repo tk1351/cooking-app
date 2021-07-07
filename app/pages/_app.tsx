@@ -8,6 +8,7 @@ import { StylesProvider } from '@material-ui/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { Provider as ReduxProvider } from 'react-redux'
+import { UserProvider } from '@auth0/nextjs-auth0'
 import { store } from '../re-ducks/store'
 import theme from '../src/theme'
 import { useAppDispatch } from '../re-ducks/hooks'
@@ -35,17 +36,19 @@ const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
     }
   }, [])
   return (
-    <ReduxProvider store={store}>
-      <StylesProvider injectFirst>
-        <MaterialUIThemeProvider theme={theme}>
-          <StyledComponentsThemeProvider theme={theme}>
-            <CssBaseline />
-            <Component {...pageProps} />
-            <AppInit />
-          </StyledComponentsThemeProvider>
-        </MaterialUIThemeProvider>
-      </StylesProvider>
-    </ReduxProvider>
+    <UserProvider>
+      <ReduxProvider store={store}>
+        <StylesProvider injectFirst>
+          <MaterialUIThemeProvider theme={theme}>
+            <StyledComponentsThemeProvider theme={theme}>
+              <CssBaseline />
+              <Component {...pageProps} />
+              <AppInit />
+            </StyledComponentsThemeProvider>
+          </MaterialUIThemeProvider>
+        </StylesProvider>
+      </ReduxProvider>
+    </UserProvider>
   )
 }
 export default MyApp
