@@ -5,8 +5,6 @@ import {
   CardMedia,
   Typography,
   Button,
-  Menu,
-  MenuItem,
   Grid,
   Divider,
   Box,
@@ -15,17 +13,11 @@ import { Favorite, FavoriteBorder } from '@material-ui/icons'
 import Link from 'next/link'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { v4 as uuidv4 } from 'uuid'
-import {
-  TwitterShareButton,
-  TwitterIcon,
-  LineShareButton,
-  LineIcon,
-} from 'react-share'
 import { useAppDispatch, useAppSelector } from '../../re-ducks/hooks'
 import { likeRecipe, unlikeRecipe } from '../../re-ducks/recipe/recipeSlice'
 import { selectUserRole, selectUserId } from '../../re-ducks/auth/authSlice'
 import { IRecipe } from '../../re-ducks/recipe/type'
-import { setAlert, removeAlert } from '../../re-ducks/alert/alertSlice'
+import { setAlert } from '../../re-ducks/alert/alertSlice'
 import Alert from '../common/Alert'
 import styles from '../../styles/components/recipe/recipe.module.css'
 import ShareField from '../common/ShareField'
@@ -57,7 +49,6 @@ const Recipe: VFC<Props> = ({ recipe }) => {
           alertType: 'succeeded',
         })
       )
-      setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
       setLikedNumber((prev) => prev + 1)
     }
   }
@@ -75,7 +66,6 @@ const Recipe: VFC<Props> = ({ recipe }) => {
           alertType: 'succeeded',
         })
       )
-      setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
 
       setIsLiked((prev) => !prev)
       setLikedNumber((prev) => prev - 1)
@@ -130,34 +120,6 @@ const Recipe: VFC<Props> = ({ recipe }) => {
   const handleClose = () => {
     setAnchorEl(null)
   }
-
-  // const ShareField = () => {
-  //   const title = recipe.name
-  //   const url = `http://localhost:3000/recipe/${recipe.id}`
-  //   return (
-  //     <>
-  //       <Menu
-  //         keepMounted
-  //         open={Boolean(anchorEl)}
-  //         onClose={handleClose}
-  //         anchorEl={anchorEl}
-  //       >
-  //         <div className={styles.share}>
-  //           <MenuItem>
-  //             <TwitterShareButton title={title} url={url}>
-  //               <TwitterIcon size={32} round={true} />
-  //             </TwitterShareButton>
-  //           </MenuItem>
-  //           <MenuItem>
-  //             <LineShareButton title={title} url={url}>
-  //               <LineIcon size={32} round={true} />
-  //             </LineShareButton>
-  //           </MenuItem>
-  //         </div>
-  //       </Menu>
-  //     </>
-  //   )
-  // }
 
   // 調理工程のorderで昇順
   const sortDescriptions = recipe.recipeDescriptions.sort((a, b) => {

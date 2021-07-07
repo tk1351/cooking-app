@@ -9,7 +9,7 @@ import FormButton from '../form/FormButton'
 import { Button, Container, Grid, Typography } from '@material-ui/core'
 import { useAppDispatch } from '../../re-ducks/hooks'
 import { updateUserProfile } from '../../re-ducks/auth/authSlice'
-import { setAlert, removeAlert } from '../../re-ducks/alert/alertSlice'
+import { setAlert } from '../../re-ducks/alert/alertSlice'
 import { MyKnownError } from '../../re-ducks/defaultType'
 import Alert from '../common/Alert'
 import styles from '../../styles/components/user/editProfileForm.module.css'
@@ -47,7 +47,6 @@ const EditProfileForm: VFC<Props> = ({ user }) => {
           alertType: 'succeeded',
         })
       )
-      setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
 
       await router.push(`/user/${user.id}`)
     } else if (updateUserProfile.rejected.match(resultAction)) {
@@ -60,7 +59,6 @@ const EditProfileForm: VFC<Props> = ({ user }) => {
           alertType: 'failed',
         })
       )
-      setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
     }
   }
 

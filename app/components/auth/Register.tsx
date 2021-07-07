@@ -11,7 +11,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import TextForm from '../form/TextForm'
 import { registerValidationSchema } from '../form/validations/registerValidation'
 import FormButton from '../form/FormButton'
-import { setAlert, removeAlert } from '../../re-ducks/alert/alertSlice'
+import { setAlert } from '../../re-ducks/alert/alertSlice'
 import Alert from '../common/Alert'
 import { MyKnownError } from '../../re-ducks/defaultType'
 import { Grid, Container, Typography } from '@material-ui/core'
@@ -51,7 +51,6 @@ const Register: VFC = () => {
           alertType: 'succeeded',
         })
       )
-      setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
 
       await router.push('/login')
     } else if (registerUser.rejected.match(resultAction)) {
@@ -64,7 +63,6 @@ const Register: VFC = () => {
           alertType: 'failed',
         })
       )
-      setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
     }
   }
 

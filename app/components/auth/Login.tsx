@@ -13,7 +13,7 @@ import TextForm from '../form/TextForm'
 import FormButton from '../form/FormButton'
 import { loginValidationSchema } from '../form/validations/loginValidation'
 import Alert from '../common/Alert'
-import { setAlert, removeAlert } from '../../re-ducks/alert/alertSlice'
+import { setAlert } from '../../re-ducks/alert/alertSlice'
 import { MyKnownError } from '../../re-ducks/defaultType'
 import styles from '../../styles/components/auth/login.module.css'
 
@@ -54,7 +54,6 @@ const Login: VFC = () => {
           alertType: 'failed',
         })
       )
-      setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
     }
   }
 

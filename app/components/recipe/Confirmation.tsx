@@ -22,7 +22,7 @@ import {
 import { IRecipeData } from '../form/type'
 import { firebaseStorage } from '../../src/utils/firebase'
 import { createRecipe } from '../../re-ducks/recipe/recipeSlice'
-import { setAlert, removeAlert } from '../../re-ducks/alert/alertSlice'
+import { setAlert } from '../../re-ducks/alert/alertSlice'
 import { MyKnownError } from '../../re-ducks/defaultType'
 import styles from '../../styles/components/recipe/confirmation.module.css'
 
@@ -86,7 +86,6 @@ const Confirmation: VFC = () => {
               alertType: 'succeeded',
             })
           )
-          setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
 
           dispatch(removeRecipe())
           await router.push('/')
@@ -100,7 +99,6 @@ const Confirmation: VFC = () => {
               alertType: 'failed',
             })
           )
-          setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
         }
       } catch (error) {
         console.error(error)

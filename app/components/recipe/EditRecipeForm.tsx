@@ -30,7 +30,7 @@ import { updateRecipe } from '../../re-ducks/recipe/recipeSlice'
 import { IRecipe, IUpdateRecipeInputs } from '../../re-ducks/recipe/type'
 import { firebaseStorage } from '../../src/utils/firebase'
 import { recipeValidationSchema } from '../form/validations/recipeValidation'
-import { setAlert, removeAlert } from '../../re-ducks/alert/alertSlice'
+import { setAlert } from '../../re-ducks/alert/alertSlice'
 import { MyKnownError } from '../../re-ducks/defaultType'
 import Alert from '../common/Alert'
 import styles from '../../styles/components/recipe/editRecipeForm.module.css'
@@ -143,7 +143,6 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
               alertType: 'succeeded',
             })
           )
-          setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
 
           await router.push('/')
         } else if (updateRecipe.rejected.match(resultAction)) {
@@ -156,7 +155,6 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
               alertType: 'failed',
             })
           )
-          setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
         }
       } catch (error) {
         console.error(error)
@@ -181,7 +179,6 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
               alertType: 'succeeded',
             })
           )
-          setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
 
           await router.push('/')
         } else if (updateRecipe.rejected.match(resultAction)) {
@@ -194,7 +191,6 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
               alertType: 'failed',
             })
           )
-          setTimeout(() => dispatch(removeAlert({ alertId })), 5000)
         }
       } catch (error) {
         console.error(error)
