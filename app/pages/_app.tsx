@@ -8,7 +8,7 @@ import { StylesProvider } from '@material-ui/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { Provider as ReduxProvider } from 'react-redux'
-import { UserProvider } from '@auth0/nextjs-auth0'
+import { Auth0Provider } from '@auth0/auth0-react'
 import { store } from '../re-ducks/store'
 import theme from '../src/theme'
 import { useAppDispatch } from '../re-ducks/hooks'
@@ -36,7 +36,12 @@ const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
     }
   }, [])
   return (
-    <UserProvider>
+    <Auth0Provider
+      domain={'dev-business-app.us.auth0.com'}
+      clientId={'4aUgo5jVh2BPNCMD4JvcsT4ngSLYRBAT'}
+      redirectUri={'http://localhost:3000'}
+      audience={'http://localhost:8080'}
+    >
       <ReduxProvider store={store}>
         <StylesProvider injectFirst>
           <MaterialUIThemeProvider theme={theme}>
@@ -48,7 +53,7 @@ const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
           </MaterialUIThemeProvider>
         </StylesProvider>
       </ReduxProvider>
-    </UserProvider>
+    </Auth0Provider>
   )
 }
 export default MyApp
