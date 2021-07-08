@@ -5,20 +5,18 @@ import {
   UnauthorizedException,
   NotFoundException,
 } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
 import { User } from './users.entity';
-import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { UserRole } from './user.model';
 import { MyKnownMessage } from '../message.interface';
-import { RecipeLikeRepository } from '../recipe-likes/recipe-likes.repository';
-import { RecipeLike } from '../recipe-likes/recipe-likes.entity';
-import { SocialsRepository } from '../socials/socials.repository';
-import { Social } from '../socials/socials.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import {
   GetUsersByLimitNumberDto,
   GetUsersByOffsetDto,
 } from './dto/get-users.dto';
+import { RecipeLikeRepository } from '../recipe-likes/recipe-likes.repository';
+import { SocialsRepository } from '../socials/socials.repository';
+import { RecipeLike } from '../recipe-likes/recipe-likes.entity';
+import { Social } from '../socials/socials.entity';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -86,22 +84,21 @@ export class UserRepository extends Repository<User> {
   }
 
   async registerAdmin(createUserDto: CreateUserDto): Promise<MyKnownMessage> {
-    const { name, email, password } = createUserDto;
+    const { name, email, sub } = createUserDto;
 
     const user = this.create();
     user.name = name;
     user.email = email;
-    user.salt = await bcrypt.genSalt();
-    user.password = await this.hashPassword(password, user.salt);
+    user.sub = sub;
     user.role = UserRole.admin;
+    user.bio = '';
     user.favoriteDish = '';
     user.specialDish = '';
-    user.bio = '';
     user.socials = [];
 
     try {
       await user.save();
-      return { message: 'ユーザー登録が完了しました' };
+      return { message: '管理者登録が完了しました' };
     } catch (error) {
       // userのemailが重複している場合
       if (error.code === '23505') {
@@ -113,17 +110,16 @@ export class UserRepository extends Repository<User> {
   }
 
   async register(createUserDto: CreateUserDto): Promise<MyKnownMessage> {
-    const { name, email, password } = createUserDto;
+    const { name, email, sub } = createUserDto;
 
     const user = this.create();
     user.name = name;
     user.email = email;
-    user.salt = await bcrypt.genSalt();
-    user.password = await this.hashPassword(password, user.salt);
+    user.sub = sub;
     user.role = UserRole.user;
+    user.bio = '';
     user.favoriteDish = '';
     user.specialDish = '';
-    user.bio = '';
     user.socials = [];
 
     try {
@@ -137,31 +133,6 @@ export class UserRepository extends Repository<User> {
         throw new InternalServerErrorException();
       }
     }
-  }
-
-  async validateUserPassword(
-    authCredentialsDto: AuthCredentialsDto,
-  ): Promise<string> {
-    const { email, password } = authCredentialsDto;
-
-    // select: falseの要素を明示的に返して、getOne()する
-    const user = await this.createQueryBuilder('users')
-      .addSelect('users.email')
-      .addSelect('users.password')
-      .addSelect('users.salt')
-      .where('users.email = :email', { email })
-      .getOne();
-
-    if (user && (await user.validatePassword(password))) {
-      return user.email;
-    } else {
-      return null;
-    }
-  }
-
-  // passwordの暗号化
-  private async hashPassword(password: string, salt: string): Promise<string> {
-    return bcrypt.hash(password, salt);
   }
 
   async deleteUser(id: number, user: User): Promise<MyKnownMessage> {

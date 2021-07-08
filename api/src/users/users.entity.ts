@@ -1,5 +1,4 @@
 import { Entity, Column, Unique, OneToMany } from 'typeorm';
-import * as bcrypt from 'bcrypt';
 import { UserRole } from './user.model';
 import { Recipe } from '../recipes/recipes.entity';
 import { DefaultEntity } from '../entity';
@@ -15,11 +14,8 @@ export class User extends DefaultEntity {
   @Column({ select: false })
   email: string;
 
-  @Column({ select: false })
-  password: string;
-
-  @Column({ select: false })
-  salt: string;
+  @Column()
+  sub: string;
 
   @Column()
   role: UserRole;
@@ -43,9 +39,4 @@ export class User extends DefaultEntity {
 
   @OneToMany(() => Social, (socials) => socials.user, { eager: true })
   socials: Social[];
-
-  async validatePassword(password: string): Promise<boolean> {
-    const hash = await bcrypt.hash(password, this.salt);
-    return hash === this.password;
-  }
 }

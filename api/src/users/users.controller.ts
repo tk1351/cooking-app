@@ -13,7 +13,6 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from './users.service';
-import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { User } from './users.entity';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { GetUser } from './get-user.decorator';
@@ -65,13 +64,6 @@ export class UsersController {
     @Body(ValidationPipe) createUserDto: CreateUserDto,
   ): Promise<MyKnownMessage> {
     return this.usersService.register(createUserDto);
-  }
-
-  @Post('/login')
-  login(
-    @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
-  ): Promise<{ accessToken: string }> {
-    return this.usersService.login(authCredentialsDto);
   }
 
   @Patch('/admin/:id/profile')
