@@ -8,7 +8,7 @@ import { StylesProvider } from '@material-ui/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { Provider as ReduxProvider } from 'react-redux'
-import { Auth0Provider } from '@auth0/auth0-react'
+import { Auth0Provider, useAuth0 } from '@auth0/auth0-react'
 import { store } from '../re-ducks/store'
 import theme from '../src/theme'
 import { useAppDispatch } from '../re-ducks/hooks'
@@ -16,15 +16,16 @@ import { fetchCurrentUser } from '../re-ducks/auth/authSlice'
 
 const AppInit = () => {
   const dispatch = useAppDispatch()
+  const { getAccessTokenSilently } = useAuth0()
   useEffect(() => {
-    const isAuthenticated = async () => {
-      const resultAction = await dispatch(fetchCurrentUser())
+    ;(async function () {
+      const accessToken = await getAccessTokenSilently()
+      const resultAction = await dispatch(fetchCurrentUser(accessToken))
       if (fetchCurrentUser.fulfilled.match(resultAction)) {
         unwrapResult(resultAction)
       }
-    }
-    isAuthenticated()
-  }, [])
+    })()
+  }, [getAccessTokenSilently])
   return null
 }
 
