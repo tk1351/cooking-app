@@ -44,7 +44,7 @@ const Confirmation: VFC = () => {
   }
 
   const recipe = useAppSelector(confirmRecipe)
-  const accessToken = useAppSelector(selectUserToken) as string
+  const accessToken = useAppSelector(selectUserToken)
 
   const router = useRouter()
 

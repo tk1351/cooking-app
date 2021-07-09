@@ -1,11 +1,7 @@
 import React, { VFC } from 'react'
 import {
-  Card,
-  CardActionArea,
-  CardContent,
   Typography,
   Button,
-  CardActions,
   Grid,
   Box,
   CardMedia,
@@ -16,12 +12,13 @@ import { useRouter } from 'next/router'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { v4 as uuidv4 } from 'uuid'
 import { IRecipe } from '../../re-ducks/recipe/type'
-import { useAppDispatch } from '../../re-ducks/hooks'
+import { useAppDispatch, useAppSelector } from '../../re-ducks/hooks'
 import { deleteRecipe } from '../../re-ducks/recipe/recipeSlice'
 import { setAlert } from '../../re-ducks/alert/alertSlice'
 import Alert from '../common/Alert'
 import { MyKnownError } from '../../re-ducks/defaultType'
 import styles from '../../styles/components/admin/deleteRecipe.module.css'
+import { selectUserToken } from '../../re-ducks/auth/authSlice'
 
 type Props = {
   recipe: IRecipe
@@ -31,8 +28,10 @@ const DeleteRecipe: VFC<Props> = ({ recipe }) => {
   const dispatch = useAppDispatch()
   const router = useRouter()
 
+  const accessToken = useAppSelector(selectUserToken)
+
   const onDeleteRecipeClicked = async (id: number) => {
-    const resultAction = await dispatch(deleteRecipe(id))
+    const resultAction = await dispatch(deleteRecipe({ id, accessToken }))
     if (deleteRecipe.fulfilled.match(resultAction)) {
       unwrapResult(resultAction)
 
