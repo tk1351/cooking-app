@@ -25,6 +25,7 @@ import { createRecipe } from '../../re-ducks/recipe/recipeSlice'
 import { setAlert } from '../../re-ducks/alert/alertSlice'
 import { MyKnownError } from '../../re-ducks/defaultType'
 import styles from '../../styles/components/recipe/confirmation.module.css'
+import { selectUserToken } from '../../re-ducks/auth/authSlice'
 
 const Confirmation: VFC = () => {
   const dispatch = useAppDispatch()
@@ -43,6 +44,7 @@ const Confirmation: VFC = () => {
   }
 
   const recipe = useAppSelector(confirmRecipe)
+  const accessToken = useAppSelector(selectUserToken) as string
 
   const router = useRouter()
 
@@ -74,7 +76,12 @@ const Confirmation: VFC = () => {
 
       try {
         const newData: IRecipeData = { ...recipe, image: imageUrl }
-        const resultAction = await dispatch(createRecipe(newData))
+        const resultAction = await dispatch(
+          createRecipe({
+            recipeData: newData,
+            accessToken,
+          })
+        )
         if (createRecipe.fulfilled.match(resultAction)) {
           unwrapResult(resultAction)
 
