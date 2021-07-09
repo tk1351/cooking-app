@@ -62,3 +62,12 @@ export interface IRegisterInputs {
   password: string
   confirmPassword: string
 }
+
+export interface ICurrentUser {
+  user: {
+    id: number
+    name: string
+    role: 'admin' | 'user'
+  }
+  accessToken: string
+}

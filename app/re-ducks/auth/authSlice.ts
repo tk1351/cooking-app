@@ -7,6 +7,7 @@ import {
   IUpdateUserProfileInputs,
   IUser,
   IUpdateAdminProfileInputs,
+  ICurrentUser,
 } from './type'
 import { MyKnownError, MyKnownMessage } from '../defaultType'
 import { setAuthToken } from '../../src/utils/setAuthToken'
@@ -26,21 +27,23 @@ const initialState: IAuthState = {
 import API from '../../src/utils/api'
 
 export const fetchCurrentUser = createAsyncThunk<
-  { id: number; name: string; role: 'admin' | 'user' },
-  void,
+  ICurrentUser,
+  string,
   AsyncThunkConfig<MyKnownError>
->('auth/loadUser', async (_, { rejectWithValue }) => {
+>('auth/loadUser', async (accessToken, { rejectWithValue }) => {
   try {
-    if (localStorage.token) {
-      setAuthToken(localStorage.token)
-    }
+    setAuthToken(accessToken)
     const url = '/auth'
     const res = await API.get<{
       id: number
       name: string
       role: 'admin' | 'user'
     }>(url)
-    return res.data
+
+    const { id, name, role } = res.data
+    const currentUser = { user: { id, name, role }, accessToken }
+
+    return currentUser
   } catch (error) {
     return rejectWithValue(error.response.data)
   }
@@ -56,78 +59,80 @@ export const registerUser = createAsyncThunk<
     const res = await API.post<MyKnownMessage>(url, userData)
     return res.data
   } catch (error) {
-    localStorage.removeItem('token')
     return rejectWithValue(error.response.data)
   }
 })
 
-export const loginUser = createAsyncThunk<
-  { accessToken: string },
-  ILoginUser,
-  AsyncThunkConfig<MyKnownError>
->('auth/loginUser', async (userData, { rejectWithValue }) => {
-  try {
-    const url = '/users/login'
-    const res = await API.post<{ accessToken: string }>(url, userData)
-    const accessToken = res.data.accessToken
-    localStorage.setItem('token', accessToken)
+// export const loginUser = createAsyncThunk<
+//   { accessToken: string },
+//   ILoginUser,
+//   AsyncThunkConfig<MyKnownError>
+// >('auth/loginUser', async (userData, { rejectWithValue }) => {
+//   try {
+//     const url = '/users/login'
+//     const res = await API.post<{ accessToken: string }>(url, userData)
+//     const accessToken = res.data.accessToken
+//     localStorage.setItem('token', accessToken)
 
-    return { accessToken }
-  } catch (error) {
-    return rejectWithValue(error.response.data)
-  }
-})
+//     return { accessToken }
+//   } catch (error) {
+//     return rejectWithValue(error.response.data)
+//   }
+// })
 
 export const updateAdminProfile = createAsyncThunk<
   IUser,
-  { profile: IUpdateAdminProfileInputs; id: number },
+  { profile: IUpdateAdminProfileInputs; id: number; accessToken: string },
   AsyncThunkConfig<MyKnownError>
->('auth/updateAdminProfile', async ({ profile, id }, { rejectWithValue }) => {
-  try {
-    if (localStorage.token) {
-      setAuthToken(localStorage.token)
+>(
+  'auth/updateAdminProfile',
+  async ({ profile, id, accessToken }, { rejectWithValue }) => {
+    try {
+      setAuthToken(accessToken)
+      const url = `/users/admin/${id}/profile`
+      const res = await API.patch<IUser>(url, profile)
+      return res.data
+    } catch (error) {
+      return rejectWithValue(error.response.data)
     }
-    const url = `/users/admin/${id}/profile`
-    const res = await API.patch<IUser>(url, profile)
-    return res.data
-  } catch (error) {
-    return rejectWithValue(error.response.data)
   }
-})
+)
 
 export const updateUserProfile = createAsyncThunk<
   IUser,
-  { profile: IUpdateUserProfileInputs; id: number },
+  { profile: IUpdateUserProfileInputs; id: number; accessToken: string },
   AsyncThunkConfig<MyKnownError>
->('auth/updateUserProfile', async ({ profile, id }, { rejectWithValue }) => {
-  try {
-    if (localStorage.token) {
-      setAuthToken(localStorage.token)
+>(
+  'auth/updateUserProfile',
+  async ({ profile, id, accessToken }, { rejectWithValue }) => {
+    try {
+      setAuthToken(accessToken)
+      const url = `/users/user/${id}/profile`
+      const res = await API.patch<IUser>(url, profile)
+      return res.data
+    } catch (error) {
+      return rejectWithValue(error.response.data)
     }
-    const url = `/users/user/${id}/profile`
-    const res = await API.patch<IUser>(url, profile)
-    return res.data
-  } catch (error) {
-    return rejectWithValue(error.response.data)
   }
-})
+)
 
 export const deleteUserWithAdminPriviledge = createAsyncThunk<
   MyKnownMessage,
-  number,
+  { id: number; accessToken: string },
   AsyncThunkConfig<MyKnownError>
->('auth/deleteUserWithAdminPriviledge', async (id, { rejectWithValue }) => {
-  try {
-    if (localStorage.token) {
-      setAuthToken(localStorage.token)
+>(
+  'auth/deleteUserWithAdminPriviledge',
+  async ({ id, accessToken }, { rejectWithValue }) => {
+    try {
+      setAuthToken(accessToken)
+      const url = `/users/${id}/admin`
+      const res = await API.delete<MyKnownMessage>(url)
+      return res.data
+    } catch (error) {
+      return rejectWithValue(error.response.data)
     }
-    const url = `/users/${id}/admin`
-    const res = await API.delete<MyKnownMessage>(url)
-    return res.data
-  } catch (error) {
-    return rejectWithValue(error.response.data)
   }
-})
+)
 
 const authSlice = createSlice({
   name: 'auth',
@@ -139,7 +144,6 @@ const authSlice = createSlice({
       state.auth.isAuthenticated = false
       state.auth.loading = true
       state.status = 'idle'
-      localStorage.removeItem('token')
     },
   },
   extraReducers: (builder) => {
@@ -149,8 +153,8 @@ const authSlice = createSlice({
     })
     builder.addCase(fetchCurrentUser.fulfilled, (state, action) => {
       state.status = 'succeeded'
-      state.auth.user = action.payload
-      state.auth.token = localStorage.getItem('token')
+      state.auth.user = action.payload.user
+      state.auth.token = action.payload.accessToken
       state.auth.isAuthenticated = true
       state.auth.loading = false
     })
@@ -183,27 +187,27 @@ const authSlice = createSlice({
     })
 
     // ログイン
-    builder.addCase(loginUser.pending, (state) => {
-      state.status = 'loading'
-    })
-    builder.addCase(loginUser.fulfilled, (state, action) => {
-      state.status = 'succeeded'
-      state.auth.token = action.payload.accessToken
-      state.auth.isAuthenticated = true
-      state.auth.loading = false
-      state.message = null
-      state.error = null
-    })
-    builder.addCase(loginUser.rejected, (state, action) => {
-      if (action.payload) {
-        state.status = 'failed'
-        state.message = null
-        state.auth.token = null
-        state.auth.isAuthenticated = false
-        state.auth.loading = false
-        state.error = action.payload
-      }
-    })
+    // builder.addCase(loginUser.pending, (state) => {
+    //   state.status = 'loading'
+    // })
+    // builder.addCase(loginUser.fulfilled, (state, action) => {
+    //   state.status = 'succeeded'
+    //   state.auth.token = action.payload.accessToken
+    //   state.auth.isAuthenticated = true
+    //   state.auth.loading = false
+    //   state.message = null
+    //   state.error = null
+    // })
+    // builder.addCase(loginUser.rejected, (state, action) => {
+    //   if (action.payload) {
+    //     state.status = 'failed'
+    //     state.message = null
+    //     state.auth.token = null
+    //     state.auth.isAuthenticated = false
+    //     state.auth.loading = false
+    //     state.error = action.payload
+    //   }
+    // })
 
     // adminのプロフィール更新
     builder.addCase(updateAdminProfile.pending, (state) => {
@@ -258,5 +262,6 @@ export const selectIsAuthenticated = (state: RootState) =>
   state.auth.auth.isAuthenticated
 export const selectUserRole = (state: RootState) => state.auth.auth.user?.role
 export const selectUserId = (state: RootState) => state.auth.auth.user?.id
+export const selectUserToken = (state: RootState) => state.auth.auth.token
 
 export default authSlice.reducer

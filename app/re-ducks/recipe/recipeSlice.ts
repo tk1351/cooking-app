@@ -17,30 +17,29 @@ const initialState: IRecipeState = {
 
 export const createRecipe = createAsyncThunk<
   IRecipe,
-  IRecipeData,
+  { recipeData: IRecipeData; accessToken: string },
   AsyncThunkConfig<MyKnownError>
->('recipe/createRecipe', async (recipeData, { rejectWithValue }) => {
-  try {
-    if (localStorage.token) {
-      setAuthToken(localStorage.token)
+>(
+  'recipe/createRecipe',
+  async ({ recipeData, accessToken }, { rejectWithValue }) => {
+    try {
+      setAuthToken(accessToken)
+      const url = '/recipes'
+      const res = await API.post<IRecipe>(url, recipeData)
+      return res.data
+    } catch (error) {
+      return rejectWithValue(error.response.data)
     }
-    const url = '/recipes'
-    const res = await API.post<IRecipe>(url, recipeData)
-    return res.data
-  } catch (error) {
-    return rejectWithValue(error.response.data)
   }
-})
+)
 
 export const likeRecipe = createAsyncThunk<
   MyKnownMessage,
-  number,
+  { id: number; accessToken: string },
   AsyncThunkConfig<MyKnownError>
->('recipe/likeRecipe', async (id, { rejectWithValue }) => {
+>('recipe/likeRecipe', async ({ id, accessToken }, { rejectWithValue }) => {
   try {
-    if (localStorage.token) {
-      setAuthToken(localStorage.token)
-    }
+    setAuthToken(accessToken)
     const url = `/recipes/${id}/like`
     const res = await API.post<MyKnownMessage>(url, id)
     return res.data
@@ -51,30 +50,29 @@ export const likeRecipe = createAsyncThunk<
 
 export const updateRecipe = createAsyncThunk<
   IRecipe,
-  { postData: IUpdateRecipeInputs; id: number },
+  { postData: IUpdateRecipeInputs; id: number; accessToken: string },
   AsyncThunkConfig<MyKnownError>
->('recipe/updateRecipe', async ({ postData, id }, { rejectWithValue }) => {
-  try {
-    if (localStorage.token) {
-      setAuthToken(localStorage.token)
+>(
+  'recipe/updateRecipe',
+  async ({ postData, id, accessToken }, { rejectWithValue }) => {
+    try {
+      setAuthToken(accessToken)
+      const url = `/recipes/${id}`
+      const res = await API.patch<IRecipe>(url, postData)
+      return res.data
+    } catch (error) {
+      return rejectWithValue(error.response.data)
     }
-    const url = `/recipes/${id}`
-    const res = await API.patch<IRecipe>(url, postData)
-    return res.data
-  } catch (error) {
-    return rejectWithValue(error.response.data)
   }
-})
+)
 
 export const deleteRecipe = createAsyncThunk<
   { message: MyKnownMessage; id: number },
-  number,
+  { id: number; accessToken: string },
   AsyncThunkConfig<MyKnownError>
->('recipe/deleteRecipe', async (id, { rejectWithValue }) => {
+>('recipe/deleteRecipe', async ({ id, accessToken }, { rejectWithValue }) => {
   try {
-    if (localStorage.token) {
-      setAuthToken(localStorage.token)
-    }
+    setAuthToken(accessToken)
     const url = `/recipes/${id}`
     const res = await API.delete<MyKnownMessage>(url)
     return { message: res.data, id }
@@ -85,13 +83,11 @@ export const deleteRecipe = createAsyncThunk<
 
 export const unlikeRecipe = createAsyncThunk<
   MyKnownMessage,
-  number,
+  { id: number; accessToken: string },
   AsyncThunkConfig<MyKnownError>
->('recipe/unlikeRecipe', async (id, { rejectWithValue }) => {
+>('recipe/unlikeRecipe', async ({ id, accessToken }, { rejectWithValue }) => {
   try {
-    if (localStorage.token) {
-      setAuthToken(localStorage.token)
-    }
+    setAuthToken(accessToken)
     const url = `/recipes/${id}/unlike`
     const res = await API.delete<MyKnownMessage>(url)
     return res.data
