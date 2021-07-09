@@ -12,6 +12,7 @@ import {
   GetUsersByLimitNumberDto,
   GetUsersByOffsetDto,
 } from './dto/get-users.dto';
+import { UserInfo } from '../auth/type';
 
 @Injectable()
 export class UsersService {
@@ -44,6 +45,10 @@ export class UsersService {
     return await this.userRepository.getUserById(id);
   }
 
+  async getUserBySub(sub: string): Promise<User> {
+    return await this.userRepository.getUserBySub(sub);
+  }
+
   async registerAdmin(createUserDto: CreateUserDto): Promise<MyKnownMessage> {
     return this.userRepository.registerAdmin(createUserDto);
   }
@@ -55,11 +60,11 @@ export class UsersService {
   async updateAdminProfile(
     id: number,
     updateProfileDto: UpdateProfileDto,
-    user: User,
+    user: UserInfo,
   ): Promise<User> {
     const found = await this.getUserById(id);
 
-    if (found.id !== user.id) {
+    if (found.sub !== user.sub) {
       throw new UnauthorizedException('認証情報が無効です');
     }
 
@@ -89,11 +94,11 @@ export class UsersService {
   async updateUserProfile(
     id: number,
     updateUserProfileDto: UpdateUserProfileDto,
-    user: User,
+    user: UserInfo,
   ): Promise<User> {
     const found = await this.getUserById(id);
 
-    if (found.id !== user.id) {
+    if (found.sub !== user.sub) {
       throw new UnauthorizedException('認証情報が無効です');
     }
 
@@ -107,12 +112,12 @@ export class UsersService {
     return newUser;
   }
 
-  async deleteUser(id: number, user: User): Promise<MyKnownMessage> {
+  async deleteUser(id: number, user: UserInfo): Promise<MyKnownMessage> {
     return await this.userRepository.deleteUser(id, user);
   }
 
   // adminのみが全てのユーザーの削除権限あり
-  async deleteUserByAdmin(id: number, user: User): Promise<MyKnownMessage> {
+  async deleteUserByAdmin(id: number, user: UserInfo): Promise<MyKnownMessage> {
     return await this.userRepository.deleteUserByAdmin(id, user);
   }
 }

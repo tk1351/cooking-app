@@ -11,7 +11,6 @@ import {
   UseGuards,
   Query,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from './users.service';
 import { User } from './users.entity';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -23,6 +22,8 @@ import {
   GetUsersByLimitNumberDto,
   GetUsersByOffsetDto,
 } from './dto/get-users.dto';
+import { AuthGuard } from '../auth/auth.guard';
+import { UserInfo } from '../auth/type';
 
 @Controller('users')
 export class UsersController {
@@ -52,6 +53,11 @@ export class UsersController {
     return this.usersService.getUserById(id);
   }
 
+  @Get('/auth0/:sub')
+  getUserBySub(@Param('sub', ValidationPipe) sub: string): Promise<User> {
+    return this.usersService.getUserBySub(sub);
+  }
+
   @Post('/register/admin')
   registerAdmin(
     @Body(ValidationPipe) createUserDto: CreateUserDto,
@@ -67,39 +73,39 @@ export class UsersController {
   }
 
   @Patch('/admin/:id/profile')
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard)
   updateAdminProfile(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) updateProfileDto: UpdateProfileDto,
-    @GetUser() user: User,
+    @GetUser() user: UserInfo,
   ): Promise<User> {
     return this.usersService.updateAdminProfile(id, updateProfileDto, user);
   }
 
   @Patch('/user/:id/profile')
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard)
   updateUserProfile(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) updateUserProfileDto: UpdateUserProfileDto,
-    @GetUser() user: User,
+    @GetUser() user: UserInfo,
   ): Promise<User> {
     return this.usersService.updateUserProfile(id, updateUserProfileDto, user);
   }
 
   @Delete('/:id')
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard)
   deleteUser(
     @Param('id', ParseIntPipe) id: number,
-    @GetUser() user: User,
+    @GetUser() user: UserInfo,
   ): Promise<MyKnownMessage> {
     return this.usersService.deleteUser(id, user);
   }
 
   @Delete('/:id/admin')
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard)
   deleteUserByAdmin(
     @Param('id', ParseIntPipe) id: number,
-    @GetUser() user: User,
+    @GetUser() user: UserInfo,
   ): Promise<MyKnownMessage> {
     return this.usersService.deleteUserByAdmin(id, user);
   }

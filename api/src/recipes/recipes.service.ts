@@ -14,13 +14,14 @@ import {
   GetRecipesByOffsetDto,
 } from './dto/get-recipes.dto';
 import { MyKnownMessage } from '../message.interface';
-import { User } from '../users/users.entity';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { RecipeLikesService } from '../recipe-likes/recipe-likes.service';
 import { RecipeLike } from '../recipe-likes/recipe-likes.entity';
 import { TagsService } from '../tags/tags.service';
 import { RecipeDescriptionsService } from '../recipe-descriptions/recipe-descriptions.service';
 import { IngredientsService } from '../ingredients/ingredients.service';
+import { UserInfo } from '../auth/type';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class RecipesService {
@@ -31,6 +32,7 @@ export class RecipesService {
     private ingredientsService: IngredientsService,
     private recipeDescriptionsService: RecipeDescriptionsService,
     private tagsService: TagsService,
+    private usersService: UsersService,
   ) {}
 
   async getRecipes(
@@ -73,19 +75,21 @@ export class RecipesService {
 
   async createRecipe(
     createRecipeDto: CreateRecipeDto,
-    user: User,
+    user: UserInfo,
   ): Promise<Recipe> {
     return this.recipeRepository.createRecipe(createRecipeDto, user);
   }
 
-  async likeRecipe(recipeId: number, user: User): Promise<MyKnownMessage> {
+  async likeRecipe(recipeId: number, user: UserInfo): Promise<MyKnownMessage> {
     // recipeIdからお気に入りをするrecipeを特定する
     // recipeがない場合はnotfound
-    const found: Recipe = await this.getRecipeById(recipeId);
+    const foundRecipe = await this.getRecipeById(recipeId);
+
+    const foundUser = await this.usersService.getUserBySub(user.sub);
 
     // recipeがこのユーザーにお気に入りされているか確認
-    const usersLike: RecipeLike[] = found.recipeLikes.filter(
-      (like) => like.userId === user.id,
+    const usersLike: RecipeLike[] = foundRecipe.recipeLikes.filter(
+      (like) => like.userId === foundUser.id,
     );
     // お気に入りされていたらメッセージを返す
     if (usersLike.length > 0) {
@@ -95,7 +99,7 @@ export class RecipesService {
     // お気に入りをしたら メッセージを出す
     await this.recipeLikesService.recipeLike({
       recipeId,
-      userId: user.id,
+      userId: foundUser.id,
     });
 
     return { message: 'お気に入りに登録しました' };
@@ -104,14 +108,16 @@ export class RecipesService {
   async updateRecipe(
     id: number,
     updateRecipeDto: UpdateRecipeDto,
-    user: User,
+    user: UserInfo,
   ): Promise<Recipe> {
-    if (user.role !== 'admin') {
+    const foundUser = await this.usersService.getUserBySub(user.sub);
+    if (foundUser.role !== 'admin') {
       throw new UnauthorizedException('権限がありません');
     }
     // 更新対象の記事を特定する
-    const found = await this.getRecipeById(id);
-    if (!found) throw new NotFoundException(`ID: ${id}のrecipeは存在しません`);
+    const foundRecipe = await this.getRecipeById(id);
+    if (!foundRecipe)
+      throw new NotFoundException(`ID: ${id}のrecipeは存在しません`);
 
     // 材料と作業工程の更新があるか確認する
     const {
@@ -125,28 +131,28 @@ export class RecipesService {
     } = updateRecipeDto;
 
     // recipe部分の更新をする
-    found.name = name;
-    found.time = time;
-    found.remarks = remarks;
-    found.image = image;
+    foundRecipe.name = name;
+    foundRecipe.time = time;
+    foundRecipe.remarks = remarks;
+    foundRecipe.image = image;
 
     await this.ingredientsService.deleteIngredientsByRecipeId(id);
 
     const createIngredientDtos = ingredients.map((ingredient) => {
-      return { ...ingredient, recipe: found };
+      return { ...ingredient, recipe: foundRecipe };
     });
 
     const newIngredients = await this.ingredientsService.createIngredients(
       createIngredientDtos,
     );
 
-    found.ingredients = newIngredients;
+    foundRecipe.ingredients = newIngredients;
 
     await this.recipeDescriptionsService.deleteRecipeDescriptionsByRecipeId(id);
 
     const createRecipeDescriptionsDtos = recipeDescriptions.map(
       (recipeDescription) => {
-        return { ...recipeDescription, recipe: found };
+        return { ...recipeDescription, recipe: foundRecipe };
       },
     );
 
@@ -155,35 +161,40 @@ export class RecipesService {
         createRecipeDescriptionsDtos,
       );
 
-    found.recipeDescriptions = newRecipeDescriptions;
+    foundRecipe.recipeDescriptions = newRecipeDescriptions;
 
     await this.tagsService.deleteTagsByRecipeId(id);
 
     const createTagDtos = tags.map((tag) => {
-      return { ...tag, recipe: found };
+      return { ...tag, recipe: foundRecipe };
     });
 
     const newTags = await this.tagsService.createTags(createTagDtos);
 
-    found.tags = newTags;
+    foundRecipe.tags = newTags;
 
     // 更新後のrecipeを返す
-    const newRecipe = await this.recipeRepository.save(found);
+    const newRecipe = await this.recipeRepository.save(foundRecipe);
     return newRecipe;
   }
 
-  async deleteRecipe(id: number, user: User): Promise<MyKnownMessage> {
+  async deleteRecipe(id: number, user: UserInfo): Promise<MyKnownMessage> {
     return await this.recipeRepository.deleteRecipe(id, user);
   }
 
-  async unlikeRecipe(recipeId: number, user: User): Promise<MyKnownMessage> {
+  async unlikeRecipe(
+    recipeId: number,
+    user: UserInfo,
+  ): Promise<MyKnownMessage> {
     // recipeIdからお気に入りを解除するrecipeを特定する
     // recipeがない場合はnot found
-    const found: Recipe = await this.getRecipeById(recipeId);
+    const foundRecipe = await this.getRecipeById(recipeId);
+
+    const foundUser = await this.usersService.getUserBySub(user.sub);
 
     // recipeがこのユーザーにお気に入りされているか確認
-    const usersLike: RecipeLike[] = found.recipeLikes.filter(
-      (like) => like.userId === user.id,
+    const usersLike: RecipeLike[] = foundRecipe.recipeLikes.filter(
+      (like) => like.userId === foundUser.id,
     );
     // お気に入りしていなかったらメッセージを返す
     if (usersLike.length === 0) {
@@ -191,7 +202,7 @@ export class RecipesService {
     }
     // 該当するrecipeIdのuserIdが一致するお気に入りを削除する
     await this.recipeLikesService.unlikeRecipe({
-      userId: user.id,
+      userId: foundUser.id,
       recipeId,
     });
 

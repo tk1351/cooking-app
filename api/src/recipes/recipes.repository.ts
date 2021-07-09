@@ -12,7 +12,6 @@ import {
   GetRecipesByLimitNumberDto,
   GetRecipesByOffsetDto,
 } from './dto/get-recipes.dto';
-import { User } from '../users/users.entity';
 import { IngredientRepository } from '../ingredients/ingredients.repository';
 import { RecipeDescriptionRepository } from '../recipe-descriptions/recipe-descriptions.repository';
 import { TagRepository } from '../tags/tags.repository';
@@ -22,6 +21,8 @@ import { Ingredient } from '../ingredients/ingredients.entity';
 import { RecipeDescription } from '../recipe-descriptions/recipe-descriptions.entity';
 import { RecipeLike } from '../recipe-likes/recipe-likes.entity';
 import { Tag } from '../tags/tags.entity';
+import { UserInfo } from '../auth/type';
+import { UserRepository } from '../users/users.repository';
 
 @EntityRepository(Recipe)
 export class RecipeRepository extends Repository<Recipe> {
@@ -200,9 +201,13 @@ export class RecipeRepository extends Repository<Recipe> {
 
   async createRecipe(
     createRecipeDto: CreateRecipeDto,
-    user: User,
+    user: UserInfo,
   ): Promise<Recipe> {
-    if (user.role !== 'admin') {
+    const userRepository = getCustomRepository(UserRepository);
+
+    const foundUser = await userRepository.getUserBySub(user.sub);
+
+    if (foundUser.role !== 'admin') {
       throw new UnauthorizedException('権限がありません');
     }
 
@@ -228,7 +233,7 @@ export class RecipeRepository extends Repository<Recipe> {
     recipe.time = time;
     recipe.remarks = remarks;
     recipe.image = image;
-    recipe.user = user;
+    recipe.user = foundUser;
     recipe.ingredients = ingredients;
     recipe.recipeDescriptions = recipeDescriptions;
     recipe.tags = tags;
@@ -257,8 +262,12 @@ export class RecipeRepository extends Repository<Recipe> {
     return recipe;
   }
 
-  async deleteRecipe(id: number, user: User): Promise<MyKnownMessage> {
-    if (user.role !== 'admin') {
+  async deleteRecipe(id: number, user: UserInfo): Promise<MyKnownMessage> {
+    const userRepository = getCustomRepository(UserRepository);
+
+    const foundUser = await userRepository.getUserBySub(user.sub);
+
+    if (foundUser.role !== 'admin') {
       throw new UnauthorizedException('権限がありません');
     }
 

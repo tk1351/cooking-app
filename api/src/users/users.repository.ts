@@ -17,6 +17,7 @@ import { RecipeLikeRepository } from '../recipe-likes/recipe-likes.repository';
 import { SocialsRepository } from '../socials/socials.repository';
 import { RecipeLike } from '../recipe-likes/recipe-likes.entity';
 import { Social } from '../socials/socials.entity';
+import { UserInfo } from '../auth/type';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -83,6 +84,20 @@ export class UserRepository extends Repository<User> {
     return found;
   }
 
+  async getUserBySub(sub: string): Promise<User> {
+    const found = await this.createQueryBuilder('users')
+      .leftJoinAndSelect('users.socials', 'socials')
+      .leftJoinAndSelect('users.recipeLikes', 'recipeLikes')
+      .leftJoinAndSelect('recipeLikes.recipe', 'recipe')
+      .leftJoinAndSelect('recipe.ingredients', 'ingredients')
+      .leftJoinAndSelect('recipe.recipeDescriptions', 'recipeDescriptions')
+      .leftJoinAndSelect('recipe.tags', 'tags')
+      .where('users.sub = :sub', { sub })
+      .getOne();
+
+    return found;
+  }
+
   async registerAdmin(createUserDto: CreateUserDto): Promise<MyKnownMessage> {
     const { name, email, sub } = createUserDto;
 
@@ -135,35 +150,38 @@ export class UserRepository extends Repository<User> {
     }
   }
 
-  async deleteUser(id: number, user: User): Promise<MyKnownMessage> {
+  async deleteUser(id: number, user: UserInfo): Promise<MyKnownMessage> {
     const recipeLikeRepository = getCustomRepository(RecipeLikeRepository);
     const socialsRepository = getCustomRepository(SocialsRepository);
 
+    // 渡ってくるidで削除するユーザーを特定する
     const found = await this.getUserById(id);
-    if (found.id !== user.id) {
+
+    // 操作しているuserがfoundのユーザーでない場合はエラー
+    if (found.sub !== user.sub) {
       throw new UnauthorizedException('認証情報が無効です');
     }
 
-    // userIdが一致するお気に入りを取得
+    // // userIdが一致するお気に入りを取得
     const recipeLikesIndex: RecipeLike[] =
-      await recipeLikeRepository.getRecipeLikesByUserId(user.id);
+      await recipeLikeRepository.getRecipeLikesByUserId(id);
 
-    // userIdが一致するsocialを取得
+    // // userIdが一致するsocialを取得
     const socialsIndex: Social[] = await socialsRepository.getSocialsByUserId(
-      user.id,
+      id,
     );
 
-    // recipeLikesIndexをmapして、IDが一致するお気に入りを削除する
+    // // recipeLikesIndexをmapして、IDが一致するお気に入りを削除する
     recipeLikesIndex.map((index) =>
       recipeLikeRepository.deleteRecipeLikes(index.id),
     );
 
-    // socialsIndexをmapして、IDが一致するsocialを削除する
+    // // socialsIndexをmapして、IDが一致するsocialを削除する
     socialsIndex.map((index) => socialsRepository.deleteSocial(index.id));
 
     const result = await this.delete({ id });
 
-    // DeleteResultのaffectedが0 = 削除できるものが存在しない
+    // // DeleteResultのaffectedが0 = 削除できるものが存在しない
     if (result.affected === 0) {
       throw new NotFoundException(`ID: ${id}のuserは存在しません`);
     }
@@ -172,11 +190,14 @@ export class UserRepository extends Repository<User> {
   }
 
   // adminのみが全てのユーザーの削除権限あり
-  async deleteUserByAdmin(id: number, user: User): Promise<MyKnownMessage> {
+  async deleteUserByAdmin(id: number, user: UserInfo): Promise<MyKnownMessage> {
     const recipeLikeRepository = getCustomRepository(RecipeLikeRepository);
     const socialsRepository = getCustomRepository(SocialsRepository);
 
-    if (user.role !== 'admin') {
+    // 操作するユーザーが管理者でない場合はエラー
+    const found = await this.getUserBySub(user.sub);
+
+    if (found.role !== 'admin') {
       throw new UnauthorizedException('管理者権限がありません');
     }
 
@@ -186,7 +207,7 @@ export class UserRepository extends Repository<User> {
 
     // userIdが一致するsocialを取得
     const socialsIndex: Social[] = await socialsRepository.getSocialsByUserId(
-      user.id,
+      id,
     );
 
     // recipeLikesIndexをmapして、IDが一致するお気に入りを削除する
