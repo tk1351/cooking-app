@@ -25,7 +25,7 @@ import { unwrapResult } from '@reduxjs/toolkit'
 import { v4 as uuidv4 } from 'uuid'
 import TextForm from '../form/TextForm'
 import FormButton from '../form/FormButton'
-import { useAppDispatch } from '../../re-ducks/hooks'
+import { useAppDispatch, useAppSelector } from '../../re-ducks/hooks'
 import { updateRecipe } from '../../re-ducks/recipe/recipeSlice'
 import { IRecipe, IUpdateRecipeInputs } from '../../re-ducks/recipe/type'
 import { firebaseStorage } from '../../src/utils/firebase'
@@ -34,6 +34,7 @@ import { setAlert } from '../../re-ducks/alert/alertSlice'
 import { MyKnownError } from '../../re-ducks/defaultType'
 import Alert from '../common/Alert'
 import styles from '../../styles/components/recipe/editRecipeForm.module.css'
+import { selectUserToken } from '../../re-ducks/auth/authSlice'
 
 type Props = {
   recipe: IRecipe
@@ -103,6 +104,8 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
     }
   }
 
+  const accessToken = useAppSelector(selectUserToken)
+
   const onSubmit: SubmitHandler<IUpdateRecipeInputs> = async (data) => {
     let imageUrl = ''
 
@@ -130,6 +133,7 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
           updateRecipe({
             postData: newData,
             id: recipe.id,
+            accessToken,
           })
         )
         if (updateRecipe.fulfilled.match(resultAction)) {
@@ -166,6 +170,7 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
           updateRecipe({
             postData: data,
             id: recipe.id,
+            accessToken,
           })
         )
         if (updateRecipe.fulfilled.match(resultAction)) {

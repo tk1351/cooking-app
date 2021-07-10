@@ -1,5 +1,4 @@
 import React, { VFC, useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
 import { format } from 'date-fns'
 import {
   CardMedia,
@@ -15,7 +14,11 @@ import { unwrapResult } from '@reduxjs/toolkit'
 import { v4 as uuidv4 } from 'uuid'
 import { useAppDispatch, useAppSelector } from '../../re-ducks/hooks'
 import { likeRecipe, unlikeRecipe } from '../../re-ducks/recipe/recipeSlice'
-import { selectUserRole, selectUserId } from '../../re-ducks/auth/authSlice'
+import {
+  selectUserRole,
+  selectUserId,
+  selectUserToken,
+} from '../../re-ducks/auth/authSlice'
 import { IRecipe } from '../../re-ducks/recipe/type'
 import { setAlert } from '../../re-ducks/alert/alertSlice'
 import Alert from '../common/Alert'
@@ -35,8 +38,10 @@ const Recipe: VFC<Props> = ({ recipe }) => {
   const [isLiked, setIsLiked] = useState(false)
   const [likedNumber, setLikedNumber] = useState(recipe.recipeLikes.length)
 
+  const accessToken = useAppSelector(selectUserToken)
+
   const onLikeRecipeClicked = async (id: number) => {
-    const resultAction = await dispatch(likeRecipe(id))
+    const resultAction = await dispatch(likeRecipe({ id, accessToken }))
     if (likeRecipe.fulfilled.match(resultAction)) {
       unwrapResult(resultAction)
       setIsLiked((prev) => !prev)
@@ -54,7 +59,7 @@ const Recipe: VFC<Props> = ({ recipe }) => {
   }
 
   const onUnlikeRecipeClicked = async (id: number) => {
-    const resultAction = await dispatch(unlikeRecipe(id))
+    const resultAction = await dispatch(unlikeRecipe({ id, accessToken }))
     if (unlikeRecipe.fulfilled.match(resultAction)) {
       unwrapResult(resultAction)
 
