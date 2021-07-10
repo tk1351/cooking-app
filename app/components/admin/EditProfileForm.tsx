@@ -18,10 +18,13 @@ import {
 } from '@material-ui/core'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { IUser, IUpdateAdminProfileInputs } from '../../re-ducks/auth/type'
-import { useAppDispatch } from '../../re-ducks/hooks'
+import { useAppDispatch, useAppSelector } from '../../re-ducks/hooks'
 import TextForm from '../form/TextForm'
 import FormButton from '../form/FormButton'
-import { updateAdminProfile } from '../../re-ducks/auth/authSlice'
+import {
+  updateAdminProfile,
+  selectUserToken,
+} from '../../re-ducks/auth/authSlice'
 import styles from '../../styles/components/admin/editProfileForm.module.css'
 import { Remove, Add } from '@material-ui/icons'
 
@@ -56,11 +59,14 @@ const EditProfileForm: VFC<Props> = ({ user }) => {
     name: 'socials',
   })
 
+  const accessToken = useAppSelector(selectUserToken)
+
   const onSubmit: SubmitHandler<IUpdateAdminProfileInputs> = async (data) => {
     const resultAction = await dispatch(
       updateAdminProfile({
         profile: data,
         id: user.id,
+        accessToken,
       })
     )
     if (updateAdminProfile.fulfilled.match(resultAction)) {

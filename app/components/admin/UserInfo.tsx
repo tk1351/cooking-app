@@ -2,8 +2,11 @@ import React, { VFC } from 'react'
 import { useRouter } from 'next/router'
 import { IUser } from '../../re-ducks/auth/type'
 import { Button, Typography, Grid } from '@material-ui/core'
-import { useAppDispatch } from '../../re-ducks/hooks'
-import { deleteUserWithAdminPriviledge } from '../../re-ducks/auth/authSlice'
+import { useAppDispatch, useAppSelector } from '../../re-ducks/hooks'
+import {
+  deleteUserWithAdminPriviledge,
+  selectUserToken,
+} from '../../re-ducks/auth/authSlice'
 import styles from '../../styles/components/admin/userInfo.module.css'
 
 type Props = {
@@ -14,11 +17,15 @@ const UserInfo: VFC<Props> = ({ user }) => {
   const dispatch = useAppDispatch()
   const router = useRouter()
 
+  const accessToken = useAppSelector(selectUserToken)
+
   const onDeleteUserClicked = async () => {
     if (
       window.confirm(`ID: ${user.id}のユーザーを削除してもよろしいですか？`)
     ) {
-      await dispatch(deleteUserWithAdminPriviledge(user.id))
+      await dispatch(
+        deleteUserWithAdminPriviledge({ id: user.id, accessToken })
+      )
       await router.back()
     }
   }

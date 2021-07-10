@@ -7,8 +7,11 @@ import { IUser, IUpdateUserProfileInputs } from '../../re-ducks/auth/type'
 import TextForm from '../form/TextForm'
 import FormButton from '../form/FormButton'
 import { Button, Container, Grid, Typography } from '@material-ui/core'
-import { useAppDispatch } from '../../re-ducks/hooks'
-import { updateUserProfile } from '../../re-ducks/auth/authSlice'
+import { useAppDispatch, useAppSelector } from '../../re-ducks/hooks'
+import {
+  updateUserProfile,
+  selectUserToken,
+} from '../../re-ducks/auth/authSlice'
 import { setAlert } from '../../re-ducks/alert/alertSlice'
 import { MyKnownError } from '../../re-ducks/defaultType'
 import Alert from '../common/Alert'
@@ -32,9 +35,11 @@ const EditProfileForm: VFC<Props> = ({ user }) => {
     defaultValues,
   })
 
+  const accessToken = useAppSelector(selectUserToken)
+
   const onSubmit: SubmitHandler<IUpdateUserProfileInputs> = async (data) => {
     const resultAction = await dispatch(
-      updateUserProfile({ profile: data, id: user.id })
+      updateUserProfile({ profile: data, id: user.id, accessToken })
     )
     if (updateUserProfile.fulfilled.match(resultAction)) {
       unwrapResult(resultAction)

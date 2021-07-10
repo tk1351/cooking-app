@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { AsyncThunkConfig, RootState } from '../store'
 import {
   IAuthState,
-  ILoginUser,
   IRegisterUser,
   IUpdateUserProfileInputs,
   IUser,
@@ -62,23 +61,6 @@ export const registerUser = createAsyncThunk<
     return rejectWithValue(error.response.data)
   }
 })
-
-// export const loginUser = createAsyncThunk<
-//   { accessToken: string },
-//   ILoginUser,
-//   AsyncThunkConfig<MyKnownError>
-// >('auth/loginUser', async (userData, { rejectWithValue }) => {
-//   try {
-//     const url = '/users/login'
-//     const res = await API.post<{ accessToken: string }>(url, userData)
-//     const accessToken = res.data.accessToken
-//     localStorage.setItem('token', accessToken)
-
-//     return { accessToken }
-//   } catch (error) {
-//     return rejectWithValue(error.response.data)
-//   }
-// })
 
 export const updateAdminProfile = createAsyncThunk<
   IUser,
@@ -186,29 +168,6 @@ const authSlice = createSlice({
       }
     })
 
-    // ログイン
-    // builder.addCase(loginUser.pending, (state) => {
-    //   state.status = 'loading'
-    // })
-    // builder.addCase(loginUser.fulfilled, (state, action) => {
-    //   state.status = 'succeeded'
-    //   state.auth.token = action.payload.accessToken
-    //   state.auth.isAuthenticated = true
-    //   state.auth.loading = false
-    //   state.message = null
-    //   state.error = null
-    // })
-    // builder.addCase(loginUser.rejected, (state, action) => {
-    //   if (action.payload) {
-    //     state.status = 'failed'
-    //     state.message = null
-    //     state.auth.token = null
-    //     state.auth.isAuthenticated = false
-    //     state.auth.loading = false
-    //     state.error = action.payload
-    //   }
-    // })
-
     // adminのプロフィール更新
     builder.addCase(updateAdminProfile.pending, (state) => {
       state.status = 'loading'
@@ -262,6 +221,7 @@ export const selectIsAuthenticated = (state: RootState) =>
   state.auth.auth.isAuthenticated
 export const selectUserRole = (state: RootState) => state.auth.auth.user?.role
 export const selectUserId = (state: RootState) => state.auth.auth.user?.id
-export const selectUserToken = (state: RootState) => state.auth.auth.token
+export const selectUserToken = (state: RootState) =>
+  state.auth.auth.token as string
 
 export default authSlice.reducer
