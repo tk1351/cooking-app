@@ -1,5 +1,6 @@
 import React, { VFC, useState } from 'react'
 import { format } from 'date-fns'
+import { utcToZonedTime } from 'date-fns-tz'
 import {
   Card,
   CardActionArea,
@@ -48,6 +49,9 @@ const RecipeItem: VFC<Props> = ({ recipe }) => {
     setAnchorEl(null)
   }
 
+  const date = new Date(recipe.createdAt)
+  const jstDate = utcToZonedTime(date, 'Asia/Tokyo')
+
   return (
     <Grid item xs={4}>
       <Card>
@@ -67,7 +71,7 @@ const RecipeItem: VFC<Props> = ({ recipe }) => {
               </Typography>
             </Link>
             <Typography variant="body2" color="textSecondary" component="p">
-              {format(new Date(recipe.createdAt), 'yyyy-MM-dd')}
+              {format(jstDate, 'yyyy-MM-dd')}
             </Typography>
             <ul className={styles.tag}>
               {recipe.tags.map((tag) => (
