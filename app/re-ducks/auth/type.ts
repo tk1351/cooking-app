@@ -31,17 +31,6 @@ export interface IAuthState {
   error: MyKnownError | null
 }
 
-export interface IRegisterUser {
-  name: string
-  email: string
-  password: string
-}
-
-export interface ILoginUser {
-  email: string
-  password: string
-}
-
 export interface IUpdateAdminProfileInputs {
   name: string
   favoriteDish: string

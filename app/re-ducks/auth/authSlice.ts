@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { AsyncThunkConfig, RootState } from '../store'
 import {
   IAuthState,
-  IRegisterUser,
   IUpdateUserProfileInputs,
   IUser,
   IUpdateAdminProfileInputs,
@@ -43,20 +42,6 @@ export const fetchCurrentUser = createAsyncThunk<
     const currentUser = { user: { id, name, role }, accessToken }
 
     return currentUser
-  } catch (error) {
-    return rejectWithValue(error.response.data)
-  }
-})
-
-export const registerUser = createAsyncThunk<
-  MyKnownMessage,
-  IRegisterUser,
-  AsyncThunkConfig<MyKnownError>
->('auth/registerUser', async (userData, { rejectWithValue }) => {
-  try {
-    const url = '/users/register'
-    const res = await API.post<MyKnownMessage>(url, userData)
-    return res.data
   } catch (error) {
     return rejectWithValue(error.response.data)
   }
@@ -148,23 +133,6 @@ const authSlice = createSlice({
         state.error = action.payload
         state.auth.isAuthenticated = false
         state.auth.loading = false
-      }
-    })
-
-    // ユーザー登録
-    builder.addCase(registerUser.pending, (state) => {
-      state.status = 'loading'
-    })
-    builder.addCase(registerUser.fulfilled, (state, action) => {
-      state.status = 'succeeded'
-      state.message = action.payload
-      state.error = null
-    })
-    builder.addCase(registerUser.rejected, (state, action) => {
-      if (action.payload) {
-        state.status = 'failed'
-        state.message = null
-        state.error = action.payload
       }
     })
 
