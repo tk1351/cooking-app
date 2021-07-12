@@ -19,6 +19,7 @@ import Alert from '../common/Alert'
 import { MyKnownError } from '../../re-ducks/defaultType'
 import styles from '../../styles/components/admin/deleteRecipe.module.css'
 import { selectUserToken } from '../../re-ducks/auth/authSlice'
+import { firebaseStorage } from '../../src/utils/firebase'
 
 type Props = {
   recipe: IRecipe
@@ -34,6 +35,10 @@ const DeleteRecipe: VFC<Props> = ({ recipe }) => {
     const resultAction = await dispatch(deleteRecipe({ id, accessToken }))
     if (deleteRecipe.fulfilled.match(resultAction)) {
       unwrapResult(resultAction)
+
+      // firebaseの画像を削除
+      const refUrl = firebaseStorage.refFromURL(recipe.image)
+      await refUrl.delete()
 
       const alertId = uuidv4()
       dispatch(
