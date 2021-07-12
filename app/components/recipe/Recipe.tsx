@@ -1,5 +1,6 @@
 import React, { VFC, useState, useEffect } from 'react'
 import { format } from 'date-fns'
+import { utcToZonedTime } from 'date-fns-tz'
 import {
   CardMedia,
   Typography,
@@ -131,6 +132,9 @@ const Recipe: VFC<Props> = ({ recipe }) => {
     return a.order - b.order
   })
 
+  const date = new Date(recipe.createdAt)
+  const jstDate = utcToZonedTime(date, 'Asia/Tokyo')
+
   return (
     <Grid container className={styles.recipeWrapper}>
       <Grid item xs={12}>
@@ -176,7 +180,7 @@ const Recipe: VFC<Props> = ({ recipe }) => {
         </Grid>
         <Grid container>
           <Typography variant="body2" color="textSecondary" component="p">
-            {format(new Date(recipe.createdAt), 'yyyy-MM-dd')}
+            {format(jstDate, 'yyyy-MM-dd')}
           </Typography>
         </Grid>
         <Grid container className={styles.image}>
