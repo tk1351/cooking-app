@@ -125,6 +125,7 @@ export class RecipesService {
       time,
       remarks,
       image,
+      url,
       ingredients,
       recipeDescriptions,
       tags,
@@ -135,6 +136,7 @@ export class RecipesService {
     foundRecipe.time = time;
     foundRecipe.remarks = remarks;
     foundRecipe.image = image;
+    foundRecipe.url = url;
 
     await this.ingredientsService.deleteIngredientsByRecipeId(id);
 

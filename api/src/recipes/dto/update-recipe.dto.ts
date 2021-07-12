@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsInt, IsIn, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsInt, IsIn, IsOptional, IsUrl } from 'class-validator';
 import { Recipe } from '../recipes.entity';
 import { Ingredient } from '../../ingredients/ingredients.entity';
 import { RecipeDescription } from '../../recipe-descriptions/recipe-descriptions.entity';
@@ -22,6 +22,10 @@ export class UpdateRecipeDto {
 
   @IsOptional()
   image: string;
+
+  @IsOptional()
+  @IsUrl({}, { message: 'urlを入力してください' })
+  url: string;
 
   @IsOptional()
   @IsNotEmpty({ message: '材料を入力してください' })

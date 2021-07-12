@@ -20,6 +20,9 @@ export class Recipe extends DefaultEntity {
   @Column()
   image: string;
 
+  @Column()
+  url: string;
+
   @ManyToOne(() => User, (user) => user.recipes, { eager: false })
   user: User;
 

@@ -222,6 +222,7 @@ export class RecipeRepository extends Repository<Recipe> {
       time,
       remarks,
       image,
+      url,
       ingredients,
       recipeDescriptions,
       tags,
@@ -233,6 +234,7 @@ export class RecipeRepository extends Repository<Recipe> {
     recipe.time = time;
     recipe.remarks = remarks;
     recipe.image = image;
+    recipe.url = url;
     recipe.user = foundUser;
     recipe.ingredients = ingredients;
     recipe.recipeDescriptions = recipeDescriptions;
