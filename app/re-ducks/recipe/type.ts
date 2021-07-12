@@ -13,6 +13,7 @@ export interface IRecipe extends DefaultType {
   time: 5 | 10 | 15 | 20 | 30 | 40 | 50 | 60
   remarks: string
   image: string
+  url: string
   user: IUser
   ingredients: IIngredient[]
   recipeDescriptions: IRecipeDescription[]
@@ -33,6 +34,7 @@ export interface IUpdateRecipeInputs {
   time: 5 | 10 | 15 | 20 | 30 | 40 | 50 | 60
   remarks: string
   image: string
+  url: string
   ingredients: IIngredient[]
   recipeDescriptions: IRecipeDescription[]
   tags: ITag[]

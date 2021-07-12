@@ -140,6 +140,23 @@ const Recipe: VFC<Props> = ({ recipe }) => {
           </Typography>
         </Grid>
         <Grid container>
+          <a
+            href={recipe.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.url}
+          >
+            <Typography
+              variant="body2"
+              color="primary"
+              component="p"
+              className={styles.linkText}
+            >
+              {recipe.url}
+            </Typography>
+          </a>
+        </Grid>
+        <Grid container>
           <ul className={styles.tag}>
             {recipe.tags.map((tag) => (
               <div key={tag.id}>

@@ -40,6 +40,7 @@ const RecipeForm: VFC = () => {
     name: recipe.name,
     time: recipe.time,
     remarks: recipe.remarks,
+    url: recipe.url,
     ingredients: recipe.ingredients,
     recipeDescriptions: recipe.recipeDescriptions,
     tags: recipe.tags,
@@ -113,6 +114,30 @@ const RecipeForm: VFC = () => {
                   inputRef={ref}
                   error={Boolean(errors.name)}
                   helperText={errors.name && errors.name.message}
+                  className={styles.textField}
+                  fullWidth
+                />
+              </>
+            )}
+          />
+          <Controller
+            name="url"
+            control={control}
+            render={({ field: { onChange, ref }, formState: { errors } }) => (
+              <>
+                <div className={styles.typography}>
+                  <Typography>動画URL</Typography>
+                </div>
+                <TextForm
+                  label={'動画URL'}
+                  id="url"
+                  type="text"
+                  name="url"
+                  variant="outlined"
+                  onChange={onChange}
+                  inputRef={ref}
+                  error={Boolean(errors.url)}
+                  helperText={errors.url && errors.url.message}
                   className={styles.textField}
                   fullWidth
                 />

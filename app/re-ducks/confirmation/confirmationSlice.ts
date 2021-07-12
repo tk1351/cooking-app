@@ -8,6 +8,7 @@ const initialState: IConfimationState = {
     name: '',
     time: 5,
     remarks: '',
+    url: '',
     ingredients: [
       {
         name: '',

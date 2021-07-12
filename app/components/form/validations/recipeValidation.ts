@@ -13,6 +13,7 @@ export const recipeValidationSchema = yup.object().shape({
   time: yup.number().typeError(violationNumber).required(requireTime),
   remarks: yup.string(),
   image: yup.string(),
+  url: yup.string(),
   ingredients: yup.array(
     yup.object().shape({
       name: yup.string().required(requireIngredientName),

@@ -50,15 +50,20 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
     setPreview(recipe.image)
   }, [])
 
+  console.log('recipe', recipe)
+
   const defaultValues: IUpdateRecipeInputs = {
     name: recipe.name,
     time: recipe.time,
     remarks: recipe.remarks,
     image: recipe.image,
+    url: recipe.url,
     ingredients: recipe.ingredients,
     recipeDescriptions: recipe.recipeDescriptions,
     tags: recipe.tags,
   }
+
+  console.log('default', defaultValues)
 
   const { control, handleSubmit } = useForm<IUpdateRecipeInputs>({
     defaultValues,
@@ -231,6 +236,31 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
                   inputRef={ref}
                   error={Boolean(errors.name)}
                   helperText={errors.name && errors.name.message}
+                  className={styles.textField}
+                  fullWidth
+                />
+              </>
+            )}
+          />
+          <Controller
+            name="url"
+            control={control}
+            render={({ field: { onChange, ref }, formState: { errors } }) => (
+              <>
+                <div className={styles.typography}>
+                  <Typography>動画URL</Typography>
+                </div>
+                <TextForm
+                  label={'動画URL'}
+                  id="url"
+                  type="text"
+                  name="url"
+                  variant="outlined"
+                  defaultValue={recipe.url}
+                  onChange={onChange}
+                  inputRef={ref}
+                  error={Boolean(errors.url)}
+                  helperText={errors.url && errors.url.message}
                   className={styles.textField}
                   fullWidth
                 />
