@@ -1,11 +1,9 @@
-import React, { VFC } from 'react'
+import React, { VFC, useEffect } from 'react'
 import Head from 'next/head'
+import { useAuth0 } from '@auth0/auth0-react'
+import axios from 'axios'
 import { useAppSelector } from '../../re-ducks/hooks'
-import {
-  selectAuthLoading,
-  selectIsAuthenticated,
-  selectUserRole,
-} from '../../re-ducks/auth/authSlice'
+import { selectUserRole } from '../../re-ducks/auth/authSlice'
 import Recipes from '../recipe/Recipes'
 import { IRecipe } from '../../re-ducks/recipe/type'
 import Alert from './Alert'
@@ -15,27 +13,71 @@ type Props = {
 }
 
 const Home: VFC<Props> = (props) => {
-  const loading = useAppSelector(selectAuthLoading)
-  const isAuthenticated = useAppSelector(selectIsAuthenticated)
   const userRole = useAppSelector(selectUserRole)
+  const {
+    loginWithRedirect,
+    user,
+    logout,
+    isAuthenticated,
+    isLoading,
+  } = useAuth0()
 
   console.log('role', userRole)
+
+  console.log('isAuthenticated', isAuthenticated)
+
+  useEffect(() => {
+    ;(async () => {
+      if (user) {
+        const { name, email, sub } = user
+        await axios.post('http://localhost:8080/users/register', {
+          name,
+          email,
+          sub,
+        })
+        console.log('ok')
+      }
+    })()
+  }, [user])
+
+  const register = async () => {
+    if (user) {
+      const { name, email, sub } = user
+      await axios.post('http://localhost:8080/users/register', {
+        name,
+        email,
+        sub,
+      })
+      console.log('ok')
+    }
+  }
+
+  console.log('user', user)
 
   const guestView = (
     <>
       <h2>ゲストページ</h2>
+      <button onClick={() => loginWithRedirect()}>ログイン</button>
     </>
   )
 
   const userView = (
     <>
       <h2>ユーザーページ</h2>
+      <button onClick={() => logout({ returnTo: 'http://localhost:3000' })}>
+        ログアウト
+      </button>
     </>
   )
+
+  console.log('role')
 
   const adminView = (
     <>
       <h2>管理者ページ</h2>
+      <button onClick={() => logout({ returnTo: 'http://localhost:3000' })}>
+        ログアウト
+      </button>
     </>
   )
 
@@ -58,9 +100,8 @@ const Home: VFC<Props> = (props) => {
       </Head>
 
       <main>
-        <h1>Welcome to Cooking-app!</h1>
         <Alert />
-        {!loading && (
+        {!isLoading && (
           <>
             <Views />
             <Recipes {...props} />

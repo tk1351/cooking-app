@@ -1,5 +1,5 @@
 import React, { VFC } from 'react'
-import { TextField, Typography } from '@material-ui/core'
+import { TextField } from '@material-ui/core'
 import { RefCallBack } from 'react-hook-form'
 
 export interface ITextFormProps {

@@ -25,11 +25,11 @@ import { recipeValidationSchema } from '../form/validations/recipeValidation'
 import { useAppDispatch, useAppSelector } from '../../re-ducks/hooks'
 import { IRecipeInputs } from '../form/type'
 import Alert from '../common/Alert'
-import styles from '../../styles/components/recipe/recipeForm.module.css'
 import {
   setRecipe,
   confirmRecipe,
 } from '../../re-ducks/confirmation/confirmationSlice'
+import styles from '../../styles/components/recipe/recipeForm.module.css'
 
 const RecipeForm: VFC = () => {
   const dispatch = useAppDispatch()

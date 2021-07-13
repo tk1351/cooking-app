@@ -18,9 +18,9 @@ import { deleteRecipe } from '../../re-ducks/recipe/recipeSlice'
 import { setAlert } from '../../re-ducks/alert/alertSlice'
 import Alert from '../common/Alert'
 import { MyKnownError } from '../../re-ducks/defaultType'
-import styles from '../../styles/components/admin/deleteRecipe.module.css'
 import { selectUserToken } from '../../re-ducks/auth/authSlice'
 import { firebaseStorage } from '../../src/utils/firebase'
+import styles from '../../styles/components/admin/deleteRecipe.module.css'
 
 type Props = {
   recipe: IRecipe

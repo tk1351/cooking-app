@@ -33,8 +33,8 @@ import { recipeValidationSchema } from '../form/validations/recipeValidation'
 import { setAlert } from '../../re-ducks/alert/alertSlice'
 import { MyKnownError } from '../../re-ducks/defaultType'
 import Alert from '../common/Alert'
-import styles from '../../styles/components/recipe/editRecipeForm.module.css'
 import { selectUserToken } from '../../re-ducks/auth/authSlice'
+import styles from '../../styles/components/recipe/editRecipeForm.module.css'
 
 type Props = {
   recipe: IRecipe

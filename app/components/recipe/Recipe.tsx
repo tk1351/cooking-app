@@ -23,8 +23,8 @@ import {
 import { IRecipe } from '../../re-ducks/recipe/type'
 import { setAlert } from '../../re-ducks/alert/alertSlice'
 import Alert from '../common/Alert'
-import styles from '../../styles/components/recipe/recipe.module.css'
 import ShareField from '../common/ShareField'
+import styles from '../../styles/components/recipe/recipe.module.css'
 
 type Props = {
   recipe: IRecipe

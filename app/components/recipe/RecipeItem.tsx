@@ -16,8 +16,8 @@ import Link from 'next/link'
 import { IRecipe } from '../../re-ducks/recipe/type'
 import { useAppSelector } from '../../re-ducks/hooks'
 import { selectUserRole } from '../../re-ducks/auth/authSlice'
-import styles from '../../styles/components/recipe/recipeItem.module.css'
 import ShareField from '../common/ShareField'
+import styles from '../../styles/components/recipe/recipeItem.module.css'
 
 const useStyles = makeStyles({
   media: {

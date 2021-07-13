@@ -16,6 +16,7 @@ import {
   Grid,
   Typography,
 } from '@material-ui/core'
+import { Remove, Add } from '@material-ui/icons'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { IUser, IUpdateAdminProfileInputs } from '../../re-ducks/auth/type'
 import { useAppDispatch, useAppSelector } from '../../re-ducks/hooks'
@@ -26,7 +27,6 @@ import {
   selectUserToken,
 } from '../../re-ducks/auth/authSlice'
 import styles from '../../styles/components/admin/editProfileForm.module.css'
-import { Remove, Add } from '@material-ui/icons'
 
 type Props = {
   user: IUser

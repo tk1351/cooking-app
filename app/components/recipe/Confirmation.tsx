@@ -24,9 +24,9 @@ import { firebaseStorage } from '../../src/utils/firebase'
 import { createRecipe } from '../../re-ducks/recipe/recipeSlice'
 import { setAlert } from '../../re-ducks/alert/alertSlice'
 import { MyKnownError } from '../../re-ducks/defaultType'
-import styles from '../../styles/components/recipe/confirmation.module.css'
 import { selectUserToken } from '../../re-ducks/auth/authSlice'
 import Alert from '../common/Alert'
+import styles from '../../styles/components/recipe/confirmation.module.css'
 
 const Confirmation: VFC = () => {
   const dispatch = useAppDispatch()
