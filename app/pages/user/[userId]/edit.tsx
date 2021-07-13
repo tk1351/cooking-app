@@ -5,14 +5,17 @@ import { IUser } from '../../../re-ducks/auth/type'
 import Navbar from '../../../components/common/Navbar'
 import EditProfileForm from '../../../components/user/EditProfileForm'
 import Footer from '../../../components/common/Footer'
+import WithUser from '../../../src/utils/WithUser'
 
 const edit: VFC<Props> = (props) => {
   return (
-    <div>
-      <Navbar />
-      <EditProfileForm user={props} />
-      <Footer />
-    </div>
+    <WithUser>
+      <div>
+        <Navbar />
+        <EditProfileForm user={props} />
+        <Footer />
+      </div>
+    </WithUser>
   )
 }
 
