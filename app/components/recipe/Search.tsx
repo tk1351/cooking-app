@@ -5,6 +5,7 @@ import InfiniteScroll from 'react-infinite-scroller'
 import { IRecipe } from '../../re-ducks/recipe/type'
 import RecipeItem from './RecipeItem'
 import Spinner from '../common/Spinner'
+import styles from '../../styles/components/recipe/search.module.css'
 
 import API from '../../src/utils/api'
 
@@ -36,7 +37,9 @@ const Search: VFC<Props> = ({ recipes }) => {
 
   return (
     <div>
-      <h1>{query}の検索結果</h1>
+      <Grid container justify="center" className={styles.h1}>
+        <h1>{query}の検索結果</h1>
+      </Grid>
       <InfiniteScroll loadMore={loadMore} hasMore={hasMore} loader={loader}>
         <Grid container spacing={2}>
           <Grid item xs={2} />
