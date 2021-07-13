@@ -5,6 +5,8 @@ import InfiniteScroll from 'react-infinite-scroller'
 import RecipeItem from '../recipe/RecipeItem'
 import { IRecipeLike } from '../../re-ducks/defaultType'
 import Spinner from '../common/Spinner'
+import { useAppSelector } from '../../re-ducks/hooks'
+import { selectUserName } from '../../re-ducks/auth/authSlice'
 import styles from '../../styles/components/user/likes.module.css'
 
 import API from '../../src/utils/api'
@@ -16,6 +18,8 @@ type Props = {
 const Likes: VFC<Props> = ({ recipeLikes }) => {
   const router = useRouter()
   const userId = router.query.userId
+
+  const userName = useAppSelector(selectUserName)
 
   const [posts, setPosts] = useState<IRecipeLike[]>(recipeLikes)
   const [hasMore, setHasMore] = useState(true)
@@ -40,7 +44,7 @@ const Likes: VFC<Props> = ({ recipeLikes }) => {
   return (
     <div>
       <Grid container justify="center" className={styles.h1}>
-        <h1>お気に入りレシピ一覧</h1>
+        <h1>{userName}さんのお気に入りレシピ一覧</h1>
       </Grid>
       <InfiniteScroll loadMore={loadMore} hasMore={hasMore} loader={loader}>
         <Grid container spacing={2}>
