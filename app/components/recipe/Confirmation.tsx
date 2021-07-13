@@ -26,6 +26,7 @@ import { setAlert } from '../../re-ducks/alert/alertSlice'
 import { MyKnownError } from '../../re-ducks/defaultType'
 import styles from '../../styles/components/recipe/confirmation.module.css'
 import { selectUserToken } from '../../re-ducks/auth/authSlice'
+import Alert from '../common/Alert'
 
 const Confirmation: VFC = () => {
   const dispatch = useAppDispatch()
@@ -114,178 +115,181 @@ const Confirmation: VFC = () => {
   }
 
   return (
-    <Grid container className={styles.recipeWrapper}>
-      <Grid item xs={12}>
-        <Grid container className={styles.recipeName}>
-          <Typography gutterBottom variant="h4" component="h2">
-            <Box fontWeight="fontWeightBold">{recipe.name}</Box>
-          </Typography>
-        </Grid>
-        <Grid container>
-          <a
-            href={recipe.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.url}
-          >
-            <Typography
-              variant="body2"
-              color="primary"
-              component="p"
-              className={styles.linkText}
-            >
-              {recipe.url}
+    <div>
+      <Alert />
+      <Grid container className={styles.recipeWrapper}>
+        <Grid item xs={12}>
+          <Grid container className={styles.recipeName}>
+            <Typography gutterBottom variant="h4" component="h2">
+              <Box fontWeight="fontWeightBold">{recipe.name}</Box>
             </Typography>
-          </a>
-        </Grid>
-        <Grid container>
-          <ul className={styles.tag}>
-            {recipe.tags.map((tag, index) => (
-              <div key={index}>
-                <Typography
-                  variant="body2"
-                  color="primary"
-                  component="p"
-                  className={styles.tagText}
-                >
-                  #{tag.name}
-                </Typography>
-              </div>
-            ))}
-          </ul>
-        </Grid>
-        <Grid container>
-          <Typography variant="body2" color="textSecondary" component="p">
-            {format(new Date(), 'yyyy-MM-dd')}
-          </Typography>
-        </Grid>
-        <div className={styles.typography}>
-          <Typography>料理画像</Typography>
-        </div>
-        <Grid container justify="center">
-          <Box>
-            <IconButton color="primary" component="span">
-              <label>
-                <PhotoCamera style={{ fontSize: 60 }} />
-                <input
-                  name="image"
-                  type="file"
-                  accept="image/*"
-                  onChange={onChangeImageHandler}
-                  className={styles.image}
-                />
-              </label>
-            </IconButton>
-          </Box>
-        </Grid>
-        {preview && (
-          <Grid container className={styles.preview}>
-            <CardMedia image={preview} component="img" />
           </Grid>
-        )}
-        <Grid container>
-          <Typography gutterBottom variant="h6" component="h2">
-            調理時間： {recipe.time}分
-          </Typography>
-        </Grid>
-        <Grid container>
-          <Grid item className={styles.divider}>
-            <Divider />
+          <Grid container>
+            <a
+              href={recipe.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.url}
+            >
+              <Typography
+                variant="body2"
+                color="primary"
+                component="p"
+                className={styles.linkText}
+              >
+                {recipe.url}
+              </Typography>
+            </a>
           </Grid>
-        </Grid>
-        <Grid container className={styles.recipeElement}>
-          <Typography gutterBottom variant="h6" component="h2">
-            材料
-          </Typography>
-        </Grid>
-        <Grid container className={styles.recipeChildElment}>
-          <ul className={styles.ingredients}>
-            {recipe.ingredients.map((ingredient, index) => (
-              <li key={index}>
-                <Typography variant="body2" color="textPrimary" component="p">
-                  {ingredient.name}： {ingredient.amount}
-                </Typography>
-              </li>
-            ))}
-          </ul>
-        </Grid>
-        <Grid container>
-          <Grid item className={styles.divider}>
-            <Divider />
-          </Grid>
-        </Grid>
-        <Grid container className={styles.recipeElement}>
-          <Typography gutterBottom variant="h6" component="h2">
-            調理工程
-          </Typography>
-        </Grid>
-        <Grid container className={styles.recipeChildElment}>
-          <ul>
-            {sortDescriptions.map((recipeDescription, index) => (
-              <div key={index}>
-                <Typography variant="body2" color="textPrimary" component="p">
-                  {recipeDescription.order}： {recipeDescription.text}
-                </Typography>
-                {recipeDescription.url && (
-                  <a
-                    href={recipeDescription.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+          <Grid container>
+            <ul className={styles.tag}>
+              {recipe.tags.map((tag, index) => (
+                <div key={index}>
+                  <Typography
+                    variant="body2"
+                    color="primary"
+                    component="p"
+                    className={styles.tagText}
                   >
-                    <Typography
-                      variant="body2"
-                      color="primary"
-                      component="p"
-                      className={styles.a}
-                    >
-                      参考：{recipeDescription.url}
-                    </Typography>
-                  </a>
-                )}
-              </div>
-            ))}
-          </ul>
-        </Grid>
-        <Grid container>
-          {recipe.remarks && (
+                    #{tag.name}
+                  </Typography>
+                </div>
+              ))}
+            </ul>
+          </Grid>
+          <Grid container>
+            <Typography variant="body2" color="textSecondary" component="p">
+              {format(new Date(), 'yyyy-MM-dd')}
+            </Typography>
+          </Grid>
+          <div className={styles.typography}>
+            <Typography>料理画像</Typography>
+          </div>
+          <Grid container justify="center">
+            <Box>
+              <IconButton color="primary" component="span">
+                <label>
+                  <PhotoCamera style={{ fontSize: 60 }} />
+                  <input
+                    name="image"
+                    type="file"
+                    accept="image/*"
+                    onChange={onChangeImageHandler}
+                    className={styles.image}
+                  />
+                </label>
+              </IconButton>
+            </Box>
+          </Grid>
+          {preview && (
+            <Grid container className={styles.preview}>
+              <CardMedia image={preview} component="img" />
+            </Grid>
+          )}
+          <Grid container>
+            <Typography gutterBottom variant="h6" component="h2">
+              調理時間： {recipe.time}分
+            </Typography>
+          </Grid>
+          <Grid container>
             <Grid item className={styles.divider}>
               <Divider />
             </Grid>
-          )}
-        </Grid>
-        <Grid container className={styles.recipeElement}>
-          {recipe.remarks && (
+          </Grid>
+          <Grid container className={styles.recipeElement}>
             <Typography gutterBottom variant="h6" component="h2">
-              補足
+              材料
             </Typography>
-          )}
-        </Grid>
-        <Grid container>
-          {recipe.remarks && (
-            <Typography variant="body2" color="textPrimary" component="p">
-              {recipe.remarks}
+          </Grid>
+          <Grid container className={styles.recipeChildElment}>
+            <ul className={styles.ingredients}>
+              {recipe.ingredients.map((ingredient, index) => (
+                <li key={index}>
+                  <Typography variant="body2" color="textPrimary" component="p">
+                    {ingredient.name}： {ingredient.amount}
+                  </Typography>
+                </li>
+              ))}
+            </ul>
+          </Grid>
+          <Grid container>
+            <Grid item className={styles.divider}>
+              <Divider />
+            </Grid>
+          </Grid>
+          <Grid container className={styles.recipeElement}>
+            <Typography gutterBottom variant="h6" component="h2">
+              調理工程
             </Typography>
-          )}
-        </Grid>
-        <Grid container className={styles.buttonWrapper}>
-          <Button
-            variant="contained"
-            color="default"
-            onClick={() => router.back()}
-          >
-            編集する
-          </Button>
-          <Button variant="contained" color="primary" onClick={onSubmit}>
-            投稿する
-          </Button>
-        </Grid>
-        <Grid container>
-          <Link href="/">
-            <p>一覧へ戻る</p>
-          </Link>
+          </Grid>
+          <Grid container className={styles.recipeChildElment}>
+            <ul>
+              {sortDescriptions.map((recipeDescription, index) => (
+                <div key={index}>
+                  <Typography variant="body2" color="textPrimary" component="p">
+                    {recipeDescription.order}： {recipeDescription.text}
+                  </Typography>
+                  {recipeDescription.url && (
+                    <a
+                      href={recipeDescription.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Typography
+                        variant="body2"
+                        color="primary"
+                        component="p"
+                        className={styles.a}
+                      >
+                        参考：{recipeDescription.url}
+                      </Typography>
+                    </a>
+                  )}
+                </div>
+              ))}
+            </ul>
+          </Grid>
+          <Grid container>
+            {recipe.remarks && (
+              <Grid item className={styles.divider}>
+                <Divider />
+              </Grid>
+            )}
+          </Grid>
+          <Grid container className={styles.recipeElement}>
+            {recipe.remarks && (
+              <Typography gutterBottom variant="h6" component="h2">
+                補足
+              </Typography>
+            )}
+          </Grid>
+          <Grid container>
+            {recipe.remarks && (
+              <Typography variant="body2" color="textPrimary" component="p">
+                {recipe.remarks}
+              </Typography>
+            )}
+          </Grid>
+          <Grid container className={styles.buttonWrapper}>
+            <Button
+              variant="contained"
+              color="default"
+              onClick={() => router.back()}
+            >
+              編集する
+            </Button>
+            <Button variant="contained" color="primary" onClick={onSubmit}>
+              投稿する
+            </Button>
+          </Grid>
+          <Grid container>
+            <Link href="/">
+              <p>一覧へ戻る</p>
+            </Link>
+          </Grid>
         </Grid>
       </Grid>
-    </Grid>
+    </div>
   )
 }
 
