@@ -5,14 +5,17 @@ import { IUser } from '../../re-ducks/auth/type'
 import Navbar from '../../components/common/Navbar'
 import AdminPage from '../../components/admin/AdminPage'
 import Footer from '../../components/common/Footer'
+import WithAdmin from '../../src/utils/WithAdmin'
 
 const userId: VFC<Props> = (props) => {
   return (
-    <div>
-      <Navbar />
-      <AdminPage user={props} />
-      <Footer />
-    </div>
+    <WithAdmin>
+      <div>
+        <Navbar />
+        <AdminPage user={props} />
+        <Footer />
+      </div>
+    </WithAdmin>
   )
 }
 

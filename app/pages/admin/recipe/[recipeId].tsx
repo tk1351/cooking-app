@@ -5,14 +5,17 @@ import { IRecipe } from '../../../re-ducks/recipe/type'
 import Navbar from '../../../components/common/Navbar'
 import DeleteRecipe from '../../../components/admin/DeleteRecipe'
 import Footer from '../../../components/common/Footer'
+import WithAdmin from '../../../src/utils/WithAdmin'
 
 const recipeId: VFC<Props> = (props) => {
   return (
-    <div>
-      <Navbar />
-      <DeleteRecipe recipe={props} />
-      <Footer />
-    </div>
+    <WithAdmin>
+      <div>
+        <Navbar />
+        <DeleteRecipe recipe={props} />
+        <Footer />
+      </div>
+    </WithAdmin>
   )
 }
 
