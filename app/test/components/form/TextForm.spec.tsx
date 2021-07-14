@@ -13,10 +13,8 @@ const onChange = (e: any[]) => {
 }
 
 const mockProps: ITextFormProps = {
-  head: 'dummy head',
   id: 'props',
   label: 'props',
-  placeholder: 'dummy placeholder',
   type: 'text',
   name: 'props',
   variant: 'filled',
@@ -26,9 +24,8 @@ const mockProps: ITextFormProps = {
 }
 
 describe('レンダリング', () => {
-  it('spanとinputが正しく表示されている', () => {
+  it('labelが正しく表示されている', () => {
     render(<TextForm {...mockProps} />)
-    expect(screen.getByText('dummy head')).toBeInTheDocument()
     expect(screen.getByLabelText('props')).toBeInTheDocument()
   })
 })
