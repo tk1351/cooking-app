@@ -1,13 +1,11 @@
 import reducer, {
   fetchCurrentUser,
-  loginUser,
-  registerUser,
   logout,
   updateAdminProfile,
   updateUserProfile,
   deleteUserWithAdminPriviledge,
 } from '../../../re-ducks/auth/authSlice'
-import { IAuthState } from '../../../re-ducks/auth/type'
+import { IAuthState, ICurrentUser } from '../../../re-ducks/auth/type'
 import { MyKnownError } from '../../../re-ducks/defaultType'
 
 const localStorageMock = (() => {
@@ -61,6 +59,15 @@ let roleAdminState: IAuthState = {
   error: null,
 }
 
+let currentUser: ICurrentUser = {
+  user: {
+    id: 1,
+    name: 'testName',
+    role: 'user',
+  },
+  accessToken: 'test',
+}
+
 describe('authReducerのテスト', () => {
   describe('fetchCurrentUser', () => {
     it('pending時はstatusがloadingとなる', () => {
@@ -70,12 +77,19 @@ describe('authReducerのテスト', () => {
     })
 
     it('fulfilled時はpayloadのuser情報が渡される', () => {
+      const payload = {
+        user: {
+          id: 1,
+          name: 'testName',
+          role: 'user',
+        },
+      }
       const action = {
         type: fetchCurrentUser.fulfilled.type,
-        payload: roleUserState.auth.user,
+        payload,
       }
       const state = reducer(roleUserState, action)
-      expect(state.auth.user).toEqual(roleUserState.auth.user)
+      expect(state.auth.user).toEqual(currentUser.user)
     })
 
     it('rejected時はpayloadのerrorが渡される', () => {
@@ -86,58 +100,6 @@ describe('authReducerのテスト', () => {
       }
       const action = { type: fetchCurrentUser.rejected.type, payload }
       const state = reducer(roleUserState, action)
-      expect(state.error).toEqual(payload)
-    })
-  })
-
-  describe('registerUser', () => {
-    it('pending時はstatusがloadingとなる', () => {
-      const action = { type: registerUser.pending.type }
-      const state = reducer(initialState, action)
-      expect(state.status).toEqual('loading')
-    })
-
-    it('fulfilled時はmessageとしてpayloadが返ってくる', () => {
-      const payload = { message: 'dummy message' }
-      const action = { type: registerUser.fulfilled.type, payload }
-      const state = reducer(initialState, action)
-      expect(state.message).toEqual(payload)
-    })
-
-    it('rejected時はpayloadのerrorが返ってくる', () => {
-      const payload: MyKnownError = {
-        statusCode: 400,
-        error: 'dummy error',
-        message: 'dummy message',
-      }
-      const action = { type: registerUser.rejected.type, payload }
-      const state = reducer(initialState, action)
-      expect(state.error).toEqual(payload)
-    })
-  })
-
-  describe('loginUser', () => {
-    it('pending時はstatusがloadingとなる', () => {
-      const action = { type: loginUser.pending.type }
-      const state = reducer(initialState, action)
-      expect(state.status).toEqual('loading')
-    })
-
-    it('fulfilled時はpayloadのtokenが返ってくる', () => {
-      const payload = { accessToken: 'dummy token' }
-      const action = { type: loginUser.fulfilled.type, payload }
-      const state = reducer(initialState, action)
-      expect(state.auth.token).toEqual(payload.accessToken)
-    })
-
-    it('rejected時はpayloadのerrorが返ってくる', () => {
-      const payload: MyKnownError = {
-        statusCode: 400,
-        error: 'dummy error',
-        message: 'dummy message',
-      }
-      const action = { type: loginUser.rejected.type, payload }
-      const state = reducer(initialState, action)
       expect(state.error).toEqual(payload)
     })
   })
