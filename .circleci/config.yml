@@ -21,6 +21,6 @@ jobs:
       - run: cd api && rm -rf node_modules && yarn install --frozon-lockfile
       - run: cd app && rm -rf node_modules && yarn install --frozon-lockfile
       - run: docker-compose -f docker-compose.test.yml up -d
-      - run: docker-compose -f docker-compose.test.yml exec api yarn test --watchAll=false --filter=test/users/jwt.strategy.spec.ts
+      - run: docker-compose -f docker-compose.test.yml exec api yarn test --watchAll=false --filter=/api/test/users/jwt.strategy.spec.ts
       - run: docker-compose -f docker-compose.test.yml exec app yarn test --watchAll=false
       - run: docker-compose -f docker-compose.test.yml down
