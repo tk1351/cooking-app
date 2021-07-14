@@ -47,18 +47,6 @@ describe('RecipeLikesRepository', () => {
     });
   });
 
-  describe('getRecipeLikesByUserId', () => {
-    it('getRecipeLikesByUserIdに成功すると、該当するrecipeLikeを返す', async () => {
-      const getMany = jest.fn().mockReturnValue(mockRecipeLikes);
-      const where = jest.fn(() => ({ getMany }));
-      recipeLikesRepository.createQueryBuilder = jest.fn(() => ({ where }));
-
-      const result = await recipeLikesRepository.getRecipeLikesByUserId(1);
-      expect(recipeLikesRepository.createQueryBuilder).toHaveBeenCalled();
-      expect(result).toEqual(mockRecipeLikes);
-    });
-  });
-
   describe('getRecipeLikesByRecipeId', () => {
     it('getRecipeLikesByRecipeIdに成功すると、該当するrecipeLikeを返す', async () => {
       const getMany = jest.fn().mockReturnValue(mockRecipeLikes);
