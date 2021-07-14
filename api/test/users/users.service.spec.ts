@@ -1,10 +1,8 @@
 import { Test } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
-import { UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../../src/users/users.service';
 import { UserRepository } from '../../src/users/users.repository';
 import { UserRole } from '../../src/users/user.model';
-import { AuthCredentialsDto } from '../../src/users/dto/auth-credentials.dto';
 import { RecipeLikesService } from '../../src/recipe-likes/recipe-likes.service';
 import { SocialsService } from '../../src/socials/socials.service';
 
@@ -36,16 +34,10 @@ const mockAdmin = {
   updatedAt: new Date(),
 };
 
-const mockAuthCredentialsDto: AuthCredentialsDto = {
+const mockCreateUserDto = {
+  name: 'testName',
   email: 'test@example.com',
-  password: 'testPassword',
-};
-
-const mockUpdateProfileDto = {
-  name: '',
-  favoriteDish: '',
-  specialDish: '',
-  bio: '',
+  sub: '12345',
 };
 
 const mockUserRepository = () => ({
@@ -56,6 +48,7 @@ const mockUserRepository = () => ({
   validateUserPassword: jest.fn(),
   deleteUser: jest.fn(),
   deleteUserByAdmin: jest.fn(),
+  save: jest.fn(),
 });
 
 const mockJwtService = () => ({
@@ -116,13 +109,14 @@ describe('Users service', () => {
       userRepository.registerAdmin.mockResolvedValue('someUser');
       expect(userRepository.registerAdmin).not.toHaveBeenCalled();
 
-      const result = await usersService.registerAdmin(mockAuthCredentialsDto);
+      const result = await usersService.registerAdmin(mockCreateUserDto);
       expect(result).toEqual('someUser');
 
-      const { email, password } = mockAuthCredentialsDto;
+      const { name, email, sub } = mockCreateUserDto;
       expect(userRepository.registerAdmin).toHaveBeenCalledWith({
+        name,
         email,
-        password,
+        sub,
       });
     });
   });
@@ -132,51 +126,15 @@ describe('Users service', () => {
       userRepository.register.mockResolvedValue('someUser');
       expect(userRepository.register).not.toHaveBeenCalled();
 
-      const result = await usersService.register(mockAuthCredentialsDto);
+      const result = await usersService.register(mockCreateUserDto);
       expect(result).toEqual('someUser');
 
-      const { email, password } = mockAuthCredentialsDto;
+      const { name, email, sub } = mockCreateUserDto;
       expect(userRepository.register).toHaveBeenCalledWith({
+        name,
         email,
-        password,
+        sub,
       });
-    });
-  });
-
-  describe('login', () => {
-    it('userRepository.validateUserPassword()を呼び、成功するとtokenを返す', async () => {
-      userRepository.validateUserPassword.mockResolvedValue('someToken');
-
-      expect(userRepository.validateUserPassword).not.toHaveBeenCalled();
-
-      const result = await usersService.login(mockAuthCredentialsDto);
-      expect(userRepository.validateUserPassword).toHaveBeenCalled();
-
-      // とりあえずaccessTokenが返ることだけ確認
-      expect(result.accessToken).toBeUndefined();
-    });
-
-    it('authCredentialsDtoが不正の場合、errorを返す', () => {
-      userRepository.validateUserPassword.mockResolvedValue(null);
-      expect(usersService.login(mockAuthCredentialsDto)).rejects.toThrow(
-        UnauthorizedException,
-      );
-    });
-  });
-
-  describe('updateUserProfile', () => {
-    it('自身のデータではない場合は、errorを返す', async () => {
-      const save = jest.fn().mockResolvedValue(true);
-
-      usersService.getUserById = jest.fn().mockResolvedValue({
-        id: 12345,
-        mockUpdateProfileDto,
-        save,
-      });
-
-      expect(
-        usersService.updateUserProfile(1, mockUpdateProfileDto, mockUser),
-      ).rejects.toThrow(UnauthorizedException);
     });
   });
 
