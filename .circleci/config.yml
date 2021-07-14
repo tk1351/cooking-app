@@ -1,0 +1,33 @@
+version: 2.1
+
+jobs:
+  build:
+    machine:
+      image: ubuntu-1604:202007-01
+    steps:
+      - checkout
+      - run: |
+          echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
+          echo ' [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV
+      - run: |
+          nvm install v14.15.1
+          nvm alias default v14.15.1
+      - run: |
+          gpg --recv-key 78BD65473CB3BD13 && gpg -a --export 78BD65473CB3BD13 | sudo apt-key add -
+          curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+          echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+          sudo apt-get update && sudo apt-get install yarn
+      - run: |
+          command: docker-compose -f docker-compose.test.yml up --build -d
+      - run: |
+          command: cd api && rm -rf node_modules && yarn install --frozon-lockfile
+      - run: |
+          command: cd app && rm -rf node_modules && yarn install --frozon-lockfile
+      - run: |
+          command: docker-compose -f docker-compose.test.yml up -d
+      - run: |
+          command: docker-compose -f docker-compose.test.yml exec api yarn test --watchAll=false
+      - run: |
+          command: docker-compose -f docker-compose.test.yml exec app yarn test --watchAll=false
+      - run: |
+          command: docker-compose -f docker-compose.test.yml down
