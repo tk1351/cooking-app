@@ -31,6 +31,7 @@ const mockRecipe: IRecipe = {
   updatedAt: new Date(),
   name: 'dummy name',
   time: 5,
+  url: 'https://',
   remarks: 'dummy remarks',
   image: 'dummy image',
   ingredients: [],
@@ -49,14 +50,6 @@ const admin: OmitUser = {
     isAuthenticated: true,
   },
 }
-const user: OmitUser = {
-  auth: {
-    token: 'dummy token',
-    loading: false,
-    user: { id: 1, name: 'dummy name', role: 'user' },
-    isAuthenticated: true,
-  },
-}
 
 describe('レンダリング', () => {
   it('propsとして渡されるrecipeが正しく表示される', () => {
@@ -70,10 +63,5 @@ describe('レンダリング', () => {
     render(<Recipe recipe={mockRecipe} />, { initialState: { auth: admin } })
     expect(screen.getByText('編集')).toBeInTheDocument()
     expect(screen.getByText('削除')).toBeInTheDocument()
-  })
-
-  it('roleがuserの場合はお気に入りボタンが表示される', () => {
-    render(<Recipe recipe={mockRecipe} />, { initialState: { auth: user } })
-    expect(screen.getByText('○')).toBeInTheDocument()
   })
 })
