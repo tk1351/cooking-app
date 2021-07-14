@@ -27,12 +27,12 @@ describe('JwtStrategy', () => {
   describe('validate', () => {
     it('JWT payloadに基づいてバリデーションを行い、userを返す', async () => {
       const user = new User();
-      user.email = 'test@example.com';
+      user.sub = '12345';
 
       userRepository.findOne.mockResolvedValue(user);
-      const result = await jwtStrategy.validate({ email: 'test@example.com' });
+      const result = await jwtStrategy.validate({ sub: '12345' });
       expect(userRepository.findOne).toHaveBeenCalledWith({
-        email: 'test@example.com',
+        sub: '12345',
       });
       expect(result).toEqual(user);
     });
@@ -40,7 +40,7 @@ describe('JwtStrategy', () => {
 
   it('userが見つからない場合、errorを返す', async () => {
     userRepository.findOne.mockResolvedValue(null);
-    expect(jwtStrategy.validate({ email: 'test@example.com' })).rejects.toThrow(
+    expect(jwtStrategy.validate({ sub: '12345' })).rejects.toThrow(
       UnauthorizedException,
     );
   });
