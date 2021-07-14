@@ -39,6 +39,7 @@ const mockRecipe: IRecipe = {
   updatedAt: new Date(),
   name: 'dummy name',
   time: 5,
+  url: 'https://',
   remarks: 'dummy remarks',
   image: 'dummy image',
   ingredients: [
@@ -87,14 +88,14 @@ describe('レンダリング', () => {
     expect(screen.getByLabelText('URL')).toBeInTheDocument()
     expect(screen.getByLabelText('タグ名')).toBeInTheDocument()
     expect(screen.getByLabelText('補足')).toBeInTheDocument()
-    expect(screen.getByText('投稿')).toBeInTheDocument()
+    expect(screen.getByText('編集')).toBeInTheDocument()
   })
 })
 
 describe('EditRecipeForm', () => {
   it('正しい値が入っている場合にerrorが表示されない', async () => {
     await act(async () => render(<EditRecipeForm recipe={mockRecipe} />))
-    const button = screen.getByText('投稿')
+    const button = screen.getByText('編集')
 
     await act(async () => {
       fireEvent.submit(button)

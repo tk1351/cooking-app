@@ -30,14 +30,14 @@ describe('レンダリング', () => {
     expect(screen.getByLabelText('URL')).toBeInTheDocument()
     expect(screen.getByLabelText('タグ名')).toBeInTheDocument()
     expect(screen.getByLabelText('補足')).toBeInTheDocument()
-    expect(screen.getByText('投稿')).toBeInTheDocument()
+    expect(screen.getByText('投稿内容を確認')).toBeInTheDocument()
   })
 })
 
 describe('RecipeForm', () => {
   it('formが空の場合validationが機能する', async () => {
     await act(async () => render(<RecipeForm />))
-    const button = screen.getByText('投稿')
+    const button = screen.getByText('投稿内容を確認')
 
     await act(async () => {
       fireEvent.submit(button)
@@ -53,7 +53,7 @@ describe('RecipeForm', () => {
 
   it('正しい値が入っている場合にerrorが表示されない', async () => {
     await act(async () => render(<RecipeForm />))
-    const button = screen.getByText('投稿')
+    const button = screen.getByText('投稿内容を確認')
 
     const nameInput = screen.getByLabelText('レシピ名')
     const ingredientsNameInput = screen.getByLabelText('材料名')

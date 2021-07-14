@@ -39,6 +39,7 @@ const mockRecipe: IRecipe = {
   updatedAt: new Date(),
   name: 'dummy name',
   time: 5,
+  url: 'https://',
   remarks: 'dummy remarks',
   image: 'dummy image',
   ingredients: [
