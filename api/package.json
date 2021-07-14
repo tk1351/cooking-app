@@ -82,7 +82,7 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "testPathIgnorePatterns": [
-      "<rootDir>/test/users/jwt.strategy.spec.ts"
+      "api/test/users/jwt.strategy.spec.ts"
     ]
   }
 }
