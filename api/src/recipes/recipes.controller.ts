@@ -39,10 +39,10 @@ export class RecipesController {
   }
 
   @Get('/filter')
-  async getRecipseFilter(
+  async getRecipesFilter(
     @Query(ValidationPipe) getRecipesFilterDto: GetRecipesFilterDto,
   ): Promise<Recipe[]> {
-    return this.recipesService.getRecipseFilter(getRecipesFilterDto);
+    return this.recipesService.getRecipesFilter(getRecipesFilterDto);
   }
 
   @Get('/number')

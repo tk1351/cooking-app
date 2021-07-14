@@ -58,7 +58,7 @@ export class RecipeRepository extends Repository<Recipe> {
     }
   }
 
-  async getRecipseFilter(
+  async getRecipesFilter(
     getRecipesFilterDto: GetRecipesFilterDto,
   ): Promise<Recipe[]> {
     const { query, limit, start } = getRecipesFilterDto;
