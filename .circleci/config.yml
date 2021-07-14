@@ -17,17 +17,10 @@ jobs:
           curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
           echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
           sudo apt-get update && sudo apt-get install yarn
-      - run: |
-          command: docker-compose -f docker-compose.test.yml up --build -d
-      - run: |
-          command: cd api && rm -rf node_modules && yarn install --frozon-lockfile
-      - run: |
-          command: cd app && rm -rf node_modules && yarn install --frozon-lockfile
-      - run: |
-          command: docker-compose -f docker-compose.test.yml up -d
-      - run: |
-          command: docker-compose -f docker-compose.test.yml exec api yarn test --watchAll=false
-      - run: |
-          command: docker-compose -f docker-compose.test.yml exec app yarn test --watchAll=false
-      - run: |
-          command: docker-compose -f docker-compose.test.yml down
+      - run: docker-compose -f docker-compose.test.yml up --build -d
+      - run: cd api && rm -rf node_modules && yarn install --frozon-lockfile
+      - run: cd app && rm -rf node_modules && yarn install --frozon-lockfile
+      - run: docker-compose -f docker-compose.test.yml up -d
+      - run: docker-compose -f docker-compose.test.yml exec api yarn test --watchAll=false
+      - run: docker-compose -f docker-compose.test.yml exec app yarn test --watchAll=false
+      - run: docker-compose -f docker-compose.test.yml down
