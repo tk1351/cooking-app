@@ -182,7 +182,7 @@ const RecipeForm: VFC = () => {
             {ingredientFields.map((field, index) => (
               <li key={field.id} className={styles.li}>
                 <Controller
-                  name={`ingredients[${index}].name`}
+                  name={`ingredients.${index}.name`}
                   control={control}
                   defaultValue={field.name ? field.name : ''}
                   render={({
@@ -211,7 +211,7 @@ const RecipeForm: VFC = () => {
                   )}
                 />
                 <Controller
-                  name={`ingredients[${index}].amount`}
+                  name={`ingredients.${index}.amount`}
                   control={control}
                   defaultValue={field.amount ? field.amount : ''}
                   render={({ field: { onChange }, formState: { errors } }) => (
@@ -270,7 +270,7 @@ const RecipeForm: VFC = () => {
             {recipeDescriptionFields.map((field, index) => (
               <li key={field.id} className={styles.li}>
                 <Controller
-                  name={`recipeDescriptions[${index}].order`}
+                  name={`recipeDescriptions.${index}.order`}
                   control={control}
                   defaultValue={index + 1}
                   render={({
@@ -299,7 +299,7 @@ const RecipeForm: VFC = () => {
                   )}
                 />
                 <Controller
-                  name={`recipeDescriptions[${index}].text`}
+                  name={`recipeDescriptions.${index}.text`}
                   control={control}
                   defaultValue={field.text ? field.text : ''}
                   render={({
@@ -328,7 +328,7 @@ const RecipeForm: VFC = () => {
                   )}
                 />
                 <Controller
-                  name={`recipeDescriptions[${index}].url`}
+                  name={`recipeDescriptions.${index}.url`}
                   control={control}
                   defaultValue={field.url ? field.url : ''}
                   render={({
@@ -392,7 +392,7 @@ const RecipeForm: VFC = () => {
             {tagFields.map((field, index) => (
               <li key={field.id} className={styles.li}>
                 <Controller
-                  name={`tags[${index}].name`}
+                  name={`tags.${index}.name`}
                   control={control}
                   defaultValue={field.name ? field.name : ''}
                   render={({

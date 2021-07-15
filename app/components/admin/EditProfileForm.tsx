@@ -190,7 +190,7 @@ const EditProfileForm: VFC<Props> = ({ user }) => {
           {fields.map((item, index) => (
             <li key={item.id} className={styles.li}>
               <Controller
-                name={`socials[${index}].category`}
+                name={`socials.${index}.category`}
                 control={control}
                 render={({ field: { onChange }, formState: { errors } }) => (
                   <FormControl variant="outlined" className={styles.select}>
@@ -212,7 +212,7 @@ const EditProfileForm: VFC<Props> = ({ user }) => {
                 )}
               />
               <Controller
-                name={`socials[${index}].url`}
+                name={`socials.${index}.url`}
                 control={control}
                 render={({
                   field: { onChange, ref },
