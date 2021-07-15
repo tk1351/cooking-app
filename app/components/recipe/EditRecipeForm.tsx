@@ -395,7 +395,7 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
                 <Controller
                   name={`recipeDescriptions.${index}.order`}
                   control={control}
-                  defaultValue={field.order ? field.order : ''}
+                  defaultValue={field.order ? field.order : ('' as string)}
                   render={({
                     field: { onChange, ref },
                     formState: { errors },
