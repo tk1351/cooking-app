@@ -41,9 +41,9 @@ const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
   return (
     <Auth0Provider
       domain={'dev-business-app.us.auth0.com'}
-      clientId={process.env.AUTH0_CLIENT_ID as string}
-      redirectUri={process.env.APP_URL}
-      audience={process.env.API_URL}
+      clientId={process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID as string}
+      redirectUri={process.env.NEXT_PUBLIC_AUTH0_APP_URL}
+      audience={process.env.NEXT_PUBLIC_AUTH0_API_URL}
     >
       <ReduxProvider store={store}>
         <StylesProvider injectFirst>
