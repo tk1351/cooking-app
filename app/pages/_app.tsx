@@ -41,7 +41,7 @@ const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
   return (
     <Auth0Provider
       domain={'dev-business-app.us.auth0.com'}
-      clientId={'4aUgo5jVh2BPNCMD4JvcsT4ngSLYRBAT'}
+      clientId={process.env.AUTH0_CLIENT_ID as string}
       redirectUri={process.env.APP_URL}
       audience={process.env.API_URL}
     >
