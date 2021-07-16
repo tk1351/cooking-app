@@ -6,6 +6,7 @@ import { Injectable } from '@nestjs/common';
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
   createTypeOrmOptions(): TypeOrmModuleOptions {
     const configService = new ConfigService();
+
     return {
       type: 'postgres',
       host: configService.get('POSTGRES_HOST'),
@@ -14,7 +15,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       password: configService.get('POSTGRES_PASSWORD'),
       database: configService.get('POSTGRES_DB'),
       entities: [__dirname + '/../**/*.entity.{js,ts}'],
-      synchronize: true,
+      synchronize: configService.get('POSTGRES_SYNCHRONIZE'),
     };
   }
 }
