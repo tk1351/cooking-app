@@ -17,7 +17,7 @@ const recipeId: VFC<Props> = (props) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const url = `https://glacial-waters-79944.herokuapp.com/recipes`
+  const url = `${process.env.API_URL}/recipes`
   const res = await axios.get<IRecipe[]>(url)
   const recipes = await res.data
 
@@ -32,7 +32,7 @@ export const getStaticProps: GetStaticProps<
   IRecipe,
   { recipeId: string }
 > = async (context) => {
-  const url = `https://glacial-waters-79944.herokuapp.com/recipes/${Number(
+  const url = `${process.env.API_URL}/recipes/${Number(
     context.params?.recipeId
   )}`
   const res = await axios.get<IRecipe>(url)

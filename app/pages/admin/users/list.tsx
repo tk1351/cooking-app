@@ -21,7 +21,7 @@ const list: VFC<Props> = (props) => {
 
 export const getStaticProps = async () => {
   const limitNumber = 10
-  const url = `https://glacial-waters-79944.herokuapp.com/users/number?limit=${limitNumber}`
+  const url = `${process.env.API_URL}/users/number?limit=${limitNumber}`
   const res = await axios.get<IUser[]>(url)
   return {
     props: { users: res.data },

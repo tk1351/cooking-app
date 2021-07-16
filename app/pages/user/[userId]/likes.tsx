@@ -20,7 +20,7 @@ const likes: VFC<Props> = (props) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const url = `https://glacial-waters-79944.herokuapp.com/recipe-likes`
+  const url = `${process.env.API_URL}/recipe-likes`
   const res = await axios.get<IRecipeLike[]>(url)
   const recipeLikes = res.data
 
@@ -37,7 +37,7 @@ export const getStaticProps: GetStaticProps<
 > = async (context) => {
   const limitNumber = 5
 
-  const url = `https://glacial-waters-79944.herokuapp.com/recipe-likes/${Number(
+  const url = `${process.env.API_URL}/recipe-likes/${Number(
     context.params?.userId
   )}/user/number?limit=${limitNumber}`
   const res = await axios.get<IRecipeLike[]>(url)
