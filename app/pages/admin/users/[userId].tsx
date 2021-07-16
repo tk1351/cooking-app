@@ -20,7 +20,7 @@ const userId: VFC<Props> = (props) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const url = 'http://api:8080/users'
+  const url = `${process.env.API_URL}/users`
   const res = await axios.get<IUser[]>(url)
   const users = res.data
 
@@ -34,7 +34,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<IUser, { userId: string }> = async (
   context
 ) => {
-  const url = `http://api:8080/users/${Number(context.params?.userId)}`
+  const url = `${process.env.API_URL}/users/${Number(context.params?.userId)}`
   const res = await axios.get<IUser>(url)
   return {
     props: res.data,

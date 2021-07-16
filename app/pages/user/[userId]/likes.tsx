@@ -20,7 +20,7 @@ const likes: VFC<Props> = (props) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const url = 'http://api:8080/recipe-likes'
+  const url = `${process.env.API_URL}/recipe-likes`
   const res = await axios.get<IRecipeLike[]>(url)
   const recipeLikes = res.data
 
@@ -37,7 +37,7 @@ export const getStaticProps: GetStaticProps<
 > = async (context) => {
   const limitNumber = 5
 
-  const url = `http://api:8080/recipe-likes/${Number(
+  const url = `${process.env.API_URL}/recipe-likes/${Number(
     context.params?.userId
   )}/user/number?limit=${limitNumber}`
   const res = await axios.get<IRecipeLike[]>(url)

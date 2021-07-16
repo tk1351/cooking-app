@@ -20,7 +20,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const limitNumber = 5
 
   const query = context.query.query as string
-  const url = `http://api:8080/recipes/filter?query=${encodeURI(
+  const url = `${process.env.API_URL}/recipes/filter?query=${encodeURI(
     query
   )}&limit=${limitNumber}`
   const res = await axios.get<IRecipe[]>(url)

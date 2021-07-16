@@ -30,7 +30,12 @@ const Home: VFC<Props> = (props) => {
     ;(async () => {
       if (user) {
         const { name, email, sub } = user
-        await axios.post('http://localhost:8080/users/register', {
+        const url =
+          process.env.NODE_ENV === 'production'
+            ? process.env.API_URL
+            : 'http://localhost:8080'
+
+        await axios.post(`${url}/users/register`, {
           name,
           email,
           sub,
