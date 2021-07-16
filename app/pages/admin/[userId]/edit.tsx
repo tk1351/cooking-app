@@ -20,7 +20,7 @@ const edit: VFC<Props> = (props) => {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const url = `${process.env.API_URL}/users`
+  const url = `https://glacial-waters-79944.herokuapp.com/users`
   const res = await axios.get<IUser[]>(url)
   const users = await res.data
 
@@ -34,7 +34,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps<IUser, { userId: string }> = async (
   context
 ) => {
-  const url = `${process.env.API_URL}/users/${Number(context.params?.userId)}`
+  const url = `https://glacial-waters-79944.herokuapp.com/users/${Number(
+    context.params?.userId
+  )}`
   const res = await axios.get<IUser>(url)
   return {
     props: res.data,

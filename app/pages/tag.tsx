@@ -20,7 +20,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const limitNumber = 5
 
   const tagName = context.query.name as string
-  const url = `${process.env.API_URL}/recipes/tag?name=${encodeURI(
+  const url = `https://glacial-waters-79944.herokuapp.com/recipes/tag?name=${encodeURI(
     tagName
   )}&limit=${limitNumber}`
   const res = await axios.get<IRecipe[]>(url)

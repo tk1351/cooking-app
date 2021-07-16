@@ -18,7 +18,7 @@ const index: VFC<Props> = (props) => {
 
 export const getStaticProps = async () => {
   const limitNumber = 5
-  const url = `${process.env.API_URL}/recipes/number?limit=${limitNumber}`
+  const url = `https://glacial-waters-79944.herokuapp.com/recipes/number?limit=${limitNumber}`
   const res = await axios.get<IRecipe[]>(url)
   return {
     props: { recipes: res.data },
