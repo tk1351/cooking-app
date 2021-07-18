@@ -32,7 +32,7 @@ const Home: VFC<Props> = (props) => {
         const { name, email, sub } = user
         const url =
           process.env.NODE_ENV === 'production'
-            ? process.env.API_URL
+            ? process.env.NEXT_PUBLIC_AUTH0_API_URL
             : 'http://localhost:8080'
 
         await axios.post(`${url}/users/register`, {
