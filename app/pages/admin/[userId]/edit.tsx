@@ -28,7 +28,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     params: { userId: user.id.toString() },
   }))
 
-  return { paths, fallback: false }
+  return { paths, fallback: true }
 }
 
 export const getStaticProps: GetStaticProps<IUser, { userId: string }> = async (
