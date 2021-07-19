@@ -7,11 +7,13 @@ import {
 import { expressJwtSecret } from 'jwks-rsa';
 import { promisify } from 'util';
 import * as jwt from 'express-jwt';
-import { jwtConstants } from '../users/constants';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    const configService = new ConfigService();
+
     const req = context.getArgByIndex(0);
     const res = context.getArgByIndex(1);
     const checkJwt = promisify(
@@ -20,10 +22,10 @@ export class AuthGuard implements CanActivate {
           cache: true,
           rateLimit: true,
           jwksRequestsPerMinute: 5,
-          jwksUri: jwtConstants.jwksUri,
+          jwksUri: configService.get('JWKS_URI'),
         }),
-        audience: jwtConstants.audience,
-        issuer: jwtConstants.uri,
+        audience: configService.get('AUDIENCE'),
+        issuer: configService.get('ISSUER_URI'),
         algorithms: ['RS256'],
       }),
     );
