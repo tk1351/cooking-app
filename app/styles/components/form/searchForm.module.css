@@ -1,0 +1,16 @@
+.inputRoot {
+  color: 'inherit';
+}
+
+.searchFormWrapper {
+  background-color: rgb(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  border-radius: 5px;
+  padding: 0 0.5rem;
+}
+
+.form {
+  display: flex;
+  margin-right: 20px;
+}
