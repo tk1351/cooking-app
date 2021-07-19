@@ -1,4 +1,5 @@
 import React, { VFC, useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import { format } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
 import {
@@ -9,7 +10,7 @@ import {
   Divider,
   Box,
 } from '@material-ui/core'
-import { Favorite, FavoriteBorder } from '@material-ui/icons'
+import { Favorite, FavoriteBorder, YouTube } from '@material-ui/icons'
 import Link from 'next/link'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { v4 as uuidv4 } from 'uuid'
@@ -32,6 +33,7 @@ type Props = {
 
 const Recipe: VFC<Props> = ({ recipe }) => {
   const dispatch = useAppDispatch()
+  const router = useRouter()
 
   const userRole = useAppSelector(selectUserRole)
   const userId = useAppSelector(selectUserId)
@@ -150,14 +152,7 @@ const Recipe: VFC<Props> = ({ recipe }) => {
             rel="noopener noreferrer"
             className={styles.url}
           >
-            <Typography
-              variant="body2"
-              color="primary"
-              component="p"
-              className={styles.linkText}
-            >
-              {recipe.url}
-            </Typography>
+            <YouTube fontSize="large" />
           </a>
         </Grid>
         <Grid container>
@@ -316,10 +311,14 @@ const Recipe: VFC<Props> = ({ recipe }) => {
               </>
             )}
             {userRole === undefined && (
-              <>
-                <FavoriteBorder />
+              <div className={styles.guestFavoriteWrapper}>
+                <div className={styles.favorite}>
+                  <Link href="/login">
+                    <FavoriteBorder />
+                  </Link>
+                </div>
                 {likedNumber >= 1 && likedNumber}
-              </>
+              </div>
             )}
           </div>
         </Grid>
