@@ -53,7 +53,20 @@ const Search: VFC<Props> = ({ recipes }) => {
           <Grid item xs={2} />
         </Grid>
       </InfiniteScroll>
-      <Button onClick={() => router.push('/')}>一覧へ戻る</Button>
+      <Grid container spacing={2} className={styles.buttonWrapper}>
+        <Grid item xs={2} />
+        <Grid item xs={8}>
+          <Button
+            variant="contained"
+            color="inherit"
+            onClick={() => router.push('/')}
+            className={styles.back}
+          >
+            一覧へ戻る
+          </Button>
+        </Grid>
+        <Grid item xs={2} />
+      </Grid>
     </div>
   )
 }
