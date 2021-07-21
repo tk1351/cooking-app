@@ -32,6 +32,7 @@ export interface ITag extends DefaultType {
 export interface ISocial extends DefaultType {
   category: number
   url: string
+  userId: number
 }
 
 export interface MyKnownMessage {

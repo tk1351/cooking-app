@@ -11,6 +11,8 @@ export interface IUser extends DefaultType {
   name: string
   email: string
   role: 'admin' | 'user'
+  sub: string
+  picture: string
   favoriteDish: string
   specialDish: string
   bio: string

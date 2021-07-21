@@ -25,6 +25,8 @@ const mockUser: IUser = {
   name: 'dummy name',
   email: 'dummy@example.com',
   role: 'user',
+  sub: 'dummy sub',
+  picture: 'dummy picture',
   favoriteDish: 'dummy favoriteDish',
   specialDish: 'dummy specialDish',
   bio: 'dummy bio',
@@ -37,6 +39,7 @@ const mockUser: IUser = {
       updatedAt: new Date(),
       category: 1,
       url: 'http://test',
+      userId: 1,
     },
   ],
 }

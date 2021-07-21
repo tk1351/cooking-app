@@ -16,6 +16,8 @@ const mockAdmin: IUser = {
   name: 'dummy name',
   email: 'dummy@example.com',
   role: 'admin',
+  sub: 'dummy sub',
+  picture: 'dummy picture',
   favoriteDish: 'dummy favoriteDish',
   specialDish: 'dummy specialDish',
   bio: 'dummy bio',
@@ -28,6 +30,7 @@ const mockAdmin: IUser = {
       updatedAt: new Date(),
       category: 1,
       url: 'http://test',
+      userId: 1,
     },
   ],
 }
