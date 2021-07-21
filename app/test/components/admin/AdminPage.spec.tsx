@@ -43,7 +43,6 @@ describe('レンダリング', () => {
     expect(screen.getByText(/dummy favoriteDish/)).toBeInTheDocument()
     expect(screen.getByText(/dummy specialDish/)).toBeInTheDocument()
     expect(screen.getByText(/dummy bio/)).toBeInTheDocument()
-    expect(screen.getByText('http://test')).toBeInTheDocument()
 
     expect(screen.getByText('プロフィール編集')).toBeInTheDocument()
     expect(screen.getByText('ユーザー一覧へ')).toBeInTheDocument()
