@@ -17,7 +17,7 @@ type Props = {
 
 const ShareField: VFC<Props> = ({ recipe, anchorEl, handleClose }) => {
   const title = recipe.name
-  const url = `http://localhost:3000/recipe/${recipe.id}`
+  const url = `${process.env.NEXT_PUBLIC_APP_URL}recipe/${recipe.id}`
 
   return (
     <Menu

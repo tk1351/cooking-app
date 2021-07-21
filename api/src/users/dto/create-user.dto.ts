@@ -15,4 +15,8 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'subを入力してください' })
   @IsString({ message: 'subには文字を入力してください' })
   sub: string;
+
+  @IsNotEmpty({ message: 'pictureを入力してください' })
+  @IsString({ message: 'pictureには文字を入力してください' })
+  picture: string;
 }

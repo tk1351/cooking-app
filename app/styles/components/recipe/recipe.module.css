@@ -74,3 +74,13 @@
 .url {
   margin-bottom: 10px;
 }
+
+.guestFavoriteWrapper {
+  display: flex;
+}
+
+.favorite {
+  cursor: pointer;
+  opacity: 0.8;
+  margin-right: 0.5rem;
+}

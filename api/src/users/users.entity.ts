@@ -18,6 +18,9 @@ export class User extends DefaultEntity {
   sub: string;
 
   @Column()
+  picture: string;
+
+  @Column()
   role: UserRole;
 
   @Column()

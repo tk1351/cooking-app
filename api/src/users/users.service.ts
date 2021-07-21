@@ -49,6 +49,10 @@ export class UsersService {
     return await this.userRepository.getUserBySub(sub);
   }
 
+  async getAuthorById(id: number): Promise<User> {
+    return await this.userRepository.getAuthorById(id);
+  }
+
   async registerAdmin(createUserDto: CreateUserDto): Promise<MyKnownMessage> {
     return this.userRepository.registerAdmin(createUserDto);
   }

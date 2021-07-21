@@ -77,11 +77,7 @@ const Navbar: VFC = () => {
               <p>Cooking-app</p>
             </Link>
           </IconButton>
-          {!isLoading && (
-            <div>
-              <Links />
-            </div>
-          )}
+          {!isLoading && <Links />}
         </Toolbar>
       </AppBar>
     </div>

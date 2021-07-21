@@ -58,6 +58,11 @@ export class UsersController {
     return this.usersService.getUserBySub(sub);
   }
 
+  @Get('/author/:id')
+  getAuthorById(@Param('id', ParseIntPipe) id: number): Promise<User> {
+    return this.usersService.getAuthorById(id);
+  }
+
   @Post('/register/admin')
   registerAdmin(
     @Body(ValidationPipe) createUserDto: CreateUserDto,

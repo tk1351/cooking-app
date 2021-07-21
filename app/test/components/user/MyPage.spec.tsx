@@ -16,6 +16,8 @@ const mockUser: IUser = {
   name: 'dummy name',
   email: 'dummy@example.com',
   role: 'user',
+  sub: 'dummy sub',
+  picture: 'dummy picture',
   favoriteDish: 'dummy favoriteDish',
   specialDish: 'dummy specialDish',
   bio: 'dummy',

@@ -26,6 +26,8 @@ const dummyUser: IUser = {
   name: 'dummy name',
   email: 'dummy@example.com',
   role: 'admin',
+  sub: 'dummy sub',
+  picture: 'dummy picture',
   favoriteDish: 'dummy',
   specialDish: 'dummy',
   bio: 'dummy',

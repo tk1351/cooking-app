@@ -203,8 +203,8 @@ const EditProfileForm: VFC<Props> = ({ user }) => {
                       onChange={onChange}
                       error={Boolean(errors.socials && errors.socials[index])}
                     >
-                      <MenuItem value={1}>Twitter</MenuItem>
-                      <MenuItem value={2}>Youtube</MenuItem>
+                      <MenuItem value={1}>Youtube</MenuItem>
+                      <MenuItem value={2}>Twitter</MenuItem>
                       <MenuItem value={3}>Instagram</MenuItem>
                       <MenuItem value={4}>Facebook</MenuItem>
                     </Select>

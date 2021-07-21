@@ -24,3 +24,11 @@ jobs:
       - run: docker-compose -f docker-compose.test.yml exec api yarn test --watchAll=false
       - run: docker-compose -f docker-compose.test.yml exec app yarn test --watchAll=false
       - run: docker-compose -f docker-compose.test.yml down
+
+workflows:
+  deploy:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: master

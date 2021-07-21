@@ -4,6 +4,7 @@ import {
   InternalServerErrorException,
   UnauthorizedException,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { User } from './users.entity';
 import { UserRole } from './user.model';
@@ -98,13 +99,31 @@ export class UserRepository extends Repository<User> {
     return found;
   }
 
+  async getAuthorById(id: number): Promise<User> {
+    const found = await this.createQueryBuilder('users')
+      .leftJoinAndSelect('users.socials', 'socials')
+      .where('users.id = :id', { id })
+      .getOne();
+
+    if (found === undefined) {
+      throw new NotFoundException('userが存在しません');
+    }
+
+    if (found.role === 'user') {
+      throw new BadRequestException('管理者ではありません');
+    }
+
+    return found;
+  }
+
   async registerAdmin(createUserDto: CreateUserDto): Promise<MyKnownMessage> {
-    const { name, email, sub } = createUserDto;
+    const { name, email, sub, picture } = createUserDto;
 
     const user = this.create();
     user.name = name;
     user.email = email;
     user.sub = sub;
+    user.picture = picture;
     user.role = UserRole.admin;
     user.bio = '';
     user.favoriteDish = '';
@@ -125,12 +144,13 @@ export class UserRepository extends Repository<User> {
   }
 
   async register(createUserDto: CreateUserDto): Promise<MyKnownMessage> {
-    const { name, email, sub } = createUserDto;
+    const { name, email, sub, picture } = createUserDto;
 
     const user = this.create();
     user.name = name;
     user.email = email;
     user.sub = sub;
+    user.picture = picture;
     user.role = UserRole.user;
     user.bio = '';
     user.favoriteDish = '';
