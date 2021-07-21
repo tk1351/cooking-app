@@ -1,12 +1,12 @@
 import { VFC } from 'react'
-import { InferGetStaticPropsType } from 'next'
+import { GetServerSideProps } from 'next'
 import axios from 'axios'
 import Navbar from '../components/common/Navbar'
 import Home from '../components/common/Home'
 import { IRecipe } from '../re-ducks/recipe/type'
 import Footer from '../components/common/Footer'
 
-const index: VFC<Props> = (props) => {
+const index: VFC<{ recipes: IRecipe[] }> = (props) => {
   return (
     <>
       <Navbar />
@@ -16,7 +16,7 @@ const index: VFC<Props> = (props) => {
   )
 }
 
-export const getStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const limitNumber = 5
   const url = `${process.env.API_URL}/recipes/number?limit=${limitNumber}`
   const res = await axios.get<IRecipe[]>(url)
@@ -24,7 +24,5 @@ export const getStaticProps = async () => {
     props: { recipes: res.data },
   }
 }
-
-type Props = InferGetStaticPropsType<typeof getStaticProps>
 
 export default index
