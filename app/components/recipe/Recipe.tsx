@@ -1,5 +1,4 @@
 import React, { VFC, useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
 import { format } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
 import {
@@ -33,7 +32,6 @@ type Props = {
 
 const Recipe: VFC<Props> = ({ recipe }) => {
   const dispatch = useAppDispatch()
-  const router = useRouter()
 
   const userRole = useAppSelector(selectUserRole)
   const userId = useAppSelector(selectUserId)
