@@ -28,7 +28,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     params: { userId: recipeLike.userId.toString() },
   }))
 
-  return { paths, fallback: true }
+  return { paths, fallback: false }
 }
 
 export const getStaticProps: GetStaticProps<
