@@ -9,7 +9,7 @@ import styles from '../../styles/components/common/authorProfile.module.css'
 const AuthorProfile: VFC = () => {
   const [user, setUser] = useState<IUser>()
 
-  const id = 1
+  const id = process.env.NODE_ENV === 'production' ? 23 : 1
   const url = `${process.env.NEXT_PUBLIC_API_URL}/users/author/${id}`
   useEffect(() => {
     ;(async () => {
