@@ -7,12 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { RecipeRepository } from './recipes.repository';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { Recipe } from './recipes.entity';
-import {
-  GetRecipesFilterDto,
-  GetRecipesByTagDto,
-  GetRecipesByLimitNumberDto,
-  GetRecipesByOffsetDto,
-} from './dto/get-recipes.dto';
+import { GetRecipesFilterDto } from './dto/get-recipes.dto';
 import { MyKnownMessage } from '../message.interface';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { RecipeLikesService } from '../recipe-likes/recipe-likes.service';
@@ -37,7 +32,7 @@ export class RecipesService {
 
   async getRecipes(
     getRecipesFilterDto: GetRecipesFilterDto,
-  ): Promise<Recipe[]> {
+  ): Promise<[Recipe[], number]> {
     return this.recipeRepository.getRecipes(getRecipesFilterDto);
   }
 
@@ -47,30 +42,10 @@ export class RecipesService {
     return this.recipeRepository.getRecipesFilter(getRecipesFilterDto);
   }
 
-  async getRecipesByLimitNumber(
-    getRecipesByLimitNumberDto: GetRecipesByLimitNumberDto,
-  ): Promise<Recipe[]> {
-    return this.recipeRepository.getRecipesByLimitNumber(
-      getRecipesByLimitNumberDto,
-    );
-  }
-
-  async getRecipesByOffset(
-    getRecipesByOffsetDto: GetRecipesByOffsetDto,
-  ): Promise<Recipe[]> {
-    return this.recipeRepository.getRecipesByOffset(getRecipesByOffsetDto);
-  }
-
   async getRecipeById(id: number): Promise<Recipe | undefined> {
     const found = await this.recipeRepository.getRecipeById(id);
 
     return found;
-  }
-
-  async getRecipesByTag(
-    getRecipesByTag: GetRecipesByTagDto,
-  ): Promise<Recipe[]> {
-    return this.recipeRepository.getRecipesByTag(getRecipesByTag);
   }
 
   async createRecipe(
