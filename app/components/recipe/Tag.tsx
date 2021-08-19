@@ -23,12 +23,14 @@ const Tag: VFC<Props> = ({ recipes }) => {
   const loadMore = async () => {
     const limitNumber = 5
 
-    const url = `/recipes/tag?name=${name}&start=${posts.length}&limit=${limitNumber}`
-    const res = await API.get<IRecipe[]>(url)
+    const url = `/recipes?tag=${name}&start=${posts.length}&limit=${limitNumber}`
+    const res = await API.get<[IRecipe[], number]>(url)
 
-    try {
-      setPosts([...posts, ...res.data])
-    } finally {
+    const data = res.data[0]
+
+    setPosts([...posts, ...data])
+
+    if (data.length < 1) {
       setHasMore(false)
     }
   }

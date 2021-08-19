@@ -1,4 +1,5 @@
-import React, { VFC, useState } from 'react'
+import React, { useState } from 'react'
+import { NextPage } from 'next'
 import {
   Grid,
   Typography,
@@ -13,7 +14,6 @@ import Link from 'next/link'
 import { format } from 'date-fns'
 import { useRouter } from 'next/router'
 import { unwrapResult } from '@reduxjs/toolkit'
-import { v4 as uuidv4 } from 'uuid'
 import { useAppSelector, useAppDispatch } from '../../re-ducks/hooks'
 import {
   confirmRecipe,
@@ -25,10 +25,9 @@ import { createRecipe } from '../../re-ducks/recipe/recipeSlice'
 import { setAlert } from '../../re-ducks/alert/alertSlice'
 import { MyKnownError } from '../../re-ducks/defaultType'
 import { selectUserToken } from '../../re-ducks/auth/authSlice'
-import Alert from '../common/Alert'
 import styles from '../../styles/components/recipe/confirmation.module.css'
 
-const Confirmation: VFC = () => {
+const Confirmation: NextPage = () => {
   const dispatch = useAppDispatch()
 
   const [recipeImage, setRecipeImage] = useState<File | null>(null)
@@ -86,10 +85,9 @@ const Confirmation: VFC = () => {
         if (createRecipe.fulfilled.match(resultAction)) {
           unwrapResult(resultAction)
 
-          const alertId = uuidv4()
           dispatch(
             setAlert({
-              alertId,
+              open: true,
               msg: 'レシピを投稿しました',
               alertType: 'succeeded',
             })
@@ -99,10 +97,9 @@ const Confirmation: VFC = () => {
           await router.push('/')
         } else if (createRecipe.rejected.match(resultAction)) {
           const payload = resultAction.payload as MyKnownError
-          const alertId = uuidv4()
           dispatch(
             setAlert({
-              alertId,
+              open: true,
               msg: payload.message as string,
               alertType: 'failed',
             })
@@ -111,12 +108,19 @@ const Confirmation: VFC = () => {
       } catch (error) {
         console.error(error)
       }
+    } else {
+      dispatch(
+        setAlert({
+          open: true,
+          msg: '料理画像を追加してください',
+          alertType: 'failed',
+        })
+      )
     }
   }
 
   return (
     <div>
-      <Alert />
       <Grid container className={styles.recipeWrapper}>
         <Grid item xs={12}>
           <Grid container className={styles.recipeName}>

@@ -1,4 +1,5 @@
-import React, { VFC, useEffect } from 'react'
+import React, { useEffect } from 'react'
+import { NextPage } from 'next'
 import Head from 'next/head'
 import { useAuth0 } from '@auth0/auth0-react'
 import axios from 'axios'
@@ -6,13 +7,13 @@ import { useAppSelector } from '../../re-ducks/hooks'
 import { selectUserRole } from '../../re-ducks/auth/authSlice'
 import Recipes from '../recipe/Recipes'
 import { IRecipe } from '../../re-ducks/recipe/type'
-import Alert from './Alert'
 
 type Props = {
   recipes: IRecipe[]
+  count: number
 }
 
-const Home: VFC<Props> = (props) => {
+const Home: NextPage<Props> = (props) => {
   const userRole = useAppSelector(selectUserRole)
   const {
     loginWithRedirect,
@@ -90,7 +91,6 @@ const Home: VFC<Props> = (props) => {
       </Head>
 
       <main>
-        <Alert />
         {!isLoading && (
           <>
             <Views />
