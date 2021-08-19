@@ -2,7 +2,6 @@ import React, { VFC } from 'react'
 import { useRouter } from 'next/router'
 import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { unwrapResult } from '@reduxjs/toolkit'
-import { v4 as uuidv4 } from 'uuid'
 import { IUser, IUpdateUserProfileInputs } from '../../re-ducks/auth/type'
 import TextForm from '../form/TextForm'
 import FormButton from '../form/FormButton'
@@ -14,7 +13,6 @@ import {
 } from '../../re-ducks/auth/authSlice'
 import { setAlert } from '../../re-ducks/alert/alertSlice'
 import { MyKnownError } from '../../re-ducks/defaultType'
-import Alert from '../common/Alert'
 import styles from '../../styles/components/user/editProfileForm.module.css'
 
 type Props = {
@@ -44,10 +42,9 @@ const EditProfileForm: VFC<Props> = ({ user }) => {
     if (updateUserProfile.fulfilled.match(resultAction)) {
       unwrapResult(resultAction)
 
-      const alertId = uuidv4()
       dispatch(
         setAlert({
-          alertId,
+          open: true,
           msg: 'プロフィールを更新しました',
           alertType: 'succeeded',
         })
@@ -56,10 +53,9 @@ const EditProfileForm: VFC<Props> = ({ user }) => {
       await router.push(`/user/${user.id}`)
     } else if (updateUserProfile.rejected.match(resultAction)) {
       const payload = resultAction.payload as MyKnownError
-      const alertId = uuidv4()
       dispatch(
         setAlert({
-          alertId,
+          open: true,
           msg: payload.message as string,
           alertType: 'failed',
         })
@@ -69,7 +65,6 @@ const EditProfileForm: VFC<Props> = ({ user }) => {
 
   return (
     <div>
-      <Alert />
       <Container component="main" maxWidth={false} className={styles.container}>
         <Grid container justify="center" className={styles.h1}>
           <h1>プロフィール編集</h1>

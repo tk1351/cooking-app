@@ -11,12 +11,10 @@ import { format } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
 import { useRouter } from 'next/router'
 import { unwrapResult } from '@reduxjs/toolkit'
-import { v4 as uuidv4 } from 'uuid'
 import { IRecipe } from '../../re-ducks/recipe/type'
 import { useAppDispatch, useAppSelector } from '../../re-ducks/hooks'
 import { deleteRecipe } from '../../re-ducks/recipe/recipeSlice'
 import { setAlert } from '../../re-ducks/alert/alertSlice'
-import Alert from '../common/Alert'
 import { MyKnownError } from '../../re-ducks/defaultType'
 import { selectUserToken } from '../../re-ducks/auth/authSlice'
 import { firebaseStorage } from '../../src/utils/firebase'
@@ -41,10 +39,9 @@ const DeleteRecipe: VFC<Props> = ({ recipe }) => {
       const refUrl = firebaseStorage.refFromURL(recipe.image)
       await refUrl.delete()
 
-      const alertId = uuidv4()
       dispatch(
         setAlert({
-          alertId,
+          open: true,
           msg: resultAction.payload.message.message,
           alertType: 'succeeded',
         })
@@ -53,10 +50,9 @@ const DeleteRecipe: VFC<Props> = ({ recipe }) => {
       await router.push('/')
     } else if (deleteRecipe.rejected.match(resultAction)) {
       const payload = resultAction.payload as MyKnownError
-      const alertId = uuidv4()
       dispatch(
         setAlert({
-          alertId,
+          open: true,
           msg: payload.message as string,
           alertType: 'failed',
         })
@@ -74,7 +70,6 @@ const DeleteRecipe: VFC<Props> = ({ recipe }) => {
 
   return (
     <div>
-      <Alert />
       <Grid container className={styles.recipeWrapper}>
         <Grid item xs={12}>
           <Grid container className={styles.recipeName}>

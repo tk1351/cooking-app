@@ -1,5 +1,5 @@
 export interface IAlertState {
-  alertId: string
+  open: boolean
   msg: string
   alertType: 'succeeded' | 'failed' | undefined
 }

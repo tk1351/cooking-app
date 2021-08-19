@@ -3,43 +3,35 @@ import { useAppSelector, useAppDispatch } from '../../re-ducks/hooks'
 import { selectAlert, removeAlert } from '../../re-ducks/alert/alertSlice'
 import { SnackbarOrigin, Snackbar } from '@material-ui/core'
 
-export interface State extends SnackbarOrigin {
-  open: boolean
-}
-
 const Alert: VFC = () => {
-  const alerts = useAppSelector(selectAlert)
+  const alert = useAppSelector(selectAlert)
   const dispatch = useAppDispatch()
 
-  const [state, setState] = useState<State>({
-    open: true,
-    vertical: 'top',
+  const [state, setState] = useState<SnackbarOrigin>({
+    vertical: 'bottom',
     horizontal: 'right',
   })
 
-  const { vertical, horizontal, open } = state
+  const { vertical, horizontal } = state
 
   const handleClose = () => {
-    setState({ ...state, open: false })
-    const alertId = alerts[1].alertId
-    dispatch(removeAlert({ alertId }))
+    setState({ ...state })
+    dispatch(removeAlert())
   }
 
-  const isAlert = alerts.map(
-    (alert) =>
-      alert.alertType && (
-        <div key={alert.alertId}>
-          <Snackbar
-            anchorOrigin={{ vertical, horizontal }}
-            open={open}
-            onClose={handleClose}
-            message={alert.msg}
-            key={vertical + horizontal}
-          />
-        </div>
-      )
+  return (
+    <>
+      {alert.open === true && (
+        <Snackbar
+          anchorOrigin={{ vertical, horizontal }}
+          open={alert.open}
+          message={alert.msg}
+          key={vertical + horizontal}
+          onClose={handleClose}
+        />
+      )}
+    </>
   )
-  return <div>{isAlert}</div>
 }
 
 export default Alert

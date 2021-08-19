@@ -1,4 +1,5 @@
-import React, { VFC, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
+import { NextPage } from 'next'
 import { format } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
 import {
@@ -22,7 +23,6 @@ import {
 } from '../../re-ducks/auth/authSlice'
 import { IRecipe } from '../../re-ducks/recipe/type'
 import { setAlert } from '../../re-ducks/alert/alertSlice'
-import Alert from '../common/Alert'
 import ShareField from '../common/ShareField'
 import styles from '../../styles/components/recipe/recipe.module.css'
 
@@ -30,7 +30,7 @@ type Props = {
   recipe: IRecipe
 }
 
-const Recipe: VFC<Props> = ({ recipe }) => {
+const Recipe: NextPage<Props> = ({ recipe }) => {
   const dispatch = useAppDispatch()
 
   const userRole = useAppSelector(selectUserRole)
@@ -47,10 +47,9 @@ const Recipe: VFC<Props> = ({ recipe }) => {
       unwrapResult(resultAction)
       setIsLiked((prev) => !prev)
 
-      const alertId = uuidv4()
       dispatch(
         setAlert({
-          alertId,
+          open: true,
           msg: resultAction.payload.message,
           alertType: 'succeeded',
         })
@@ -64,10 +63,9 @@ const Recipe: VFC<Props> = ({ recipe }) => {
     if (unlikeRecipe.fulfilled.match(resultAction)) {
       unwrapResult(resultAction)
 
-      const alertId = uuidv4()
       dispatch(
         setAlert({
-          alertId,
+          open: true,
           msg: resultAction.payload.message,
           alertType: 'succeeded',
         })
@@ -305,7 +303,6 @@ const Recipe: VFC<Props> = ({ recipe }) => {
               <>
                 <ChangeLikedState />
                 {likedNumber >= 1 && likedNumber}
-                <Alert />
               </>
             )}
             {userRole === undefined && (

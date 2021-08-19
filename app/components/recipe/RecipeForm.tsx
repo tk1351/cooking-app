@@ -24,7 +24,6 @@ import FormButton from '../form/FormButton'
 import { recipeValidationSchema } from '../form/validations/recipeValidation'
 import { useAppDispatch, useAppSelector } from '../../re-ducks/hooks'
 import { IRecipeInputs } from '../form/type'
-import Alert from '../common/Alert'
 import {
   setRecipe,
   confirmRecipe,
@@ -90,7 +89,6 @@ const RecipeForm: VFC = () => {
 
   return (
     <div>
-      <Alert />
       <Container component="main" maxWidth={false} className={styles.container}>
         <Grid container justify="center" className={styles.h1}>
           <h1>レシピ投稿</h1>

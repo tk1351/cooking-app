@@ -2,23 +2,21 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../store'
 import { IAlertState } from './type'
 
-const initialState: IAlertState[] = [
-  {
-    alertId: '',
-    msg: '',
-    alertType: undefined,
-  },
-]
+const initialState: IAlertState = {
+  open: false,
+  msg: '',
+  alertType: undefined,
+}
 
 export const alertSlice = createSlice({
   name: 'alert',
   initialState,
   reducers: {
     setAlert: (state, action: PayloadAction<IAlertState>) => {
-      return [...state, action.payload]
+      return (state = action.payload)
     },
-    removeAlert: (state, action: PayloadAction<{ alertId: string }>) => {
-      return state.filter((alert) => alert.alertId !== action.payload.alertId)
+    removeAlert: (state) => {
+      return (state = initialState)
     },
   },
 })

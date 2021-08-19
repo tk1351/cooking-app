@@ -2,7 +2,6 @@ import React, { VFC } from 'react'
 import Link from 'next/link'
 import { Typography, Button, Grid } from '@material-ui/core'
 import { IUser } from '../../re-ducks/auth/type'
-import Alert from '../common/Alert'
 import styles from '../../styles/components/user/mypage.module.css'
 
 type Props = {
@@ -12,7 +11,6 @@ type Props = {
 const MyPage: VFC<Props> = ({ user }) => {
   return (
     <Grid container className={styles.wrapper}>
-      <Alert />
       <Grid item xs={12}>
         <Grid container justify="center">
           <h1 className={styles.h1}>マイページ</h1>

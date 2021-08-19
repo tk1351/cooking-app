@@ -22,7 +22,6 @@ import {
 import { PhotoCamera, Remove, Add } from '@material-ui/icons'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { unwrapResult } from '@reduxjs/toolkit'
-import { v4 as uuidv4 } from 'uuid'
 import TextForm from '../form/TextForm'
 import FormButton from '../form/FormButton'
 import { useAppDispatch, useAppSelector } from '../../re-ducks/hooks'
@@ -32,7 +31,6 @@ import { firebaseStorage } from '../../src/utils/firebase'
 import { recipeValidationSchema } from '../form/validations/recipeValidation'
 import { setAlert } from '../../re-ducks/alert/alertSlice'
 import { MyKnownError } from '../../re-ducks/defaultType'
-import Alert from '../common/Alert'
 import { selectUserToken } from '../../re-ducks/auth/authSlice'
 import styles from '../../styles/components/recipe/editRecipeForm.module.css'
 
@@ -144,10 +142,9 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
         if (updateRecipe.fulfilled.match(resultAction)) {
           unwrapResult(resultAction)
 
-          const alertId = uuidv4()
           dispatch(
             setAlert({
-              alertId,
+              open: true,
               msg: 'レシピを更新しました',
               alertType: 'succeeded',
             })
@@ -156,10 +153,9 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
           await router.push('/')
         } else if (updateRecipe.rejected.match(resultAction)) {
           const payload = resultAction.payload as MyKnownError
-          const alertId = uuidv4()
           dispatch(
             setAlert({
-              alertId,
+              open: true,
               msg: payload.message as string,
               alertType: 'failed',
             })
@@ -181,10 +177,9 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
         if (updateRecipe.fulfilled.match(resultAction)) {
           unwrapResult(resultAction)
 
-          const alertId = uuidv4()
           dispatch(
             setAlert({
-              alertId,
+              open: true,
               msg: 'レシピを更新しました',
               alertType: 'succeeded',
             })
@@ -193,10 +188,9 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
           await router.push('/')
         } else if (updateRecipe.rejected.match(resultAction)) {
           const payload = resultAction.payload as MyKnownError
-          const alertId = uuidv4()
           dispatch(
             setAlert({
-              alertId,
+              open: true,
               msg: payload.message as string,
               alertType: 'failed',
             })
@@ -210,7 +204,6 @@ const EditRecipeForm: VFC<Props> = ({ recipe }) => {
 
   return (
     <div>
-      <Alert />
       <Container component="main" maxWidth={false} className={styles.container}>
         <Grid container justify="center" className={styles.h1}>
           <h1>レシピ編集</h1>

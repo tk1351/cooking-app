@@ -13,6 +13,7 @@ import { store } from '../re-ducks/store'
 import theme from '../src/theme'
 import { useAppDispatch } from '../re-ducks/hooks'
 import { fetchCurrentUser } from '../re-ducks/auth/authSlice'
+import Alert from '../components/common/Alert'
 
 const AppInit = () => {
   const dispatch = useAppDispatch()
@@ -52,6 +53,7 @@ const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
               <CssBaseline />
               <Component {...pageProps} />
               <AppInit />
+              <Alert />
             </StyledComponentsThemeProvider>
           </MaterialUIThemeProvider>
         </StylesProvider>
