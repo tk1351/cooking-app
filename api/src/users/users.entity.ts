@@ -32,14 +32,12 @@ export class User extends DefaultEntity {
   @Column()
   bio: string;
 
-  @OneToMany(() => Recipe, (recipes) => recipes.user, { eager: true })
+  @OneToMany(() => Recipe, (recipes) => recipes.user)
   recipes: Recipe[];
 
-  @OneToMany(() => RecipeLike, (recipeLikes) => recipeLikes.user, {
-    eager: true,
-  })
+  @OneToMany(() => RecipeLike, (recipeLikes) => recipeLikes.user)
   recipeLikes: RecipeLike[];
 
-  @OneToMany(() => Social, (socials) => socials.user, { eager: true })
+  @OneToMany(() => Social, (socials) => socials.user)
   socials: Social[];
 }

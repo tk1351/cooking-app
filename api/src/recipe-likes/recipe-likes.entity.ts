@@ -5,14 +5,16 @@ import { Recipe } from '../recipes/recipes.entity';
 
 @Entity({ name: 'recipe-likes' })
 export class RecipeLike extends DefaultEntity {
-  @ManyToOne(() => User, (user) => user.recipeLikes, { eager: false })
+  @ManyToOne(() => User, (user) => user.recipeLikes)
   @JoinColumn({ name: 'userId' })
   user: User;
 
   @Column()
   userId: number;
 
-  @ManyToOne(() => Recipe, (recipe) => recipe.recipeLikes, { eager: false })
+  @ManyToOne(() => Recipe, (recipe) => recipe.recipeLikes, {
+    orphanedRowAction: 'delete',
+  })
   @JoinColumn({ name: 'recipeId' })
   recipe: Recipe;
 

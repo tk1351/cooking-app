@@ -23,26 +23,21 @@ export class Recipe extends DefaultEntity {
   @Column()
   url: string;
 
-  @ManyToOne(() => User, (user) => user.recipes, { eager: false })
+  @ManyToOne(() => User, (user) => user.recipes)
   user: User;
 
-  @OneToMany(() => Ingredient, (ingredients) => ingredients.recipe, {
-    eager: true,
-  })
+  @OneToMany(() => Ingredient, (ingredients) => ingredients.recipe)
   ingredients: Ingredient[];
 
   @OneToMany(
     () => RecipeDescription,
     (recipeDescriptions) => recipeDescriptions.recipe,
-    { eager: true },
   )
   recipeDescriptions: RecipeDescription[];
 
-  @OneToMany(() => RecipeLike, (recipeLikes) => recipeLikes.recipe, {
-    eager: true,
-  })
+  @OneToMany(() => RecipeLike, (recipeLikes) => recipeLikes.recipe)
   recipeLikes: RecipeLike[];
 
-  @OneToMany(() => Tag, (tags) => tags.recipe, { eager: true })
+  @OneToMany(() => Tag, (tags) => tags.recipe)
   tags: Tag[];
 }

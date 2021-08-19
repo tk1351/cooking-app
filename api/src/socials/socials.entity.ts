@@ -10,7 +10,7 @@ export class Social extends DefaultEntity {
   @Column()
   url: string;
 
-  @ManyToOne(() => User, (user) => user.socials, { eager: false })
+  @ManyToOne(() => User, (user) => user.socials)
   @JoinColumn({ name: 'userId' })
   user: User;
 

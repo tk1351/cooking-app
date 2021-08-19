@@ -10,7 +10,9 @@ export class Ingredient extends DefaultEntity {
   @Column()
   amount: string;
 
-  @ManyToOne(() => Recipe, (recipe) => recipe.ingredients, { eager: false })
+  @ManyToOne(() => Recipe, (recipe) => recipe.ingredients, {
+    orphanedRowAction: 'delete',
+  })
   @JoinColumn({ name: 'recipeId' })
   recipe: Recipe;
 

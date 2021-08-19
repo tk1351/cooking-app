@@ -14,7 +14,7 @@ export class RecipeDescription extends DefaultEntity {
   url: string | null;
 
   @ManyToOne(() => Recipe, (recipe) => recipe.recipeDescriptions, {
-    eager: false,
+    orphanedRowAction: 'delete',
   })
   @JoinColumn({ name: 'recipeId' })
   recipe: Recipe;

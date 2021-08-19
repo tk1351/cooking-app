@@ -7,7 +7,7 @@ export class Tag extends DefaultEntity {
   @Column()
   name: string;
 
-  @ManyToOne(() => Recipe, (recipe) => recipe.tags, { eager: false })
+  @ManyToOne(() => Recipe, (recipe) => recipe.tags)
   @JoinColumn({ name: 'recipeId' })
   recipe: Recipe;
 
