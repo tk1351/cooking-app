@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { Button, Grid } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import InfiniteScroll from 'react-infinite-scroller'
 import RecipeItem from '../recipe/RecipeItem'
 import { IRecipeLike } from '../../re-ducks/defaultType'
 import Spinner from '../common/Spinner'
 import { useAppSelector } from '../../re-ducks/hooks'
 import { selectUserName } from '../../re-ducks/auth/authSlice'
+import BackButton from '../common/BackButton'
 import styles from '../../styles/components/user/likes.module.css'
 
 import API from '../../src/utils/api'
@@ -65,14 +66,7 @@ const Likes: NextPage<Props> = ({ recipeLikes, count }) => {
         </Grid>
       </InfiniteScroll>
       <Grid container justify="flex-start">
-        <Button
-          variant="contained"
-          color="inherit"
-          onClick={() => router.push('/')}
-          className={styles.back}
-        >
-          一覧へ戻る
-        </Button>
+        <BackButton text={'一覧へ戻る'} />
       </Grid>
     </div>
   )

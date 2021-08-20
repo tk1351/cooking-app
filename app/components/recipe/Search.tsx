@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { Button, Grid } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import InfiniteScroll from 'react-infinite-scroller'
 import { IRecipe } from '../../re-ducks/recipe/type'
 import RecipeItem from './RecipeItem'
 import Spinner from '../common/Spinner'
+import BackButton from '../common/BackButton'
 import styles from '../../styles/components/recipe/search.module.css'
 
 import API from '../../src/utils/api'
@@ -62,14 +63,7 @@ const Search: NextPage<Props> = ({ recipes, count }) => {
       <Grid container spacing={2} className={styles.buttonWrapper}>
         <Grid item xs={2} />
         <Grid item xs={8}>
-          <Button
-            variant="contained"
-            color="inherit"
-            onClick={() => router.push('/')}
-            className={styles.back}
-          >
-            一覧へ戻る
-          </Button>
+          <BackButton text={'一覧へ戻る'} />
         </Grid>
         <Grid item xs={2} />
       </Grid>
