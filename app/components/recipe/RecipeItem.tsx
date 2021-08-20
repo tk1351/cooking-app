@@ -1,6 +1,7 @@
-import React, { VFC, useState } from 'react'
+import React, { useState } from 'react'
 import { format } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
+import { NextPage } from 'next'
 import {
   Card,
   CardActionArea,
@@ -17,6 +18,7 @@ import { IRecipe } from '../../re-ducks/recipe/type'
 import { useAppSelector } from '../../re-ducks/hooks'
 import { selectUserRole } from '../../re-ducks/auth/authSlice'
 import ShareField from '../common/ShareField'
+import AdminOperationButton from '../common/AdminOperationButton'
 import styles from '../../styles/components/recipe/recipeItem.module.css'
 
 const useStyles = makeStyles({
@@ -33,7 +35,7 @@ type Props = {
   recipe: IRecipe
 }
 
-const RecipeItem: VFC<Props> = ({ recipe }) => {
+const RecipeItem: NextPage<Props> = ({ recipe }) => {
   const classes = useStyles()
 
   const userRole = useAppSelector(selectUserRole)
@@ -109,24 +111,7 @@ const RecipeItem: VFC<Props> = ({ recipe }) => {
             <Link href={`/recipe/${recipe.id}`}>詳細</Link>
           </Button>
           {userRole === 'admin' ? (
-            <>
-              <Button
-                size="small"
-                color="primary"
-                variant="contained"
-                type="button"
-              >
-                <Link href={`/recipe/edit/${recipe.id}`}>編集</Link>
-              </Button>
-              <Button
-                size="small"
-                color="secondary"
-                variant="contained"
-                type="button"
-              >
-                <Link href={`/admin/recipe/${recipe.id}`}>削除</Link>
-              </Button>
-            </>
+            <AdminOperationButton recipe={recipe} />
           ) : (
             <></>
           )}

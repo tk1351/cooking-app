@@ -1,19 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { NextPage } from 'next'
-import { format } from 'date-fns'
-import { utcToZonedTime } from 'date-fns-tz'
-import {
-  CardMedia,
-  Typography,
-  Button,
-  Grid,
-  Divider,
-  Box,
-} from '@material-ui/core'
-import { Favorite, FavoriteBorder, YouTube } from '@material-ui/icons'
+import { Button, Grid } from '@material-ui/core'
+import { Favorite, FavoriteBorder } from '@material-ui/icons'
 import Link from 'next/link'
 import { unwrapResult } from '@reduxjs/toolkit'
-import { v4 as uuidv4 } from 'uuid'
 import { useAppDispatch, useAppSelector } from '../../re-ducks/hooks'
 import { likeRecipe, unlikeRecipe } from '../../re-ducks/recipe/recipeSlice'
 import {
@@ -24,6 +14,8 @@ import {
 import { IRecipe } from '../../re-ducks/recipe/type'
 import { setAlert } from '../../re-ducks/alert/alertSlice'
 import ShareField from '../common/ShareField'
+import AdminOperationButton from '../common/AdminOperationButton'
+import Content from './Content'
 import styles from '../../styles/components/recipe/recipe.module.css'
 
 type Props = {
@@ -125,146 +117,10 @@ const Recipe: NextPage<Props> = ({ recipe }) => {
     setAnchorEl(null)
   }
 
-  // 調理工程のorderで昇順
-  const sortDescriptions = recipe.recipeDescriptions.sort((a, b) => {
-    return a.order - b.order
-  })
-
-  const date = new Date(recipe.createdAt)
-  const jstDate = utcToZonedTime(date, 'Asia/Tokyo')
-
   return (
     <Grid container className={styles.recipeWrapper}>
       <Grid item xs={12}>
-        <Grid container className={styles.recipeName}>
-          <Typography gutterBottom variant="h4" component="h2">
-            <Box fontWeight="fontWeightBold">{recipe.name}</Box>
-          </Typography>
-        </Grid>
-        <Grid container>
-          <a
-            href={recipe.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.url}
-          >
-            <YouTube fontSize="large" />
-          </a>
-        </Grid>
-        <Grid container>
-          <ul className={styles.tag}>
-            {recipe.tags.map((tag) => (
-              <div key={tag.id}>
-                <Link href={{ pathname: '/tag', query: { name: tag.name } }}>
-                  <Typography
-                    variant="body2"
-                    color="primary"
-                    component="p"
-                    className={styles.linkText}
-                  >
-                    #{tag.name}
-                  </Typography>
-                </Link>
-              </div>
-            ))}
-          </ul>
-        </Grid>
-        <Grid container>
-          <Typography variant="body2" color="textSecondary" component="p">
-            {format(jstDate, 'yyyy-MM-dd')}
-          </Typography>
-        </Grid>
-        <Grid container className={styles.image}>
-          <CardMedia
-            className={styles.media}
-            image={recipe.image}
-            component="img"
-          />
-        </Grid>
-        <Grid container>
-          <Typography gutterBottom variant="h6" component="h2">
-            調理時間： {recipe.time}分
-          </Typography>
-        </Grid>
-        <Grid container>
-          <Grid item className={styles.divider}>
-            <Divider />
-          </Grid>
-        </Grid>
-        <Grid container className={styles.recipeElement}>
-          <Typography gutterBottom variant="h6" component="h2">
-            材料
-          </Typography>
-        </Grid>
-        <Grid container className={styles.recipeChildElment}>
-          <ul className={styles.ingredients}>
-            {recipe.ingredients.map((ingredient) => (
-              <li key={ingredient.id}>
-                <Typography variant="body2" color="textPrimary" component="p">
-                  {ingredient.name}： {ingredient.amount}
-                </Typography>
-              </li>
-            ))}
-          </ul>
-        </Grid>
-        <Grid container>
-          <Grid item className={styles.divider}>
-            <Divider />
-          </Grid>
-        </Grid>
-        <Grid container className={styles.recipeElement}>
-          <Typography gutterBottom variant="h6" component="h2">
-            調理工程
-          </Typography>
-        </Grid>
-        <Grid container className={styles.recipeChildElment}>
-          <ul>
-            {sortDescriptions.map((recipeDescription) => (
-              <div key={recipeDescription.id}>
-                <Typography variant="body2" color="textPrimary" component="p">
-                  {recipeDescription.order}： {recipeDescription.text}
-                </Typography>
-                {recipeDescription.url && (
-                  <a
-                    href={recipeDescription.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Typography
-                      variant="body2"
-                      color="primary"
-                      component="p"
-                      className={styles.a}
-                    >
-                      参考：{recipeDescription.url}
-                    </Typography>
-                  </a>
-                )}
-              </div>
-            ))}
-          </ul>
-        </Grid>
-        <Grid container>
-          {recipe.remarks && (
-            <Grid item className={styles.divider}>
-              <Divider />
-            </Grid>
-          )}
-        </Grid>
-        <Grid container className={styles.recipeElement}>
-          {recipe.remarks && (
-            <Typography gutterBottom variant="h6" component="h2">
-              補足
-            </Typography>
-          )}
-        </Grid>
-        <Grid container>
-          {recipe.remarks && (
-            <Typography variant="body2" color="textPrimary" component="p">
-              {recipe.remarks}
-            </Typography>
-          )}
-        </Grid>
+        <Content recipe={recipe} />
         <Grid container>
           <div className={styles.buttonWrapper}>
             <div className={styles.button}>
@@ -282,23 +138,7 @@ const Recipe: NextPage<Props> = ({ recipe }) => {
               anchorEl={anchorEl}
               handleClose={handleClose}
             />
-            {userRole === 'admin' && (
-              <>
-                <div className={styles.button}>
-                  <Button size="small" color="primary" variant="contained">
-                    <Link href={`/recipe/edit/${recipe.id}`}>編集</Link>
-                  </Button>
-                </div>
-                <Button
-                  size="small"
-                  color="secondary"
-                  variant="contained"
-                  type="button"
-                >
-                  <Link href={`/admin/recipe/${recipe.id}`}>削除</Link>
-                </Button>
-              </>
-            )}
+            {userRole === 'admin' && <AdminOperationButton recipe={recipe} />}
             {userRole === 'user' && (
               <>
                 <ChangeLikedState />

@@ -1,0 +1,48 @@
+.recipeName {
+  margin-top: 30px;
+}
+
+.tag {
+  display: flex;
+}
+
+.linkText {
+  padding-right: 8px;
+}
+
+.linkText:hover {
+  text-decoration: underline;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.image {
+  margin: 10px 0;
+}
+
+.media {
+  width: 50vw;
+}
+
+.divider {
+  width: 50vw;
+}
+
+.recipeElement {
+  margin-top: 10px;
+}
+
+.recipeChildElment {
+  margin-bottom: 10px;
+}
+
+.ingredients {
+  list-style: disc;
+  padding-left: 20px;
+}
+
+.a:hover {
+  text-decoration: underline;
+  opacity: 0.5;
+  cursor: pointer;
+}

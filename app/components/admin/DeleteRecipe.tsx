@@ -1,14 +1,6 @@
-import React, { VFC } from 'react'
-import {
-  Typography,
-  Button,
-  Grid,
-  Box,
-  CardMedia,
-  Divider,
-} from '@material-ui/core'
-import { format } from 'date-fns'
-import { utcToZonedTime } from 'date-fns-tz'
+import React from 'react'
+import { NextPage } from 'next'
+import { Button, Grid } from '@material-ui/core'
 import { useRouter } from 'next/router'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { IRecipe } from '../../re-ducks/recipe/type'
@@ -18,13 +10,14 @@ import { setAlert } from '../../re-ducks/alert/alertSlice'
 import { MyKnownError } from '../../re-ducks/defaultType'
 import { selectUserToken } from '../../re-ducks/auth/authSlice'
 import { firebaseStorage } from '../../src/utils/firebase'
+import Content from '../recipe/Content'
 import styles from '../../styles/components/admin/deleteRecipe.module.css'
 
 type Props = {
   recipe: IRecipe
 }
 
-const DeleteRecipe: VFC<Props> = ({ recipe }) => {
+const DeleteRecipe: NextPage<Props> = ({ recipe }) => {
   const dispatch = useAppDispatch()
   const router = useRouter()
 
@@ -60,14 +53,6 @@ const DeleteRecipe: VFC<Props> = ({ recipe }) => {
     }
   }
 
-  // 調理工程のorderで昇順
-  const sortDescriptions = recipe.recipeDescriptions.sort((a, b) => {
-    return a.order - b.order
-  })
-
-  const date = new Date(recipe.createdAt)
-  const jstDate = utcToZonedTime(date, 'Asia/Tokyo')
-
   return (
     <div>
       <Grid container className={styles.recipeWrapper}>
@@ -75,123 +60,7 @@ const DeleteRecipe: VFC<Props> = ({ recipe }) => {
           <Grid container className={styles.recipeName}>
             <h1>{recipe.name}を削除しますか？</h1>
           </Grid>
-          <Grid container className={styles.recipeName}>
-            <Typography gutterBottom variant="h4" component="h2">
-              <Box fontWeight="fontWeightBold">{recipe.name}</Box>
-            </Typography>
-          </Grid>
-          <Grid container>
-            <ul className={styles.tag}>
-              {recipe.tags.map((tag) => (
-                <div key={tag.id}>
-                  <Typography
-                    variant="body2"
-                    color="primary"
-                    component="p"
-                    className={styles.linkText}
-                  >
-                    #{tag.name}
-                  </Typography>
-                </div>
-              ))}
-            </ul>
-          </Grid>
-          <Grid container>
-            <Typography variant="body2" color="textSecondary" component="p">
-              {format(jstDate, 'yyyy-MM-dd')}
-            </Typography>
-          </Grid>
-          <Grid container className={styles.image}>
-            <CardMedia
-              className={styles.media}
-              image={recipe.image}
-              component="img"
-            />
-          </Grid>
-          <Grid container>
-            <Typography gutterBottom variant="h6" component="h2">
-              調理時間： {recipe.time}分
-            </Typography>
-          </Grid>
-          <Grid container>
-            <Grid item className={styles.divider}>
-              <Divider />
-            </Grid>
-          </Grid>
-          <Grid container className={styles.recipeElement}>
-            <Typography gutterBottom variant="h6" component="h2">
-              材料
-            </Typography>
-          </Grid>
-          <Grid container className={styles.recipeChildElment}>
-            <ul className={styles.ingredients}>
-              {recipe.ingredients.map((ingredient) => (
-                <li key={ingredient.id}>
-                  <Typography variant="body2" color="textPrimary" component="p">
-                    {ingredient.name}： {ingredient.amount}
-                  </Typography>
-                </li>
-              ))}
-            </ul>
-          </Grid>
-          <Grid container>
-            <Grid item className={styles.divider}>
-              <Divider />
-            </Grid>
-          </Grid>
-          <Grid container className={styles.recipeElement}>
-            <Typography gutterBottom variant="h6" component="h2">
-              調理工程
-            </Typography>
-          </Grid>
-          <Grid container className={styles.recipeChildElment}>
-            <ul>
-              {sortDescriptions.map((recipeDescription) => (
-                <div key={recipeDescription.id}>
-                  <Typography variant="body2" color="textPrimary" component="p">
-                    {recipeDescription.order}： {recipeDescription.text}
-                  </Typography>
-                  {recipeDescription.url && (
-                    <a
-                      href={recipeDescription.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Typography
-                        variant="body2"
-                        color="primary"
-                        component="p"
-                        className={styles.a}
-                      >
-                        参考：{recipeDescription.url}
-                      </Typography>
-                    </a>
-                  )}
-                </div>
-              ))}
-            </ul>
-          </Grid>
-          <Grid container>
-            {recipe.remarks && (
-              <Grid item className={styles.divider}>
-                <Divider />
-              </Grid>
-            )}
-          </Grid>
-          <Grid container className={styles.recipeElement}>
-            {recipe.remarks && (
-              <Typography gutterBottom variant="h6" component="h2">
-                補足
-              </Typography>
-            )}
-          </Grid>
-          <Grid container>
-            {recipe.remarks && (
-              <Typography variant="body2" color="textPrimary" component="p">
-                {recipe.remarks}
-              </Typography>
-            )}
-          </Grid>
+          <Content recipe={recipe} />
           <Grid container className={styles.buttonWrapper}>
             <Button
               variant="contained"
