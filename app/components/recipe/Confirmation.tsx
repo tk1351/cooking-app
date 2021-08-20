@@ -288,7 +288,7 @@ const Confirmation: NextPage = () => {
           </Grid>
           <Grid container>
             <Link href="/">
-              <p>一覧へ戻る</p>
+              <a>一覧へ戻る</a>
             </Link>
           </Grid>
         </Grid>
