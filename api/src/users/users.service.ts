@@ -1,6 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from './users.repository';
 import { User } from './users.entity';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -8,10 +7,7 @@ import { MyKnownMessage } from '../message.interface';
 import { SocialsService } from '../socials/socials.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
-import {
-  GetUsersByLimitNumberDto,
-  GetUsersByOffsetDto,
-} from './dto/get-users.dto';
+import { GetUsersDto } from './dto/get-users.dto';
 import { UserInfo } from '../auth/type';
 
 @Injectable()
@@ -19,26 +15,11 @@ export class UsersService {
   constructor(
     @InjectRepository(UserRepository)
     private userRepository: UserRepository,
-    private readonly jwtService: JwtService,
     private socialsService: SocialsService,
   ) {}
 
-  async getAllUsers(): Promise<User[]> {
-    return this.userRepository.getAllUsers();
-  }
-
-  async getUsersByLimitNumber(
-    getUsersByLimitNumberDto: GetUsersByLimitNumberDto,
-  ): Promise<User[]> {
-    return await this.userRepository.getUsersByLimitNumber(
-      getUsersByLimitNumberDto,
-    );
-  }
-
-  async getUsersByOffset(
-    getUsersByOffsetDto: GetUsersByOffsetDto,
-  ): Promise<User[]> {
-    return await this.userRepository.getUsersByOffset(getUsersByOffsetDto);
+  async getUsers(getUsersDto: GetUsersDto): Promise<[User[], number]> {
+    return this.userRepository.getUsers(getUsersDto);
   }
 
   async getUserById(id: number): Promise<User> {

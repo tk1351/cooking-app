@@ -18,10 +18,7 @@ import { GetUser } from './get-user.decorator';
 import { MyKnownMessage } from '../message.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
-import {
-  GetUsersByLimitNumberDto,
-  GetUsersByOffsetDto,
-} from './dto/get-users.dto';
+import { GetUsersDto } from './dto/get-users.dto';
 import { AuthGuard } from '../auth/auth.guard';
 import { UserInfo } from '../auth/type';
 
@@ -30,22 +27,10 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
-  getAllUsers(): Promise<User[]> {
-    return this.usersService.getAllUsers();
-  }
-
-  @Get('/number')
-  async getUsersByLimitNumber(
-    @Query(ValidationPipe) getUsersByLimitNumberDto: GetUsersByLimitNumberDto,
-  ): Promise<User[]> {
-    return this.usersService.getUsersByLimitNumber(getUsersByLimitNumberDto);
-  }
-
-  @Get('/offset')
-  async getUsersByOffset(
-    @Query(ValidationPipe) getUsersByOffsetDto: GetUsersByOffsetDto,
-  ): Promise<User[]> {
-    return this.usersService.getUsersByOffset(getUsersByOffsetDto);
+  getUsers(
+    @Query(ValidationPipe) getUsersDto: GetUsersDto,
+  ): Promise<[User[], number]> {
+    return this.usersService.getUsers(getUsersDto);
   }
 
   @Get('/:id')

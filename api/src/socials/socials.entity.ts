@@ -10,7 +10,9 @@ export class Social extends DefaultEntity {
   @Column()
   url: string;
 
-  @ManyToOne(() => User, (user) => user.socials)
+  @ManyToOne(() => User, (user) => user.socials, {
+    orphanedRowAction: 'delete',
+  })
   @JoinColumn({ name: 'userId' })
   user: User;
 

@@ -1,4 +1,4 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { EntityRepository, Repository, getCustomRepository } from 'typeorm';
 import {
   InternalServerErrorException,
   NotFoundException,
@@ -7,10 +7,8 @@ import { RecipeLike } from './recipe-likes.entity';
 import { RecipeLikeDto } from './dto/recipe-like-dto';
 import { MyKnownMessage } from '../message.interface';
 import { RecipeUnlikeDto } from './dto/recipe-unlike-dto';
-import {
-  GetRecipeLikeByLimitNumberDto,
-  GetRecipeLikeByOffsetDto,
-} from './dto/get-recipe-like-dto';
+import { GetRecipeLikeDto } from './dto/get-recipe-like-dto';
+import { UserRepository } from '../users/users.repository';
 
 @EntityRepository(RecipeLike)
 export class RecipeLikeRepository extends Repository<RecipeLike> {
@@ -18,61 +16,31 @@ export class RecipeLikeRepository extends Repository<RecipeLike> {
     return this.find({});
   }
 
-  async getRecipeLikesByUserId(userId: number): Promise<RecipeLike[]> {
+  async getRecipeLikesByUserId(
+    userId: number,
+    getRecipeLikeDto: GetRecipeLikeDto,
+  ): Promise<[RecipeLike[], number]> {
+    const { limit, start } = getRecipeLikeDto;
+
+    const usersRepository = getCustomRepository(UserRepository);
+
+    const user = await usersRepository.getUserById(userId);
+
+    if (!user) throw new NotFoundException(`ID: ${userId}のuserは存在しません`);
+
     const found = await this.createQueryBuilder('recipe-likes')
       .where('recipe-likes.userId = :userId', { userId })
       .leftJoinAndSelect('recipe-likes.recipe', 'recipe')
       .leftJoinAndSelect('recipe.ingredients', 'ingredients')
       .leftJoinAndSelect('recipe.recipeDescriptions', 'recipeDescriptions')
       .leftJoinAndSelect('recipe.tags', 'tags')
-      .getMany();
-
-    return found;
-  }
-
-  async getRecipeLikesByLimitNumber(
-    getRecipeLikeByLimitNumberDto: GetRecipeLikeByLimitNumberDto,
-    userId: number,
-  ): Promise<RecipeLike[]> {
-    const { limit } = getRecipeLikeByLimitNumberDto;
-
-    const result = await this.createQueryBuilder('recipe-likes')
-      .where('recipe-likes.userId = :userId', { userId })
-      .leftJoinAndSelect('recipe-likes.recipe', 'recipe')
-      .leftJoinAndSelect('recipe.ingredients', 'ingredients')
-      .leftJoinAndSelect('recipe.recipeDescriptions', 'recipeDescriptions')
-      .leftJoinAndSelect('recipe.tags', 'tags')
-      .orderBy('recipe.createdAt', 'DESC')
-      .take(limit);
-
-    try {
-      const recipeLikes = await result.getMany();
-      return recipeLikes;
-    } catch (error) {
-      throw new InternalServerErrorException();
-    }
-  }
-
-  async getRecipeLikesByOffset(
-    etRecipeLikeByOffsetDto: GetRecipeLikeByOffsetDto,
-    userId: number,
-  ): Promise<RecipeLike[]> {
-    const { start, limit } = etRecipeLikeByOffsetDto;
-
-    const result = await this.createQueryBuilder('recipe-likes')
-      .where('recipe-likes.userId = :userId', { userId })
-      .leftJoinAndSelect('recipe-likes.recipe', 'recipe')
-      .leftJoinAndSelect('recipe.ingredients', 'ingredients')
-      .leftJoinAndSelect('recipe.recipeDescriptions', 'recipeDescriptions')
-      .leftJoinAndSelect('recipe.tags', 'tags')
-      .orderBy('recipe.createdAt', 'DESC')
+      .take(limit)
       .skip(start)
-      .take(limit);
+      .getManyAndCount();
 
     try {
-      const recipeLikes = await result.getMany();
-      return recipeLikes;
-    } catch (error) {
+      return found;
+    } catch (e) {
       throw new InternalServerErrorException();
     }
   }
