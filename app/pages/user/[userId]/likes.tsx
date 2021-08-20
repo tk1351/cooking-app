@@ -1,5 +1,10 @@
-import React, { VFC } from 'react'
-import { InferGetStaticPropsType, GetStaticPaths, GetStaticProps } from 'next'
+import React from 'react'
+import {
+  InferGetStaticPropsType,
+  GetStaticPaths,
+  GetStaticProps,
+  NextPage,
+} from 'next'
 import axios from 'axios'
 import Navbar from '../../../components/common/Navbar'
 import Likes from '../../../components/user/Likes'
@@ -7,7 +12,7 @@ import { IRecipeLike } from '../../../re-ducks/defaultType'
 import Footer from '../../../components/common/Footer'
 import WithUser from '../../../src/utils/WithUser'
 
-const likes: VFC<Props> = (props) => {
+const likes: NextPage<Props> = (props) => {
   return (
     <WithUser>
       <div>
@@ -32,17 +37,21 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 export const getStaticProps: GetStaticProps<
-  { recipeLikes: IRecipeLike[] },
+  { recipeLikes: IRecipeLike[]; count: number },
   { userId: string }
 > = async (context) => {
   const limitNumber = 5
+  const start = 0
 
   const url = `${process.env.API_URL}/recipe-likes/${Number(
     context.params?.userId
-  )}/user/number?limit=${limitNumber}`
-  const res = await axios.get<IRecipeLike[]>(url)
+  )}/user?start=${start}&limit=${limitNumber}`
+  const res = await axios.get<[IRecipeLike[], number]>(url)
+  const recipeLikes = res.data[0]
+  const count = res.data[1]
+
   return {
-    props: { recipeLikes: res.data },
+    props: { recipeLikes, count },
   }
 }
 

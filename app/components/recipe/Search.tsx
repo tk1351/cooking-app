@@ -1,4 +1,5 @@
-import React, { VFC, useState } from 'react'
+import React, { useState } from 'react'
+import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { Button, Grid } from '@material-ui/core'
 import InfiniteScroll from 'react-infinite-scroller'
@@ -11,9 +12,10 @@ import API from '../../src/utils/api'
 
 type Props = {
   recipes: IRecipe[]
+  count: number
 }
 
-const Search: VFC<Props> = ({ recipes }) => {
+const Search: NextPage<Props> = ({ recipes, count }) => {
   const router = useRouter()
   const { query } = router.query
 
@@ -40,7 +42,9 @@ const Search: VFC<Props> = ({ recipes }) => {
   return (
     <div>
       <Grid container justify="center" className={styles.h1}>
-        <h1>{query}の検索結果</h1>
+        <h1>
+          {query}の検索結果: {count}件
+        </h1>
       </Grid>
       <InfiniteScroll loadMore={loadMore} hasMore={hasMore} loader={loader}>
         <Grid container spacing={2}>

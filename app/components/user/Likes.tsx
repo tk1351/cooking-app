@@ -1,4 +1,5 @@
-import React, { VFC, useState } from 'react'
+import React, { useState } from 'react'
+import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { Button, Grid } from '@material-ui/core'
 import InfiniteScroll from 'react-infinite-scroller'
@@ -13,9 +14,10 @@ import API from '../../src/utils/api'
 
 type Props = {
   recipeLikes: IRecipeLike[]
+  count: number
 }
 
-const Likes: VFC<Props> = ({ recipeLikes }) => {
+const Likes: NextPage<Props> = ({ recipeLikes, count }) => {
   const router = useRouter()
   const userId = router.query.userId
 
@@ -27,14 +29,15 @@ const Likes: VFC<Props> = ({ recipeLikes }) => {
   const loadMore = async () => {
     const limitNumber = 5
 
-    const url = `/recipe-likes/${Number(userId)}/user/offset?start=${
+    const url = `/recipe-likes/${Number(userId)}/user?start=${
       posts.length
     }&limit=${limitNumber}`
-    const res = await API.get<IRecipeLike[]>(url)
+    const res = await API.get<[IRecipeLike[], number]>(url)
 
-    try {
-      setPosts([...posts, ...res.data])
-    } finally {
+    const data = res.data[0]
+    setPosts([...posts, ...data])
+
+    if (data.length < 1) {
       setHasMore(false)
     }
   }
@@ -44,7 +47,9 @@ const Likes: VFC<Props> = ({ recipeLikes }) => {
   return (
     <div>
       <Grid container justify="center" className={styles.h1}>
-        <h1>{userName}さんのお気に入りレシピ一覧</h1>
+        <h1>
+          {userName}さんのお気に入りレシピ: {count}件
+        </h1>
       </Grid>
       <InfiniteScroll loadMore={loadMore} hasMore={hasMore} loader={loader}>
         <Grid container spacing={2}>
