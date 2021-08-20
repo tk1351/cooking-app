@@ -1,5 +1,5 @@
-import React, { VFC } from 'react'
-import { InferGetStaticPropsType } from 'next'
+import React from 'react'
+import { InferGetStaticPropsType, NextPage } from 'next'
 import axios from 'axios'
 import { IUser } from '../../../re-ducks/auth/type'
 import Navbar from '../../../components/common/Navbar'
@@ -7,7 +7,7 @@ import UsersList from '../../../components/admin/UsersList'
 import Footer from '../../../components/common/Footer'
 import WithAdmin from '../../../src/utils/WithAdmin'
 
-const list: VFC<Props> = (props) => {
+const list: NextPage<Props> = (props) => {
   return (
     <WithAdmin>
       <div>
@@ -21,10 +21,15 @@ const list: VFC<Props> = (props) => {
 
 export const getStaticProps = async () => {
   const limitNumber = 10
-  const url = `${process.env.API_URL}/users/number?limit=${limitNumber}`
-  const res = await axios.get<IUser[]>(url)
+  const start = 0
+
+  const url = `${process.env.API_URL}/users?start=${start}&limit=${limitNumber}`
+  const res = await axios.get<[IUser[], number]>(url)
+  const users = res.data[0]
+  const count = res.data[1]
+
   return {
-    props: { users: res.data },
+    props: { users, count },
   }
 }
 

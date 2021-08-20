@@ -1,5 +1,10 @@
-import React, { VFC } from 'react'
-import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next'
+import React from 'react'
+import {
+  GetStaticPaths,
+  GetStaticProps,
+  InferGetStaticPropsType,
+  NextPage,
+} from 'next'
 import axios from 'axios'
 import { IUser } from '../../re-ducks/auth/type'
 import Navbar from '../../components/common/Navbar'
@@ -7,7 +12,7 @@ import AdminPage from '../../components/admin/AdminPage'
 import Footer from '../../components/common/Footer'
 import WithAdmin from '../../src/utils/WithAdmin'
 
-const userId: VFC<Props> = (props) => {
+const userId: NextPage<Props> = (props) => {
   return (
     <WithAdmin>
       <div>
@@ -21,8 +26,8 @@ const userId: VFC<Props> = (props) => {
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const url = `${process.env.API_URL}/users`
-  const res = await axios.get<IUser[]>(url)
-  const users = await res.data
+  const res = await axios.get<[IUser[], number]>(url)
+  const users = res.data[0]
 
   const paths = users.map((user) => ({
     params: { userId: user.id.toString() },

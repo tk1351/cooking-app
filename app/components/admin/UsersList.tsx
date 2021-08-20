@@ -1,6 +1,7 @@
-import React, { VFC, useState } from 'react'
+import React, { useState } from 'react'
+import { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { Grid, Typography, Button, Container } from '@material-ui/core'
+import { Grid, Button, Container } from '@material-ui/core'
 import InfiniteScroll from 'react-infinite-scroller'
 import { IUser } from '../../re-ducks/auth/type'
 import { useAppSelector } from '../../re-ducks/hooks'
@@ -13,9 +14,10 @@ import API from '../../src/utils/api'
 
 type Props = {
   users: IUser[]
+  count: number
 }
 
-const UsersList: VFC<Props> = ({ users }) => {
+const UsersList: NextPage<Props> = ({ users, count }) => {
   const router = useRouter()
 
   const adminUserId = useAppSelector(selectUserId)
@@ -26,12 +28,14 @@ const UsersList: VFC<Props> = ({ users }) => {
   const loadMore = async () => {
     const limitNumber = 10
 
-    const url = `/users/offset?start=${limitNumber}&limit=${limitNumber}`
-    const res = await API.get<IUser[]>(url)
+    const url = `/users?start=${limitNumber}&limit=${limitNumber}`
+    const res = await API.get<[IUser[], number]>(url)
 
-    try {
-      setItems([...items, ...res.data])
-    } finally {
+    const data = res.data[0]
+
+    setItems([...items, ...data])
+
+    if (data.length < 1) {
       setHasMore(false)
     }
   }
